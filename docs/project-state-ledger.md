@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P6C.
+This ledger records the accepted project state for `forefield-product-shell` through P6D.
 
 ## Repository Split
 
@@ -164,13 +164,46 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - no Saved Tab added
   - no API / DB / auth / persistence / browser storage added
   - no new dependencies
+- no product action helper changes
+- no product read-model / mapper / fixture changes
+- View Evidence is not recorded as UserAction
+- Watch does not create SavedItem
+- Save Cluster / Save Evidence create correct SavedItem types
+- Hide preserves evidence and saved / watched state
+- hiding currently open drawer cluster closes drawer through UI interaction state
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `88 / 88` passing
+- P6D completed
+- P6D commit: `1e5530f`
+- topic-level local / session-only Saved Tab added
+- added:
+  - Overview / Saved tab switcher in `TopicWorkspaceShellPage`
+  - Saved Clusters
+  - Saved Evidence
+  - very light deferred Saved Briefs note
+  - Open saved cluster back to Overview cluster context
+  - Open saved evidence back to related cluster EvidenceDrawer context when available
+  - Unsave from Saved Tab
+- created:
+  - `src/ui/components/SavedTab.jsx`
+  - `src/ui/components/SavedItemCard.jsx`
+- modified:
+  - `src/ui/pages/TopicWorkspaceShellPage.jsx`
+  - `src/ui/TopicWorkspacePage.jsx`
+  - `src/ui/styles.css`
+- confirmed:
+  - Saved Tab is topic-level and local / session-only
+  - Saved Tab uses `SavedItem` state as source of truth
+  - Save Cluster / Save Evidence appear in Saved Tab
+  - Unsave marks items removed and does not alter underlying cluster / evidence
+  - hidden saved items remain visible in Saved Tab
+  - no API / DB / auth / persistence / browser storage added
+  - no new dependencies
+  - no `BaselineBrief` logic added
+  - no `Copilot` added
+  - no full Evidence Library or cross-topic Saved Library added
   - no product action helper changes
   - no product read-model / mapper / fixture changes
-  - View Evidence is not recorded as UserAction
-  - Watch does not create SavedItem
-  - Save Cluster / Save Evidence create correct SavedItem types
-  - Hide preserves evidence and saved / watched state
-  - hiding currently open drawer cluster closes drawer through UI interaction state
 - `npm run validate`, `npm test`, and `npm run build` passed
 - current tests: `88 / 88` passing
 
@@ -225,7 +258,13 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - provides a minimal Hidden clusters + Undo panel
 - closes the Evidence Drawer through UI interaction state when the currently open cluster is hidden
 - Save Evidence currently depends on stable drawer evidence ids and should be re-checked before persistence work
-- local `SavedItem` state now exists, but no user-facing Saved Tab exists yet
+- provides a topic-level local / session-only Saved Tab
+- displays Saved Clusters and Saved Evidence from `SavedItem` state
+- allows Unsave from Saved Tab without altering underlying cluster / evidence
+- opens saved clusters back into Overview context and opens related cluster EvidenceDrawer context for saved evidence when available
+- Open saved evidence does not highlight a specific evidence item in P6D
+- Saved Briefs is only a deferred note, not a working `BaselineBrief` feature
+- Saved Tab remains a topic-level local view, not a workspace-level Evidence Library
 - current test count: 88 / 88 passing
 
 ## Current Product-Shell Non-Capabilities
@@ -237,14 +276,17 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - no real LLM calls
 - no real data collection
 - no confirmed `Topic` promotion
-- no Saved Tab yet
 - no `BaselineBrief` / `Copilot` behavior
 - no live decision-core integration
 
 ## Recommended Next Step
 
 - next step is not yet implementation
-- recommended next planning step: `P6D Topic-level Saved Tab planning`
+- recommended next planning directions remain undecided until planning:
+  - possible local product hardening
+  - possible `BaselineBrief` planning
+  - possible Copilot guided actions planning
+  - possible API / persistence planning
 
 ## Pre-Flight Checklist For Future Phases
 
