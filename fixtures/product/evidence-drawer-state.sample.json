@@ -1,13 +1,13 @@
 {
   "topic_ref": {
-    "topic_draft_id": "topic_draft_ps_001"
+    "topic_draft_id": "topic_draft_ps__bundle-multi-source-privacy-controls"
   },
   "signal_cluster_ref": {
-    "signal_cluster_id": "signal_cluster_ps_001"
+    "signal_cluster_id": "signal_cluster_ps__bundle-multi-source-privacy-controls__r1"
   },
   "display_summary": {
-    "headline": "Users want clearer privacy controls",
-    "summary": "Directional public-source evidence across two source families suggests privacy control clarity is worth Topic review."
+    "headline": "Users want clearer privacy controls.",
+    "summary": "This demand signal is corroborated strongly enough to justify the next validation step."
   },
   "confidence_display": {
     "label": "directional",
@@ -22,18 +22,18 @@
   ],
   "evidence_items": [
     {
-      "id": "drawer_evidence_item_ps_001",
-      "curated_evidence_record_id": "curated_evidence_record_ps_001",
+      "id": "drawer_evidence_item_ps__bundle-multi-source-privacy-controls__r1__s1",
+      "curated_evidence_record_id": "curated_evidence_record_ps__bundle-multi-source-privacy-controls__r1__s1",
       "label": "Public source 1",
       "url": "https://example.com/reddit/privacy-controls-thread",
-      "summary": "Public discussion thread showing user demand for clearer privacy controls."
+      "summary": "Public discussion thread included in the curated evidence set."
     },
     {
-      "id": "drawer_evidence_item_ps_002",
-      "curated_evidence_record_id": "curated_evidence_record_ps_002",
+      "id": "drawer_evidence_item_ps__bundle-multi-source-privacy-controls__r1__s2",
+      "curated_evidence_record_id": "curated_evidence_record_ps__bundle-multi-source-privacy-controls__r1__s2",
       "label": "Public source 2",
       "url": "https://example.com/youtube/privacy-controls-comments",
-      "summary": "Public comments source showing related demand for clearer privacy controls."
+      "summary": "Public comments source included in the curated evidence set."
     }
   ]
 }

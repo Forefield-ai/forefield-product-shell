@@ -46,24 +46,21 @@ Product-shell must consume that handoff without copying decision-core pipeline c
 
 ## Current Phase
 
-Product Shell P1 docs + fixtures only.
+Product Shell P2 local mapper implementation.
 
-P1 is limited to:
+P2 is limited to:
 
-- repository boundary documentation
-- product object contract documentation
-- handoff-to-product mapping documentation
-- external handoff sample intake
-- product fixture samples for the future Topic Workspace mainline
+- repository boundary and contract documentation
+- a local static-fixture-driven handoff-to-product mapper
+- a computed Evidence Drawer read-model builder
+- zero-dependency validation and tests
 
-## Non-Goals For P1
+## Non-Goals For P2
 
 - no UI implementation
 - no API implementation
 - no DB implementation
-- no dependency installation
-- no runtime product object contract code
-- no runtime mapper code
+- no non-Node third-party dependencies
 - no copied decision-core source logic
 - no recreation of `OpportunitySet`, `OpportunityCard`, `OpportunityScore`, or `ClaimTrace`
 
@@ -71,6 +68,6 @@ P1 is limited to:
 
 - P0: repo boundary and sample input
 - P1: product-layer object contracts
-- P2: handoff-to-product mapper
+- P2: handoff-to-product mapper and local read-model builder
 - P3: mock Topic Workspace state
 - P4: UI/API/DB after contracts stabilize

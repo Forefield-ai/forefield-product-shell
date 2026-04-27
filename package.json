@@ -1,0 +1,9 @@
+{
+  "name": "forefield-product-shell",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "test": "node --test tests",
+    "validate": "node --check src/product/utils/make-product-id.js && node --check src/product/mappers/map-decision-core-handoff-to-product-mainline.js && node --check src/product/read-models/build-evidence-drawer-state.js && npm test"
+  }
+}
