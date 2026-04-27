@@ -7,7 +7,7 @@ module.exports = defineConfig({
     commonjsOptions: {
       include: [
         /node_modules/,
-        /src\/product\/workspace\/workspace-interaction-state\.js$/,
+        /src\/product\/.+\.js$/,
       ],
     },
   },

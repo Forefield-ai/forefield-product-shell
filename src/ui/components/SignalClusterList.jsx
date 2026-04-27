@@ -5,12 +5,13 @@ export default function SignalClusterList({
   signalClusterSections,
   selectedClusterId,
   onSelectCluster,
+  onOpenEvidenceDrawer,
 }) {
   return (
     <section className="cluster-list" aria-label="Signal clusters">
       <div className="cluster-list__header">
         <h2>Signal Clusters</h2>
-        <p>Select a cluster to focus the workspace state. Evidence drawer opens in P4C.</p>
+        <p>Select a cluster to focus the workspace state. View Evidence opens the drawer.</p>
       </div>
       <div className="cluster-list__items">
         {signalClusterSections.map((signalClusterSection) => (
@@ -19,6 +20,7 @@ export default function SignalClusterList({
             signalClusterSection={signalClusterSection}
             isSelected={selectedClusterId === signalClusterSection.cluster_id}
             onSelect={() => onSelectCluster(signalClusterSection.cluster_id)}
+            onViewEvidence={onOpenEvidenceDrawer}
           />
         ))}
       </div>

@@ -1,6 +1,11 @@
 import React from 'react';
 
-export default function SignalClusterCard({ signalClusterSection, isSelected, onSelect }) {
+export default function SignalClusterCard({
+  signalClusterSection,
+  isSelected,
+  onSelect,
+  onViewEvidence,
+}) {
   return (
     <article
       className={`cluster-card${isSelected ? ' cluster-card--selected' : ''}`}
@@ -42,14 +47,16 @@ export default function SignalClusterCard({ signalClusterSection, isSelected, on
 
       <div className="cluster-card__footer">
         <span>{signalClusterSection.source_links.length} linked sources</span>
-        {/* P4C will wire this button to openEvidenceDrawer. */}
         <button
           type="button"
           className="cluster-card__button"
-          disabled
-          onClick={(event) => event.stopPropagation()}
+          disabled={!signalClusterSection.drawer_available}
+          onClick={(event) => {
+            event.stopPropagation();
+            onViewEvidence(signalClusterSection.cluster_id);
+          }}
         >
-          View Evidence (P4C)
+          View Evidence
         </button>
       </div>
     </article>

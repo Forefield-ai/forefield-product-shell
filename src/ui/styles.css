@@ -42,12 +42,20 @@ select {
   gap: 20px;
 }
 
+.workspace-shell__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(320px, 0.95fr);
+  gap: 20px;
+  align-items: start;
+}
+
 .workspace-header,
 .summary-strip,
 .coverage-strip,
 .cluster-list,
 .empty-state,
-.cluster-card {
+.cluster-card,
+.evidence-drawer {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 20px;
@@ -240,8 +248,72 @@ select {
   border-radius: 10px;
   background: var(--accent);
   color: white;
+  cursor: pointer;
+}
+
+.cluster-card__button:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+.evidence-drawer {
+  position: sticky;
+  top: 20px;
+  padding: 22px;
+}
+
+.evidence-drawer__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+}
+
+.evidence-drawer__eyebrow {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.evidence-drawer__header h2,
+.evidence-drawer__section h3 {
+  margin: 0;
+}
+
+.evidence-drawer__summary,
+.evidence-drawer__item-summary,
+.evidence-drawer__confidence-label {
+  color: var(--muted);
+}
+
+.evidence-drawer__close {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-strong);
+  cursor: pointer;
+}
+
+.evidence-drawer__section + .evidence-drawer__section {
+  margin-top: 18px;
+}
+
+.evidence-drawer__items,
+.evidence-drawer__links,
+.evidence-drawer__limitations {
+  margin: 12px 0 0;
+  padding-left: 18px;
+}
+
+.evidence-drawer__item + .evidence-drawer__item {
+  margin-top: 12px;
+}
+
+.evidence-drawer__item-label {
+  margin: 0 0 6px;
+  font-weight: 600;
 }
 
 .empty-state ul {
@@ -254,15 +326,25 @@ select {
     padding: 20px 14px 36px;
   }
 
+  .workspace-shell__content {
+    grid-template-columns: 1fr;
+  }
+
   .workspace-header,
   .coverage-strip,
   .cluster-list,
-  .empty-state {
+  .empty-state,
+  .evidence-drawer {
     padding: 18px;
   }
 
   .cluster-card__header,
-  .cluster-card__footer {
+  .cluster-card__footer,
+  .evidence-drawer__header {
     flex-direction: column;
+  }
+
+  .evidence-drawer {
+    position: static;
   }
 }
