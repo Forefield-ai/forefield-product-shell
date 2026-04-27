@@ -1,0 +1,78 @@
+{
+  "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+  "bundle_id": "bundle:cross-source-demand-opportunities",
+  "bundle_status": "degraded",
+  "ranked_entry_count": 2,
+  "arbitration_summary": {
+    "claim_candidate_count": 2,
+    "downgraded_candidate_count": 1,
+    "suppressed_candidate_count": 1
+  },
+  "ranked_entries": [
+    {
+      "rank": 1,
+      "decision_summary": {
+        "problem": "Teams want clearer privacy controls across shared workflows.",
+        "why_it_matters": "The signal is strong enough to justify the next bounded validation step because corroborated support spans more than one public source family.",
+        "next_action": "Validate whether this cross-source privacy control demand stays consistent in one more bounded source family."
+      },
+      "evidence_summary": {
+        "supporting_ref_count": 3,
+        "contradicting_count": 0,
+        "source_family_count": 3,
+        "weak_context_count": 0,
+        "coverage_boundary": "bounded_multi_source_corroborated_bundle"
+      },
+      "confidence_summary": {
+        "confidence_label": "directional",
+        "confidence_boundary": "Confidence is directional because bounded support spans multiple source families with no material contradiction."
+      },
+      "provenance": {
+        "public_source_refs": [
+          "https://example.com/reddit/privacy-workflow-thread",
+          "https://example.com/youtube/privacy-workflow-comments",
+          "https://example.com/community/privacy-workflow-roundup"
+        ],
+        "public_source_ref_count": 3
+      },
+      "internal_decision_core": {
+        "decision_band": "recommend",
+        "decision_core_refs": {
+          "claim_id": "claim:privacy-workflow-controls",
+          "opportunity_id": "opportunity:claim:privacy-workflow-controls"
+        }
+      }
+    },
+    {
+      "rank": 2,
+      "decision_summary": {
+        "problem": "Smaller teams still struggle with manual workflow handoffs.",
+        "why_it_matters": "The demand signal is worth monitoring, but current support stays narrow and contradiction pressure remains present.",
+        "next_action": "Validate whether the manual handoff pain remains consistent after another bounded contradiction review."
+      },
+      "evidence_summary": {
+        "supporting_ref_count": 2,
+        "contradicting_count": 1,
+        "source_family_count": 1,
+        "weak_context_count": 1,
+        "coverage_boundary": "bounded_single_source_corroborated_bundle"
+      },
+      "confidence_summary": {
+        "confidence_label": "exploratory",
+        "confidence_boundary": "Confidence remains exploratory because the current corroboration set stays single-source and contradiction-aware."
+      },
+      "provenance": {
+        "public_source_refs": [
+          "https://example.com/forum/manual-handoff-pain",
+          "https://example.com/community/manual-handoff-followup"
+        ],
+        "public_source_ref_count": 2
+      }
+    }
+  ],
+  "limitations": [
+    "limited source coverage",
+    "weak evidence",
+    "contradiction present"
+  ]
+}
