@@ -1,0 +1,46 @@
+{
+  "initial_state": {
+    "selected_cluster_id": null,
+    "drawer_state": "closed",
+    "drawer_cluster_id": null,
+    "active_section": "clusters",
+    "expanded_cluster_ids": []
+  },
+  "after_select_cluster": {
+    "selected_cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+    "drawer_state": "closed",
+    "drawer_cluster_id": null,
+    "active_section": "clusters",
+    "expanded_cluster_ids": []
+  },
+  "after_open_evidence_drawer": {
+    "selected_cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+    "drawer_state": "open",
+    "drawer_cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+    "active_section": "clusters",
+    "expanded_cluster_ids": []
+  },
+  "after_close_evidence_drawer": {
+    "selected_cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+    "drawer_state": "closed",
+    "drawer_cluster_id": null,
+    "active_section": "clusters",
+    "expanded_cluster_ids": []
+  },
+  "after_toggle_cluster_expanded": {
+    "selected_cluster_id": null,
+    "drawer_state": "closed",
+    "drawer_cluster_id": null,
+    "active_section": "clusters",
+    "expanded_cluster_ids": [
+      "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1"
+    ]
+  },
+  "after_set_active_section": {
+    "selected_cluster_id": null,
+    "drawer_state": "closed",
+    "drawer_cluster_id": null,
+    "active_section": "evidence",
+    "expanded_cluster_ids": []
+  }
+}
