@@ -1,6 +1,30 @@
 import React from 'react';
 
-export default function EvidenceDrawer({ evidenceDrawer, onClose }) {
+function getEvidenceItemId(item) {
+  if (typeof item?.curated_evidence_record_id === 'string' && item.curated_evidence_record_id.trim()) {
+    return item.curated_evidence_record_id.trim();
+  }
+
+  if (typeof item?.id === 'string' && item.id.trim()) {
+    return item.id.trim();
+  }
+
+  if (typeof item?.url === 'string' && item.url.trim()) {
+    return item.url.trim();
+  }
+
+  return '';
+}
+
+export default function EvidenceDrawer({
+  evidenceDrawer,
+  isEvidenceSaved,
+  onSaveEvidence,
+  onUnsaveEvidence,
+  onClose,
+}) {
+  const clusterId = evidenceDrawer?.signal_cluster_ref?.signal_cluster_id || '';
+
   return (
     <aside className="evidence-drawer" aria-label="Evidence drawer">
       <div className="evidence-drawer__header">
@@ -47,7 +71,34 @@ export default function EvidenceDrawer({ evidenceDrawer, onClose }) {
         <ul className="evidence-drawer__items">
           {evidenceDrawer.evidence_items.map((item) => (
             <li className="evidence-drawer__item" key={item.id}>
-              <p className="evidence-drawer__item-label">{item.label}</p>
+              <div className="evidence-drawer__item-header">
+                <div>
+                  <p className="evidence-drawer__item-label">{item.label}</p>
+                  {isEvidenceSaved?.(getEvidenceItemId(item)) ? (
+                    <span className="evidence-drawer__item-badge">Saved</span>
+                  ) : null}
+                </div>
+                <button
+                  type="button"
+                  className="evidence-drawer__item-button"
+                  onClick={() => {
+                    const evidenceId = getEvidenceItemId(item);
+
+                    if (!evidenceId) {
+                      return;
+                    }
+
+                    if (isEvidenceSaved?.(evidenceId)) {
+                      onUnsaveEvidence?.(item, clusterId);
+                      return;
+                    }
+
+                    onSaveEvidence?.(item, clusterId);
+                  }}
+                >
+                  {isEvidenceSaved?.(getEvidenceItemId(item)) ? 'Unsave' : 'Save Evidence'}
+                </button>
+              </div>
               <p className="evidence-drawer__item-summary">{item.summary}</p>
               <a className="evidence-drawer__item-link" href={item.url} target="_blank" rel="noreferrer">
                 {item.url}

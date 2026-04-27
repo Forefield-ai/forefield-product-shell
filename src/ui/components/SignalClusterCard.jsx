@@ -1,10 +1,18 @@
 import React from 'react';
+import ClusterActions from './ClusterActions';
 
 export default function SignalClusterCard({
   signalClusterSection,
   isSelected,
+  isWatched,
+  isSaved,
   onSelect,
   onViewEvidence,
+  onWatch,
+  onUnwatch,
+  onSave,
+  onUnsave,
+  onHide,
 }) {
   return (
     <article
@@ -27,9 +35,17 @@ export default function SignalClusterCard({
           </p>
           <h3>{signalClusterSection.headline}</h3>
         </div>
-        <span className="cluster-card__badge">
-          {signalClusterSection.evidence_count} evidence
-        </span>
+        <div className="cluster-card__header-side">
+          <span className="cluster-card__badge">
+            {signalClusterSection.evidence_count} evidence
+          </span>
+          {(isWatched || isSaved) ? (
+            <div className="cluster-card__state-badges" aria-label="Cluster state">
+              {isWatched ? <span className="cluster-card__state-badge">Watching</span> : null}
+              {isSaved ? <span className="cluster-card__state-badge cluster-card__state-badge--saved">Saved</span> : null}
+            </div>
+          ) : null}
+        </div>
       </div>
 
       <p className="cluster-card__summary">{signalClusterSection.summary}</p>
@@ -46,11 +62,23 @@ export default function SignalClusterCard({
       ) : null}
 
       <div className="cluster-card__footer">
-        <div className="cluster-card__footer-meta">
-          <span className="cluster-card__stat">{signalClusterSection.source_links.length} linked sources</span>
-          <span className="cluster-card__stat">
-            {signalClusterSection.drawer_available ? 'Evidence drawer ready' : 'No drawer data'}
-          </span>
+        <div className="cluster-card__footer-copy">
+          <div className="cluster-card__footer-meta">
+            <span className="cluster-card__stat">{signalClusterSection.source_links.length} linked sources</span>
+            <span className="cluster-card__stat">
+              {signalClusterSection.drawer_available ? 'Evidence drawer ready' : 'No drawer data'}
+            </span>
+          </div>
+
+          <ClusterActions
+            isWatched={isWatched}
+            isSaved={isSaved}
+            onWatch={onWatch}
+            onUnwatch={onUnwatch}
+            onSave={onSave}
+            onUnsave={onUnsave}
+            onHide={onHide}
+          />
         </div>
         <button
           type="button"

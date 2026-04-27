@@ -8,6 +8,7 @@ import TopicListPage from './pages/TopicListPage';
 import TopicWorkspaceShellPage from './pages/TopicWorkspaceShellPage';
 import minimalProductMainline from '../../fixtures/product/product-mainline.sample.json';
 import richProductMainline from '../../fixtures/product/rich-product-mainline.sample.json';
+import { initialActionState } from '../product/actions/user-action-state';
 import { generateLocalTopicDraftFromInput } from './flow/generate-local-topic-draft';
 import {
   createLocalTopicRecord,
@@ -29,15 +30,45 @@ export default function App() {
   const [currentTopicDraft, setCurrentTopicDraft] = useState(null);
   const [localTopics, setLocalTopics] = useState([]);
   const [activeTopicId, setActiveTopicId] = useState(null);
+  const [topicActionStateById, setTopicActionStateById] = useState({});
 
   const activeTopic = localTopics.find((topic) => topic.id === activeTopicId) || null;
   const activeTopicFixtureKey = activeTopic?.fixtureKey || selectedFixtureKey;
   const activeProductMainline = PRODUCT_MAINLINE_FIXTURES[activeTopicFixtureKey] || richProductMainline;
+  const activeTopicActionState = activeTopicId
+    ? topicActionStateById[activeTopicId] || initialActionState()
+    : initialActionState();
 
   const updateTopicById = (topicId, updater) => {
     setLocalTopics((currentTopics) => currentTopics.map((topic) => (
       topic.id === topicId ? updater(topic) : topic
     )));
+  };
+
+  const ensureTopicActionStateBucket = (topicId) => {
+    if (typeof topicId !== 'string' || !topicId.trim()) {
+      return;
+    }
+
+    setTopicActionStateById((currentStateById) => (
+      currentStateById[topicId]
+        ? currentStateById
+        : {
+          ...currentStateById,
+          [topicId]: initialActionState(),
+        }
+    ));
+  };
+
+  const updateTopicActionState = (topicId, updater) => {
+    if (typeof topicId !== 'string' || !topicId.trim() || typeof updater !== 'function') {
+      return;
+    }
+
+    setTopicActionStateById((currentStateById) => ({
+      ...currentStateById,
+      [topicId]: updater(currentStateById[topicId] || initialActionState()),
+    }));
   };
 
   const handleCreateTopicDraft = (input) => {
@@ -58,6 +89,7 @@ export default function App() {
     setCurrentTopicDraft(nextDraft);
     setActiveTopicId(nextTopicRecord.id);
     setLocalTopics((currentTopics) => [nextTopicRecord, ...currentTopics]);
+    ensureTopicActionStateBucket(nextTopicRecord.id);
     setCurrentScreen(SCREEN_IDS.TOPIC_DRAFT_CONFIRMATION);
   };
 
@@ -87,7 +119,9 @@ export default function App() {
 
       setLocalTopics((currentTopics) => [nextTopicRecord, ...currentTopics]);
       setActiveTopicId(nextTopicRecord.id);
+      ensureTopicActionStateBucket(nextTopicRecord.id);
     } else {
+      ensureTopicActionStateBucket(activeTopicId);
       updateTopicById(activeTopicId, (topic) => updateLocalTopicRecord(topic, {
         draft,
         status: TOPIC_STATUSES.BUILDING,
@@ -113,6 +147,7 @@ export default function App() {
     }
 
     setActiveTopicId(topicId);
+    ensureTopicActionStateBucket(topicId);
     setCurrentTopicDraft(nextTopic.draft);
     setCurrentInput(nextTopic.originalInput);
     setCurrentScreen(SCREEN_IDS.TOPIC_WORKSPACE);
@@ -126,6 +161,7 @@ export default function App() {
     }
 
     setActiveTopicId(topicId);
+    ensureTopicActionStateBucket(topicId);
     setCurrentTopicDraft(nextTopic.draft);
     setCurrentInput(nextTopic.originalInput);
     setCurrentScreen(SCREEN_IDS.BASELINE_BUILDING);
@@ -139,6 +175,7 @@ export default function App() {
     }
 
     setActiveTopicId(topicId);
+    ensureTopicActionStateBucket(topicId);
     setCurrentTopicDraft(nextTopic.draft);
     setCurrentInput(nextTopic.originalInput);
     setCurrentScreen(SCREEN_IDS.TOPIC_DRAFT_CONFIRMATION);
@@ -191,7 +228,9 @@ export default function App() {
         return (
           <TopicWorkspaceShellPage
             topic={activeTopic}
+            topicActionState={activeTopicActionState}
             productMainline={activeProductMainline}
+            onUpdateTopicActionState={updateTopicActionState}
             onOpenTopicList={openTopicList}
             onCreateNewTopic={startNewTopic}
           />
