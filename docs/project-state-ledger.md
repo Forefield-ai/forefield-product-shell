@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P5B.
+This ledger records the accepted project state for `forefield-product-shell` through P6B.
 
 ## Repository Split
 
@@ -117,6 +117,27 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - `npm run validate`, `npm test`, and `npm run build` passed
 - current tests: `70 / 70` passing
 - Future Codex reports must be treated as implementation reports requiring review, not as approved outcomes.
+- P6B completed
+- P6B commit: `ff8af26`
+- local / session-only `UserAction` and `SavedItem` state layer added
+- created:
+  - `docs/contracts/user-actions-and-saved-items.md`
+  - `src/product/actions/user-action-state.js`
+  - `tests/product-actions/user-action-state.test.js`
+- supports:
+  - watch / unwatch cluster
+  - save / unsave cluster
+  - save / unsave evidence
+  - hide / undo hide cluster
+- View Evidence is not recorded as `UserAction`
+- hide does not delete evidence, saved items, or watched state
+- `UserAction` / `SavedItem` are not mixed into `TopicWorkspaceViewState` or `WorkspaceInteractionState`
+- no UI files changed
+- no fixtures created
+- no API / DB / auth / persistence / browser storage added
+- no new dependencies
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `88 / 88` passing
 
 ## Current Product-Shell Capabilities
 
@@ -159,7 +180,11 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - simulates Baseline Building with local staged progress, not real source collection
 - keeps confirmed draft metadata in the local shell layer around the existing workspace
 - stores a stable per-topic `fixtureKey` for local topic records
-- current test count: 70 / 70 passing
+- provides a local / session-only `UserAction` and `SavedItem` state layer
+- supports watch / unwatch cluster, save / unsave cluster, save / unsave evidence, and hide / undo hide cluster
+- keeps View Evidence separate from local `UserAction` feedback state
+- preserves saved and watched state when a cluster is hidden
+- current test count: 88 / 88 passing
 
 ## Current Product-Shell Non-Capabilities
 
@@ -170,15 +195,15 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - no real LLM calls
 - no real data collection
 - no confirmed `Topic` promotion
-- no `SavedItem` / `UserAction` / `BaselineBrief` / `Copilot` behavior
+- no UI wiring yet for `SavedItem` / `UserAction` actions
+- no Saved Tab yet
+- no `BaselineBrief` / `Copilot` behavior
 - no live decision-core integration
 
 ## Recommended Next Step
 
-- undecided until planning:
-  - possible P5C local flow hardening
-  - or P6A User Actions / Saved Tab planning
-  - or API / persistence planning
+- next step is not yet implementation
+- recommended next planning step: `P6C UI wiring planning`
 
 ## Pre-Flight Checklist For Future Phases
 
