@@ -1,0 +1,213 @@
+{
+  "monitoring_run": {
+    "id": "monitoring_run_ps__bundle-cross-source-demand-opportunities",
+    "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+    "source_bundle_id": "bundle:cross-source-demand-opportunities",
+    "source_bundle_status": "degraded",
+    "ingest_status": "imported",
+    "imported_at": "2026-01-01T00:00:00.000Z"
+  },
+  "topic_draft": {
+    "id": "topic_draft_ps__bundle-cross-source-demand-opportunities",
+    "monitoring_run_id": "monitoring_run_ps__bundle-cross-source-demand-opportunities",
+    "lifecycle_state": "draft",
+    "title": "Teams want clearer privacy controls across shared workflows.",
+    "summary": "The signal is strong enough to justify the next bounded validation step because corroborated support spans more than one public source family.",
+    "limitations_summary": "limited source coverage weak evidence contradiction present",
+    "provenance": {
+      "source_bundle_id": "bundle:cross-source-demand-opportunities",
+      "source_ranked_entry_ranks": [
+        1,
+        2
+      ]
+    }
+  },
+  "signal_clusters": [
+    {
+      "id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+      "parent_topic_ref": {
+        "topic_draft_id": "topic_draft_ps__bundle-cross-source-demand-opportunities"
+      },
+      "monitoring_run_id": "monitoring_run_ps__bundle-cross-source-demand-opportunities",
+      "source_ranked_entry_ref": {
+        "rank": 1
+      },
+      "headline": "Teams want clearer privacy controls across shared workflows.",
+      "summary": "The signal is strong enough to justify the next bounded validation step because corroborated support spans more than one public source family.",
+      "confidence_display": {
+        "label": "directional",
+        "summary": "Confidence is directional because bounded support spans multiple source families with no material contradiction."
+      },
+      "limitations": [
+        "limited source coverage",
+        "weak evidence",
+        "contradiction present"
+      ],
+      "curated_evidence_ids": [
+        "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s1",
+        "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s2",
+        "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s3"
+      ],
+      "provenance": {
+        "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+        "source_bundle_id": "bundle:cross-source-demand-opportunities"
+      }
+    },
+    {
+      "id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
+      "parent_topic_ref": {
+        "topic_draft_id": "topic_draft_ps__bundle-cross-source-demand-opportunities"
+      },
+      "monitoring_run_id": "monitoring_run_ps__bundle-cross-source-demand-opportunities",
+      "source_ranked_entry_ref": {
+        "rank": 2
+      },
+      "headline": "Smaller teams still struggle with manual workflow handoffs.",
+      "summary": "The demand signal is worth monitoring, but current support stays narrow and contradiction pressure remains present.",
+      "confidence_display": {
+        "label": "exploratory",
+        "summary": "Confidence remains exploratory because the current corroboration set stays single-source and contradiction-aware."
+      },
+      "limitations": [
+        "limited source coverage",
+        "weak evidence",
+        "contradiction present"
+      ],
+      "curated_evidence_ids": [
+        "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r2__s1",
+        "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r2__s2"
+      ],
+      "provenance": {
+        "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+        "source_bundle_id": "bundle:cross-source-demand-opportunities"
+      }
+    }
+  ],
+  "curated_evidence_records": [
+    {
+      "id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s1",
+      "signal_cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+      "monitoring_run_id": "monitoring_run_ps__bundle-cross-source-demand-opportunities",
+      "summary": "Public discussion thread included in the curated evidence set.",
+      "public_source_refs": [
+        "https://example.com/reddit/privacy-workflow-thread"
+      ],
+      "confidence_display": {
+        "label": "directional",
+        "summary": "Confidence is directional because bounded support spans multiple source families with no material contradiction."
+      },
+      "limitations": [
+        "limited source coverage",
+        "weak evidence",
+        "contradiction present"
+      ],
+      "source_ranked_entry_ref": {
+        "rank": 1
+      },
+      "provenance": {
+        "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+        "source_bundle_id": "bundle:cross-source-demand-opportunities"
+      }
+    },
+    {
+      "id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s2",
+      "signal_cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+      "monitoring_run_id": "monitoring_run_ps__bundle-cross-source-demand-opportunities",
+      "summary": "Public comments source included in the curated evidence set.",
+      "public_source_refs": [
+        "https://example.com/youtube/privacy-workflow-comments"
+      ],
+      "confidence_display": {
+        "label": "directional",
+        "summary": "Confidence is directional because bounded support spans multiple source families with no material contradiction."
+      },
+      "limitations": [
+        "limited source coverage",
+        "weak evidence",
+        "contradiction present"
+      ],
+      "source_ranked_entry_ref": {
+        "rank": 1
+      },
+      "provenance": {
+        "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+        "source_bundle_id": "bundle:cross-source-demand-opportunities"
+      }
+    },
+    {
+      "id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s3",
+      "signal_cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+      "monitoring_run_id": "monitoring_run_ps__bundle-cross-source-demand-opportunities",
+      "summary": "Public source included in the curated evidence set.",
+      "public_source_refs": [
+        "https://example.com/community/privacy-workflow-roundup"
+      ],
+      "confidence_display": {
+        "label": "directional",
+        "summary": "Confidence is directional because bounded support spans multiple source families with no material contradiction."
+      },
+      "limitations": [
+        "limited source coverage",
+        "weak evidence",
+        "contradiction present"
+      ],
+      "source_ranked_entry_ref": {
+        "rank": 1
+      },
+      "provenance": {
+        "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+        "source_bundle_id": "bundle:cross-source-demand-opportunities"
+      }
+    },
+    {
+      "id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r2__s1",
+      "signal_cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
+      "monitoring_run_id": "monitoring_run_ps__bundle-cross-source-demand-opportunities",
+      "summary": "Public source included in the curated evidence set.",
+      "public_source_refs": [
+        "https://example.com/forum/manual-handoff-pain"
+      ],
+      "confidence_display": {
+        "label": "exploratory",
+        "summary": "Confidence remains exploratory because the current corroboration set stays single-source and contradiction-aware."
+      },
+      "limitations": [
+        "limited source coverage",
+        "weak evidence",
+        "contradiction present"
+      ],
+      "source_ranked_entry_ref": {
+        "rank": 2
+      },
+      "provenance": {
+        "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+        "source_bundle_id": "bundle:cross-source-demand-opportunities"
+      }
+    },
+    {
+      "id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r2__s2",
+      "signal_cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
+      "monitoring_run_id": "monitoring_run_ps__bundle-cross-source-demand-opportunities",
+      "summary": "Public source included in the curated evidence set.",
+      "public_source_refs": [
+        "https://example.com/community/manual-handoff-followup"
+      ],
+      "confidence_display": {
+        "label": "exploratory",
+        "summary": "Confidence remains exploratory because the current corroboration set stays single-source and contradiction-aware."
+      },
+      "limitations": [
+        "limited source coverage",
+        "weak evidence",
+        "contradiction present"
+      ],
+      "source_ranked_entry_ref": {
+        "rank": 2
+      },
+      "provenance": {
+        "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+        "source_bundle_id": "bundle:cross-source-demand-opportunities"
+      }
+    }
+  ]
+}

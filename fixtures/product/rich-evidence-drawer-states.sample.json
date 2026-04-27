@@ -1,0 +1,92 @@
+{
+  "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1": {
+    "topic_ref": {
+      "topic_draft_id": "topic_draft_ps__bundle-cross-source-demand-opportunities"
+    },
+    "signal_cluster_ref": {
+      "signal_cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1"
+    },
+    "display_summary": {
+      "headline": "Teams want clearer privacy controls across shared workflows.",
+      "summary": "The signal is strong enough to justify the next bounded validation step because corroborated support spans more than one public source family."
+    },
+    "confidence_display": {
+      "label": "directional",
+      "summary": "Confidence is directional because bounded support spans multiple source families with no material contradiction."
+    },
+    "limitations": [
+      "limited source coverage",
+      "weak evidence",
+      "contradiction present"
+    ],
+    "source_links": [
+      "https://example.com/reddit/privacy-workflow-thread",
+      "https://example.com/youtube/privacy-workflow-comments",
+      "https://example.com/community/privacy-workflow-roundup"
+    ],
+    "evidence_items": [
+      {
+        "id": "drawer_evidence_item_ps__bundle-cross-source-demand-opportunities__r1__s1",
+        "curated_evidence_record_id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s1",
+        "label": "Public source 1",
+        "url": "https://example.com/reddit/privacy-workflow-thread",
+        "summary": "Public discussion thread included in the curated evidence set."
+      },
+      {
+        "id": "drawer_evidence_item_ps__bundle-cross-source-demand-opportunities__r1__s2",
+        "curated_evidence_record_id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s2",
+        "label": "Public source 2",
+        "url": "https://example.com/youtube/privacy-workflow-comments",
+        "summary": "Public comments source included in the curated evidence set."
+      },
+      {
+        "id": "drawer_evidence_item_ps__bundle-cross-source-demand-opportunities__r1__s3",
+        "curated_evidence_record_id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s3",
+        "label": "Public source 3",
+        "url": "https://example.com/community/privacy-workflow-roundup",
+        "summary": "Public source included in the curated evidence set."
+      }
+    ]
+  },
+  "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2": {
+    "topic_ref": {
+      "topic_draft_id": "topic_draft_ps__bundle-cross-source-demand-opportunities"
+    },
+    "signal_cluster_ref": {
+      "signal_cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2"
+    },
+    "display_summary": {
+      "headline": "Smaller teams still struggle with manual workflow handoffs.",
+      "summary": "The demand signal is worth monitoring, but current support stays narrow and contradiction pressure remains present."
+    },
+    "confidence_display": {
+      "label": "exploratory",
+      "summary": "Confidence remains exploratory because the current corroboration set stays single-source and contradiction-aware."
+    },
+    "limitations": [
+      "limited source coverage",
+      "weak evidence",
+      "contradiction present"
+    ],
+    "source_links": [
+      "https://example.com/forum/manual-handoff-pain",
+      "https://example.com/community/manual-handoff-followup"
+    ],
+    "evidence_items": [
+      {
+        "id": "drawer_evidence_item_ps__bundle-cross-source-demand-opportunities__r2__s1",
+        "curated_evidence_record_id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r2__s1",
+        "label": "Public source 1",
+        "url": "https://example.com/forum/manual-handoff-pain",
+        "summary": "Public source included in the curated evidence set."
+      },
+      {
+        "id": "drawer_evidence_item_ps__bundle-cross-source-demand-opportunities__r2__s2",
+        "curated_evidence_record_id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r2__s2",
+        "label": "Public source 2",
+        "url": "https://example.com/community/manual-handoff-followup",
+        "summary": "Public source included in the curated evidence set."
+      }
+    ]
+  }
+}
