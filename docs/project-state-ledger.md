@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P4D2.
+This ledger records the accepted project state for `forefield-product-shell` through P4D3.
 
 ## Repository Split
 
@@ -87,6 +87,16 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - no API / DB / auth / persistence / dependencies added
 - `npm run validate`, `npm test`, and `npm run build` passed
 - product tests remain `58 / 58` passing
+- P4D3 completed
+- P4D3 commit: `a9877ee6242d13d2a5868494a7212e5560dfa062`
+- static UI layout polish completed
+- visual hierarchy and readability improved across header, summary strip, source coverage, cluster cards, and EvidenceDrawer
+- basic responsive layout polish completed for summary strip, cluster list, and drawer stacking
+- no product logic changed
+- no backend / persistence added
+- `npm run validate`, `npm test`, and `npm run build` passed
+- product tests remain `58 / 58` passing
+- current phase paused before next product semantics
 
 ## Current Product-Shell Capabilities
 
@@ -117,6 +127,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - renders a primary empty-state block when `empty_or_sparse_state.is_empty === true`
 - renders a non-blocking sparse coverage notice when `empty_or_sparse_state.is_sparse === true` and not empty
 - maps machine-readable empty/sparse reasons to short readable UI labels
+- applies static layout polish for better scanability and responsive readability
 - does not directly consume handoff, mapper output, or decision-core internals in UI
 - no mapper source changed
 - no product read-model / helper / mapper source changed in P4C
@@ -135,7 +146,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- P4D3: layout polish
+- paused before next product semantics
 
 ## Pre-Flight Checklist For Future Phases
 
