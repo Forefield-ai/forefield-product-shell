@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P6B.
+This ledger records the accepted project state for `forefield-product-shell` through P6C.
 
 ## Repository Split
 
@@ -138,6 +138,41 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - no new dependencies
 - `npm run validate`, `npm test`, and `npm run build` passed
 - current tests: `88 / 88` passing
+- P6C completed
+- P6C commit: `e872581`
+- local / session-only User Actions UI wiring added
+- added:
+  - Watch / Unwatch on cluster cards
+  - Save / Unsave Cluster on cluster cards
+  - Not relevant / Hide on cluster cards
+  - Save / Unsave Evidence in Evidence Drawer
+  - Watching / Saved visual badges
+  - minimal Hidden clusters + Undo panel
+  - per-topic action state wiring through App -> TopicWorkspaceShellPage -> TopicWorkspacePage
+- created:
+  - `src/ui/components/ClusterActions.jsx`
+  - `src/ui/components/HiddenClustersPanel.jsx`
+- modified:
+  - `src/ui/App.jsx`
+  - `src/ui/pages/TopicWorkspaceShellPage.jsx`
+  - `src/ui/TopicWorkspacePage.jsx`
+  - `src/ui/components/SignalClusterList.jsx`
+  - `src/ui/components/SignalClusterCard.jsx`
+  - `src/ui/components/EvidenceDrawer.jsx`
+  - `src/ui/styles.css`
+- confirmed:
+  - no Saved Tab added
+  - no API / DB / auth / persistence / browser storage added
+  - no new dependencies
+  - no product action helper changes
+  - no product read-model / mapper / fixture changes
+  - View Evidence is not recorded as UserAction
+  - Watch does not create SavedItem
+  - Save Cluster / Save Evidence create correct SavedItem types
+  - Hide preserves evidence and saved / watched state
+  - hiding currently open drawer cluster closes drawer through UI interaction state
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `88 / 88` passing
 
 ## Current Product-Shell Capabilities
 
@@ -184,6 +219,13 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - supports watch / unwatch cluster, save / unsave cluster, save / unsave evidence, and hide / undo hide cluster
 - keeps View Evidence separate from local `UserAction` feedback state
 - preserves saved and watched state when a cluster is hidden
+- wires local User Actions into Topic Workspace UI without introducing persistence
+- supports Watch / Unwatch, Save / Unsave Cluster, Not relevant / Hide, and Save / Unsave Evidence in the current workspace UI
+- shows Watching / Saved visual badges on the workspace UI
+- provides a minimal Hidden clusters + Undo panel
+- closes the Evidence Drawer through UI interaction state when the currently open cluster is hidden
+- Save Evidence currently depends on stable drawer evidence ids and should be re-checked before persistence work
+- local `SavedItem` state now exists, but no user-facing Saved Tab exists yet
 - current test count: 88 / 88 passing
 
 ## Current Product-Shell Non-Capabilities
@@ -195,7 +237,6 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - no real LLM calls
 - no real data collection
 - no confirmed `Topic` promotion
-- no UI wiring yet for `SavedItem` / `UserAction` actions
 - no Saved Tab yet
 - no `BaselineBrief` / `Copilot` behavior
 - no live decision-core integration
@@ -203,7 +244,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 ## Recommended Next Step
 
 - next step is not yet implementation
-- recommended next planning step: `P6C UI wiring planning`
+- recommended next planning step: `P6D Topic-level Saved Tab planning`
 
 ## Pre-Flight Checklist For Future Phases
 
