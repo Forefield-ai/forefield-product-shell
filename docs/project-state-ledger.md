@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P3B.
+This ledger records the accepted project state for `forefield-product-shell` through P3C.
 
 ## Repository Split
 
@@ -32,6 +32,12 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - `TopicWorkspaceViewState` read-model builder added
 - minimal and rich workspace golden fixtures added
 - workspace-level tests added
+- P3C completed
+- P3C commit: `54f5d60973233118b9c6a745fe400e7917d573bb`
+- `WorkspaceInteractionState` contract added
+- `WorkspaceInteractionState` helper / reducer module added
+- `WorkspaceInteractionState` fixture snapshots added
+- `WorkspaceInteractionState` tests added
 
 ## Current Product-Shell Capabilities
 
@@ -39,14 +45,20 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - maps handoff into `MonitoringRun`, `TopicDraft`, `SignalCluster[]`, and `CuratedEvidenceRecord[]`
 - builds `EvidenceDrawerState` per `SignalCluster`
 - builds `TopicWorkspaceViewState` as a computed read model
+- models `WorkspaceInteractionState` as a lightweight interaction-state layer
 - ignores `internal_decision_core` by default
 - keeps `decision_band` and `review_priority` out of product output
 - prevents prohibited decision-core fields from entering product output
 - uses zero dependencies and Node built-in tests
-- current test count: 38 / 38 passing
+- current test count: 58 / 58 passing
 - selected_evidence_drawer defaults to `null`
 - selectedClusterId builds drawer only when explicitly provided
 - selectedClusterId not found throws a clear error
+- selectCluster does not open drawer
+- openEvidenceDrawer opens drawer and selects cluster
+- closeEvidenceDrawer preserves selected_cluster_id
+- `WorkspaceInteractionState` is ephemeral / session-scoped / non-persistent
+- `WorkspaceInteractionState` is not `UserAction`, `SavedItem`, analytics, or business truth
 - no mapper source changed
 - no UI / API / DB / persistence added
 - no confirmed `Topic` by default
@@ -64,7 +76,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- P3C: Workspace interaction state planning
+- P4A: Topic Workspace UI planning
 
 ## Pre-Flight Checklist For Future Phases
 
