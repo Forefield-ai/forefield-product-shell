@@ -1,0 +1,39 @@
+{
+  "topic_ref": {
+    "topic_draft_id": "topic_draft_ps_001"
+  },
+  "signal_cluster_ref": {
+    "signal_cluster_id": "signal_cluster_ps_001"
+  },
+  "display_summary": {
+    "headline": "Users want clearer privacy controls",
+    "summary": "Directional public-source evidence across two source families suggests privacy control clarity is worth Topic review."
+  },
+  "confidence_display": {
+    "label": "directional",
+    "summary": "Confidence is directional because bounded support spans more than one source family."
+  },
+  "limitations": [
+    "This handoff stays bounded to decision-core evidence and does not imply product-level topic memory."
+  ],
+  "source_links": [
+    "https://example.com/reddit/privacy-controls-thread",
+    "https://example.com/youtube/privacy-controls-comments"
+  ],
+  "evidence_items": [
+    {
+      "id": "drawer_evidence_item_ps_001",
+      "curated_evidence_record_id": "curated_evidence_record_ps_001",
+      "label": "Public source 1",
+      "url": "https://example.com/reddit/privacy-controls-thread",
+      "summary": "Public discussion thread showing user demand for clearer privacy controls."
+    },
+    {
+      "id": "drawer_evidence_item_ps_002",
+      "curated_evidence_record_id": "curated_evidence_record_ps_002",
+      "label": "Public source 2",
+      "url": "https://example.com/youtube/privacy-controls-comments",
+      "summary": "Public comments source showing related demand for clearer privacy controls."
+    }
+  ]
+}

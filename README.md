@@ -46,23 +46,24 @@ Product-shell must consume that handoff without copying decision-core pipeline c
 
 ## Current Phase
 
-Product Shell P0 initialization only.
+Product Shell P1 docs + fixtures only.
 
-P0 is limited to:
+P1 is limited to:
 
 - repository boundary documentation
-- product object mapping documentation
-- a clearly marked sample external handoff fixture
-- repo-level working guidance
+- product object contract documentation
+- handoff-to-product mapping documentation
+- external handoff sample intake
+- product fixture samples for the future Topic Workspace mainline
 
-## Non-Goals For P0
+## Non-Goals For P1
 
 - no UI implementation
 - no API implementation
 - no DB implementation
 - no dependency installation
-- no product object contract code
-- no mapper code
+- no runtime product object contract code
+- no runtime mapper code
 - no copied decision-core source logic
 - no recreation of `OpportunitySet`, `OpportunityCard`, `OpportunityScore`, or `ClaimTrace`
 

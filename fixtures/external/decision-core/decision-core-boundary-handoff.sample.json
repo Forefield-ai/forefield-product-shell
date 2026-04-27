@@ -1,67 +1,42 @@
 {
-  "_fixture_note": "External sample input copied or modeled from forefield-decision-core DecisionCoreBoundaryHandoff. This is not a product-shell contract.",
-  "handoff_version": "0.1.0-sample",
-  "bundle_id": "bundle_sample_001",
-  "bundle_status": "ready",
+  "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+  "bundle_id": "bundle:multi-source-privacy-controls",
+  "bundle_status": "pass",
   "ranked_entry_count": 1,
   "arbitration_summary": {
-    "status": "sample",
-    "notes": "Placeholder arbitration summary for product-shell P0 boundary intake."
+    "claim_candidate_count": 1,
+    "downgraded_candidate_count": 0,
+    "suppressed_candidate_count": 0
   },
   "ranked_entries": [
     {
-      "entry_id": "entry_sample_001",
       "rank": 1,
-      "title": "Sample ranked entry for Topic intake planning",
-      "decision_band": "watch",
       "decision_summary": {
-        "problem": "Teams need a bounded external handoff before product-layer mapping exists.",
-        "why_it_matters": "This sample shows the minimum shape product-shell expects to review and map later."
+        "problem": "Users want clearer privacy controls.",
+        "why_it_matters": "This demand signal is corroborated strongly enough to justify the next validation step.",
+        "next_action": "Validate whether this problem stays consistent across one more bounded source family."
       },
       "evidence_summary": {
-        "summary": "A small set of public evidence indicates the handoff can seed future Topic and evidence workflows."
+        "supporting_ref_count": 2,
+        "contradicting_count": 0,
+        "source_family_count": 2,
+        "weak_context_count": 0,
+        "coverage_boundary": "bounded_multi_source_corroborated_bundle"
       },
       "confidence_summary": {
-        "level": "medium",
-        "summary": "Confidence is limited because this is a modeled placeholder rather than a validated runtime payload."
+        "confidence_label": "directional",
+        "confidence_boundary": "Confidence is directional because bounded support spans more than one source family."
       },
       "provenance": {
         "public_source_refs": [
-          {
-            "source_id": "src_sample_001",
-            "label": "Public source placeholder",
-            "url": "https://example.com/source"
-          }
-        ]
-      },
-      "limitations": [
-        "This fixture is a placeholder for P0 planning only.",
-        "Field semantics may evolve once the real handoff contract is validated."
-      ]
+          "https://example.com/reddit/privacy-controls-thread",
+          "https://example.com/youtube/privacy-controls-comments"
+        ],
+        "public_source_ref_count": 2
+      }
     }
   ],
-  "decision_summary": {
-    "problem": "Product-shell needs a clean external decision-core boundary.",
-    "why_it_matters": "That boundary allows product workflows to evolve without copying analytical internals."
-  },
-  "evidence_summary": {
-    "summary": "The sample fixture demonstrates a minimal product-shell intake shape with public provenance references."
-  },
-  "confidence_summary": {
-    "level": "medium",
-    "summary": "Confidence is intentionally conservative because this file is a sample external fixture."
-  },
-  "provenance": {
-    "public_source_refs": [
-      {
-        "source_id": "src_sample_001",
-        "label": "Public source placeholder",
-        "url": "https://example.com/source"
-      }
-    ]
-  },
   "limitations": [
-    "This sample must not be treated as a product-shell contract.",
-    "This sample must not be treated as proof of decision-core runtime completeness."
+    "This handoff stays bounded to decision-core evidence and does not imply product-level topic memory."
   ]
 }

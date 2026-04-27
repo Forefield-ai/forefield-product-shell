@@ -171,4 +171,8 @@ For a new engineer or agent:
 1. `README.md`
 2. `docs/architecture/repo-boundary.md`
 3. `docs/architecture/product-object-map.md`
-4. `fixtures/external/decision-core/decision-core-boundary-handoff.sample.json`
+4. `docs/contracts/product-object-contracts.md`
+5. `docs/contracts/handoff-to-product-mapping.md`
+6. `fixtures/external/decision-core/decision-core-boundary-handoff.sample.json`
+7. `fixtures/product/product-mainline.sample.json`
+8. `fixtures/product/evidence-drawer-state.sample.json`

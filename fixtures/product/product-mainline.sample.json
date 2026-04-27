@@ -1,0 +1,87 @@
+{
+  "monitoring_run": {
+    "id": "monitoring_run_ps_001",
+    "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+    "source_bundle_id": "bundle:multi-source-privacy-controls",
+    "source_bundle_status": "pass",
+    "ingest_status": "imported",
+    "imported_at": "2026-04-27T00:00:00Z",
+    "source_handoff_locator": {
+      "fixture_path": "fixtures/external/decision-core/decision-core-boundary-handoff.sample.json",
+      "ranked_entry_count": 1
+    }
+  },
+  "topic_draft": {
+    "id": "topic_draft_ps_001",
+    "monitoring_run_id": "monitoring_run_ps_001",
+    "lifecycle_state": "draft",
+    "title": "Privacy controls clarity",
+    "summary": "Users want clearer privacy controls and the current demand signal looks directionally corroborated across public sources.",
+    "limitations_summary": "The handoff stays bounded to decision-core evidence and does not imply product-level topic memory.",
+    "provenance": {
+      "source_bundle_id": "bundle:multi-source-privacy-controls",
+      "source_ranked_entry_ranks": [
+        1
+      ]
+    }
+  },
+  "signal_clusters": [
+    {
+      "id": "signal_cluster_ps_001",
+      "parent_topic_ref": {
+        "topic_draft_id": "topic_draft_ps_001"
+      },
+      "monitoring_run_id": "monitoring_run_ps_001",
+      "source_ranked_entry_ref": {
+        "rank": 1
+      },
+      "headline": "Users want clearer privacy controls",
+      "summary": "This signal cluster captures a directionally corroborated demand signal worth Topic review.",
+      "confidence_display": {
+        "label": "directional",
+        "summary": "Confidence is directional because bounded support spans more than one source family."
+      },
+      "limitations": [
+        "This handoff stays bounded to decision-core evidence and does not imply product-level topic memory."
+      ],
+      "provenance": {
+        "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+        "source_bundle_id": "bundle:multi-source-privacy-controls"
+      }
+    }
+  ],
+  "curated_evidence_records": [
+    {
+      "id": "curated_evidence_record_ps_001",
+      "signal_cluster_id": "signal_cluster_ps_001",
+      "monitoring_run_id": "monitoring_run_ps_001",
+      "summary": "Public discussion thread showing user demand for clearer privacy controls.",
+      "public_source_refs": [
+        "https://example.com/reddit/privacy-controls-thread"
+      ],
+      "source_ranked_entry_ref": {
+        "rank": 1
+      },
+      "provenance": {
+        "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+        "source_bundle_id": "bundle:multi-source-privacy-controls"
+      }
+    },
+    {
+      "id": "curated_evidence_record_ps_002",
+      "signal_cluster_id": "signal_cluster_ps_001",
+      "monitoring_run_id": "monitoring_run_ps_001",
+      "summary": "Public comments source showing related demand for clearer privacy controls.",
+      "public_source_refs": [
+        "https://example.com/youtube/privacy-controls-comments"
+      ],
+      "source_ranked_entry_ref": {
+        "rank": 1
+      },
+      "provenance": {
+        "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+        "source_bundle_id": "bundle:multi-source-privacy-controls"
+      }
+    }
+  ]
+}
