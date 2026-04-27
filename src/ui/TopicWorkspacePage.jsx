@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import WorkspaceHeader from './components/WorkspaceHeader';
 import ReviewSummaryStrip from './components/ReviewSummaryStrip';
 import SourceCoverageStrip from './components/SourceCoverageStrip';
@@ -79,6 +79,7 @@ function getEvidenceSourceLinksSnapshot(item) {
 export default function TopicWorkspacePage({
   productMainline,
   actionState = initialActionState(),
+  workspaceCommand,
   onWatchCluster,
   onUnwatchCluster,
   onSaveCluster,
@@ -91,6 +92,7 @@ export default function TopicWorkspacePage({
   const [interactionState, setInteractionState] = useState(() =>
     initialWorkspaceInteractionState()
   );
+  const lastHandledWorkspaceCommandId = useRef(null);
   const workspaceViewState = buildTopicWorkspaceViewState(productMainline);
   const allSignalClusterSections = Array.isArray(workspaceViewState?.signal_cluster_sections)
     ? workspaceViewState.signal_cluster_sections
@@ -208,6 +210,31 @@ export default function TopicWorkspacePage({
 
     setInteractionState((currentState) => closeEvidenceDrawer(currentState));
   }, [isDrawerClusterHidden]);
+
+  useEffect(() => {
+    if (!workspaceCommand || !workspaceCommand.commandId || !workspaceCommand.clusterId) {
+      return;
+    }
+
+    if (lastHandledWorkspaceCommandId.current === workspaceCommand.commandId) {
+      return;
+    }
+
+    if (isClusterHidden(actionState, workspaceCommand.clusterId)) {
+      return;
+    }
+
+    if (workspaceCommand.type === 'open_evidence') {
+      setInteractionState((currentState) => openEvidenceDrawer(currentState, workspaceCommand.clusterId));
+      lastHandledWorkspaceCommandId.current = workspaceCommand.commandId;
+      return;
+    }
+
+    if (workspaceCommand.type === 'select_cluster') {
+      setInteractionState((currentState) => selectCluster(currentState, workspaceCommand.clusterId));
+      lastHandledWorkspaceCommandId.current = workspaceCommand.commandId;
+    }
+  }, [actionState, workspaceCommand]);
 
   return (
     <main className="workspace-shell">
