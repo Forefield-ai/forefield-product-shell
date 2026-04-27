@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P2D-shell.
+This ledger records the accepted project state for `forefield-product-shell` through P3B.
 
 ## Repository Split
 
@@ -27,18 +27,28 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - rich product golden fixtures added
 - rich evidence drawer states golden fixture added
 - rich golden fixture tests added
+- P3B completed
+- P3B commit: `05f571ab047bef64477131db31f7baf2b69ff815`
+- `TopicWorkspaceViewState` read-model builder added
+- minimal and rich workspace golden fixtures added
+- workspace-level tests added
 
 ## Current Product-Shell Capabilities
 
 - consumes minimal and rich `DecisionCoreBoundaryHandoff` fixtures
 - maps handoff into `MonitoringRun`, `TopicDraft`, `SignalCluster[]`, and `CuratedEvidenceRecord[]`
 - builds `EvidenceDrawerState` per `SignalCluster`
+- builds `TopicWorkspaceViewState` as a computed read model
 - ignores `internal_decision_core` by default
 - keeps `decision_band` and `review_priority` out of product output
 - prevents prohibited decision-core fields from entering product output
 - uses zero dependencies and Node built-in tests
-- current test count: 25 / 25 passing
-- mapper / read-model source unchanged through P2D-shell
+- current test count: 38 / 38 passing
+- selected_evidence_drawer defaults to `null`
+- selectedClusterId builds drawer only when explicitly provided
+- selectedClusterId not found throws a clear error
+- no mapper source changed
+- no UI / API / DB / persistence added
 - no confirmed `Topic` by default
 
 ## Current Product-Shell Non-Capabilities
@@ -54,7 +64,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- P3A: Topic Workspace View State planning
+- P3C: Workspace interaction state planning
 
 ## Pre-Flight Checklist For Future Phases
 
