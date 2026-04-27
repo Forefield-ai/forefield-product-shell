@@ -1,0 +1,67 @@
+{
+  "_fixture_note": "External sample input copied or modeled from forefield-decision-core DecisionCoreBoundaryHandoff. This is not a product-shell contract.",
+  "handoff_version": "0.1.0-sample",
+  "bundle_id": "bundle_sample_001",
+  "bundle_status": "ready",
+  "ranked_entry_count": 1,
+  "arbitration_summary": {
+    "status": "sample",
+    "notes": "Placeholder arbitration summary for product-shell P0 boundary intake."
+  },
+  "ranked_entries": [
+    {
+      "entry_id": "entry_sample_001",
+      "rank": 1,
+      "title": "Sample ranked entry for Topic intake planning",
+      "decision_band": "watch",
+      "decision_summary": {
+        "problem": "Teams need a bounded external handoff before product-layer mapping exists.",
+        "why_it_matters": "This sample shows the minimum shape product-shell expects to review and map later."
+      },
+      "evidence_summary": {
+        "summary": "A small set of public evidence indicates the handoff can seed future Topic and evidence workflows."
+      },
+      "confidence_summary": {
+        "level": "medium",
+        "summary": "Confidence is limited because this is a modeled placeholder rather than a validated runtime payload."
+      },
+      "provenance": {
+        "public_source_refs": [
+          {
+            "source_id": "src_sample_001",
+            "label": "Public source placeholder",
+            "url": "https://example.com/source"
+          }
+        ]
+      },
+      "limitations": [
+        "This fixture is a placeholder for P0 planning only.",
+        "Field semantics may evolve once the real handoff contract is validated."
+      ]
+    }
+  ],
+  "decision_summary": {
+    "problem": "Product-shell needs a clean external decision-core boundary.",
+    "why_it_matters": "That boundary allows product workflows to evolve without copying analytical internals."
+  },
+  "evidence_summary": {
+    "summary": "The sample fixture demonstrates a minimal product-shell intake shape with public provenance references."
+  },
+  "confidence_summary": {
+    "level": "medium",
+    "summary": "Confidence is intentionally conservative because this file is a sample external fixture."
+  },
+  "provenance": {
+    "public_source_refs": [
+      {
+        "source_id": "src_sample_001",
+        "label": "Public source placeholder",
+        "url": "https://example.com/source"
+      }
+    ]
+  },
+  "limitations": [
+    "This sample must not be treated as a product-shell contract.",
+    "This sample must not be treated as proof of decision-core runtime completeness."
+  ]
+}
