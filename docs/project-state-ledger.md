@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P4D1.
+This ledger records the accepted project state for `forefield-product-shell` through P4D2.
 
 ## Repository Split
 
@@ -74,6 +74,19 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - no API / DB / auth / persistence / dependencies added
 - `npm run validate`, `npm test`, and `npm run build` passed
 - product tests remain `58 / 58` passing
+- P4D2 completed
+- P4D2 commit: `c261c2b83d3eea4100def12441132fb108f04fb9`
+- `EmptySparseState` display refinement completed
+- `is_empty === true` renders a primary empty state block
+- `is_sparse === true && !is_empty` renders a non-blocking limited coverage notice
+- reason strings are mapped to short readable display labels inside the UI component
+- no product fixtures changed
+- no product read-model / mapper / interaction helper changed
+- fixture selector behavior remains intact
+- `EvidenceDrawer` behavior remains intact
+- no API / DB / auth / persistence / dependencies added
+- `npm run validate`, `npm test`, and `npm run build` passed
+- product tests remain `58 / 58` passing
 
 ## Current Product-Shell Capabilities
 
@@ -101,6 +114,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - renders static EvidenceDrawer content through `buildTopicWorkspaceViewState(richProductMainline, { selectedClusterId })`
 - resets `WorkspaceInteractionState` on fixture switch by remounting `TopicWorkspacePage`
 - clears selection and closes drawer on fixture switch
+- renders a primary empty-state block when `empty_or_sparse_state.is_empty === true`
+- renders a non-blocking sparse coverage notice when `empty_or_sparse_state.is_sparse === true` and not empty
+- maps machine-readable empty/sparse reasons to short readable UI labels
 - does not directly consume handoff, mapper output, or decision-core internals in UI
 - no mapper source changed
 - no product read-model / helper / mapper source changed in P4C
@@ -119,7 +135,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- P4D2: Empty/sparse state display refinement
+- P4D3: layout polish
 
 ## Pre-Flight Checklist For Future Phases
 
