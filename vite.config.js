@@ -8,6 +8,7 @@ module.exports = defineConfig({
       include: [
         /node_modules/,
         /src\/product\/.+\.js$/,
+        /src\/ui\/flow\/.+\.js$/,
       ],
     },
   },
