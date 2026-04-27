@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P6D.
+This ledger records the accepted project state for `forefield-product-shell` through P7B.
 
 ## Repository Split
 
@@ -203,9 +203,40 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - no `Copilot` added
   - no full Evidence Library or cross-topic Saved Library added
   - no product action helper changes
-  - no product read-model / mapper / fixture changes
+- no product read-model / mapper / fixture changes
 - `npm run validate`, `npm test`, and `npm run build` passed
 - current tests: `88 / 88` passing
+- P7B completed
+- P7B commit: `fc808f22aaf949c1ae7e5bbf051666ba83214b33`
+- runtime documentation layer added
+- created:
+  - `docs/runtime/runtime-architecture.md`
+  - `docs/runtime/runtime-object-contracts.md`
+  - `docs/runtime/api-boundary.md`
+- scope covered:
+  - runtime architecture layers and principles
+  - runtime object candidates and MVP / deferred classification
+  - candidate API boundary
+  - ownership and tenancy rules
+  - prohibited fields
+  - decision-core boundary
+  - local / session-only state to future persisted runtime migration direction
+- confirmed:
+  - no source / runtime / API / DB / auth / UI code changed
+  - no `src/runtime` added
+  - no API routes added
+  - no DB schema or migration added
+  - no auth or persistence added
+  - no browser storage added
+  - no UI changes
+  - no `src/product` changes
+  - no dependencies added
+- `npm run validate`, `npm test`, and `npm run build` passed
+- working tree clean
+- P7B API endpoints are candidate boundary docs, not final implementation contracts
+- `UserAction` and `SavedItem` should be planned as related runtime objects, not isolated features
+- `InitialTopicMap` should be treated first as a workspace snapshot before over-normalizing persistence
+- auth / workspace should start from a backend-ready stub contract, not full auth implementation
 
 ## Current Product-Shell Capabilities
 
@@ -281,12 +312,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- next step is not yet implementation
-- recommended next planning directions remain undecided until planning:
-  - possible local product hardening
-  - possible `BaselineBrief` planning
-  - possible Copilot guided actions planning
-  - possible API / persistence planning
+- recommended next step: `P7C` planning only
+- do not implement API / DB / auth / persistence by default
 
 ## Pre-Flight Checklist For Future Phases
 
