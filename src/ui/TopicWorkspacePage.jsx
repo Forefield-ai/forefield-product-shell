@@ -42,6 +42,11 @@ export default function TopicWorkspacePage({ productMainline }) {
     workspaceViewState?.empty_or_sparse_state?.is_empty
     || workspaceViewState?.empty_or_sparse_state?.is_sparse
   );
+  const isEmptyState = Boolean(workspaceViewState?.empty_or_sparse_state?.is_empty);
+  const isSparseOnlyState = Boolean(
+    workspaceViewState?.empty_or_sparse_state?.is_sparse
+    && !workspaceViewState?.empty_or_sparse_state?.is_empty
+  );
 
   return (
     <main className="workspace-shell">
@@ -54,19 +59,23 @@ export default function TopicWorkspacePage({ productMainline }) {
         <ReviewSummaryStrip reviewSummary={workspaceViewState.review_summary} />
         <SourceCoverageStrip sourceCoverageStrip={workspaceViewState.source_coverage_strip} />
 
-        {isEmptyOrSparse ? (
+        {isSparseOnlyState ? (
           <EmptySparseState emptyOrSparseState={workspaceViewState.empty_or_sparse_state} />
         ) : null}
 
-        <div className="workspace-shell__content">
-          <SignalClusterList
-            signalClusterSections={workspaceViewState.signal_cluster_sections}
-            selectedClusterId={interactionState.selected_cluster_id}
-            onSelectCluster={handleSelectCluster}
-            onOpenEvidenceDrawer={handleOpenEvidenceDrawer}
-          />
+        <div className={`workspace-shell__content${isEmptyState ? ' workspace-shell__content--empty' : ''}`}>
+          {isEmptyState ? (
+            <EmptySparseState emptyOrSparseState={workspaceViewState.empty_or_sparse_state} />
+          ) : (
+            <SignalClusterList
+              signalClusterSections={workspaceViewState.signal_cluster_sections}
+              selectedClusterId={interactionState.selected_cluster_id}
+              onSelectCluster={handleSelectCluster}
+              onOpenEvidenceDrawer={handleOpenEvidenceDrawer}
+            />
+          )}
 
-          {interactionState.drawer_state === 'open' && selectedEvidenceDrawer ? (
+          {!isEmptyState && interactionState.drawer_state === 'open' && selectedEvidenceDrawer ? (
             <EvidenceDrawer
               evidenceDrawer={selectedEvidenceDrawer}
               onClose={handleCloseEvidenceDrawer}
