@@ -21,7 +21,7 @@ export default function SignalClusterCard({
       aria-pressed={isSelected}
     >
       <div className="cluster-card__header">
-        <div>
+        <div className="cluster-card__header-copy">
           <p className="cluster-card__eyebrow">
             {signalClusterSection.confidence_display?.label || 'unlabeled'}
           </p>
@@ -46,7 +46,12 @@ export default function SignalClusterCard({
       ) : null}
 
       <div className="cluster-card__footer">
-        <span>{signalClusterSection.source_links.length} linked sources</span>
+        <div className="cluster-card__footer-meta">
+          <span className="cluster-card__stat">{signalClusterSection.source_links.length} linked sources</span>
+          <span className="cluster-card__stat">
+            {signalClusterSection.drawer_available ? 'Evidence drawer ready' : 'No drawer data'}
+          </span>
+        </div>
         <button
           type="button"
           className="cluster-card__button"

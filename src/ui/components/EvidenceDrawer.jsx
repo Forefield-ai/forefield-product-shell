@@ -4,7 +4,7 @@ export default function EvidenceDrawer({ evidenceDrawer, onClose }) {
   return (
     <aside className="evidence-drawer" aria-label="Evidence drawer">
       <div className="evidence-drawer__header">
-        <div>
+        <div className="evidence-drawer__header-copy">
           <p className="evidence-drawer__eyebrow">Evidence Drawer</p>
           <h2>{evidenceDrawer.display_summary?.headline || 'Selected cluster evidence'}</h2>
         </div>
@@ -49,7 +49,7 @@ export default function EvidenceDrawer({ evidenceDrawer, onClose }) {
             <li className="evidence-drawer__item" key={item.id}>
               <p className="evidence-drawer__item-label">{item.label}</p>
               <p className="evidence-drawer__item-summary">{item.summary}</p>
-              <a href={item.url} target="_blank" rel="noreferrer">
+              <a className="evidence-drawer__item-link" href={item.url} target="_blank" rel="noreferrer">
                 {item.url}
               </a>
             </li>
@@ -62,7 +62,7 @@ export default function EvidenceDrawer({ evidenceDrawer, onClose }) {
         <ul className="evidence-drawer__links">
           {evidenceDrawer.source_links.map((sourceLink) => (
             <li key={sourceLink}>
-              <a href={sourceLink} target="_blank" rel="noreferrer">
+              <a className="evidence-drawer__source-link" href={sourceLink} target="_blank" rel="noreferrer">
                 {sourceLink}
               </a>
             </li>
