@@ -1,0 +1,116 @@
+{
+  "workspace_header": {
+    "workspace_title": "Teams want clearer privacy controls across shared workflows.",
+    "draft_state_label": "draft",
+    "monitoring_run_id": "monitoring_run_ps__bundle-cross-source-demand-opportunities",
+    "source_bundle_id": "bundle:cross-source-demand-opportunities",
+    "source_bundle_status": "degraded",
+    "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+    "imported_at": "2026-01-01T00:00:00.000Z"
+  },
+  "topic_draft_summary": {
+    "topic_draft_id": "topic_draft_ps__bundle-cross-source-demand-opportunities",
+    "title": "Teams want clearer privacy controls across shared workflows.",
+    "summary": "The signal is strong enough to justify the next bounded validation step because corroborated support spans more than one public source family.",
+    "limitations_summary": "limited source coverage weak evidence contradiction present"
+  },
+  "review_summary": {
+    "signal_cluster_count": 2,
+    "curated_evidence_record_count": 5,
+    "public_source_ref_count": 5,
+    "directional_count": 1,
+    "exploratory_count": 1
+  },
+  "source_coverage_strip": {
+    "public_source_ref_count": 5,
+    "unique_public_source_ref_count": 5,
+    "cluster_coverage": [
+      {
+        "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+        "evidence_count": 3,
+        "public_source_ref_count": 3,
+        "unique_public_source_ref_count": 3
+      },
+      {
+        "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
+        "evidence_count": 2,
+        "public_source_ref_count": 2,
+        "unique_public_source_ref_count": 2
+      }
+    ]
+  },
+  "signal_cluster_sections": [
+    {
+      "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+      "headline": "Teams want clearer privacy controls across shared workflows.",
+      "summary": "The signal is strong enough to justify the next bounded validation step because corroborated support spans more than one public source family.",
+      "confidence_display": {
+        "label": "directional",
+        "summary": "Confidence is directional because bounded support spans multiple source families with no material contradiction."
+      },
+      "limitations": [
+        "limited source coverage",
+        "weak evidence",
+        "contradiction present"
+      ],
+      "evidence_count": 3,
+      "source_links": [
+        "https://example.com/reddit/privacy-workflow-thread",
+        "https://example.com/youtube/privacy-workflow-comments",
+        "https://example.com/community/privacy-workflow-roundup"
+      ],
+      "drawer_available": true
+    },
+    {
+      "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
+      "headline": "Smaller teams still struggle with manual workflow handoffs.",
+      "summary": "The demand signal is worth monitoring, but current support stays narrow and contradiction pressure remains present.",
+      "confidence_display": {
+        "label": "exploratory",
+        "summary": "Confidence remains exploratory because the current corroboration set stays single-source and contradiction-aware."
+      },
+      "limitations": [
+        "limited source coverage",
+        "weak evidence",
+        "contradiction present"
+      ],
+      "evidence_count": 2,
+      "source_links": [
+        "https://example.com/forum/manual-handoff-pain",
+        "https://example.com/community/manual-handoff-followup"
+      ],
+      "drawer_available": true
+    }
+  ],
+  "selected_evidence_drawer": null,
+  "limitations_and_caveats": {
+    "workspace_limitations": [
+      "limited source coverage",
+      "weak evidence",
+      "contradiction present"
+    ],
+    "cluster_caveats": [
+      {
+        "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+        "limitations": [
+          "limited source coverage",
+          "weak evidence",
+          "contradiction present"
+        ]
+      },
+      {
+        "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
+        "limitations": [
+          "limited source coverage",
+          "weak evidence",
+          "contradiction present"
+        ]
+      }
+    ]
+  },
+  "empty_or_sparse_state": {
+    "is_empty": false,
+    "is_sparse": false,
+    "reasons": []
+  }
+}

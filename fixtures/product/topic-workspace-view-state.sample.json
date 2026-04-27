@@ -1,0 +1,75 @@
+{
+  "workspace_header": {
+    "workspace_title": "Users want clearer privacy controls.",
+    "draft_state_label": "draft",
+    "monitoring_run_id": "monitoring_run_ps__bundle-multi-source-privacy-controls",
+    "source_bundle_id": "bundle:multi-source-privacy-controls",
+    "source_bundle_status": "pass",
+    "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+    "imported_at": "2026-04-27T00:00:00Z"
+  },
+  "topic_draft_summary": {
+    "topic_draft_id": "topic_draft_ps__bundle-multi-source-privacy-controls",
+    "title": "Users want clearer privacy controls.",
+    "summary": "This demand signal is corroborated strongly enough to justify the next validation step.",
+    "limitations_summary": "This handoff stays bounded to decision-core evidence and does not imply product-level topic memory."
+  },
+  "review_summary": {
+    "signal_cluster_count": 1,
+    "curated_evidence_record_count": 2,
+    "public_source_ref_count": 2,
+    "directional_count": 1,
+    "exploratory_count": 0
+  },
+  "source_coverage_strip": {
+    "public_source_ref_count": 2,
+    "unique_public_source_ref_count": 2,
+    "cluster_coverage": [
+      {
+        "cluster_id": "signal_cluster_ps__bundle-multi-source-privacy-controls__r1",
+        "evidence_count": 2,
+        "public_source_ref_count": 2,
+        "unique_public_source_ref_count": 2
+      }
+    ]
+  },
+  "signal_cluster_sections": [
+    {
+      "cluster_id": "signal_cluster_ps__bundle-multi-source-privacy-controls__r1",
+      "headline": "Users want clearer privacy controls.",
+      "summary": "This demand signal is corroborated strongly enough to justify the next validation step.",
+      "confidence_display": {
+        "label": "directional",
+        "summary": "Confidence is directional because bounded support spans more than one source family."
+      },
+      "limitations": [
+        "This handoff stays bounded to decision-core evidence and does not imply product-level topic memory."
+      ],
+      "evidence_count": 2,
+      "source_links": [
+        "https://example.com/reddit/privacy-controls-thread",
+        "https://example.com/youtube/privacy-controls-comments"
+      ],
+      "drawer_available": true
+    }
+  ],
+  "selected_evidence_drawer": null,
+  "limitations_and_caveats": {
+    "workspace_limitations": [
+      "This handoff stays bounded to decision-core evidence and does not imply product-level topic memory."
+    ],
+    "cluster_caveats": [
+      {
+        "cluster_id": "signal_cluster_ps__bundle-multi-source-privacy-controls__r1",
+        "limitations": [
+          "This handoff stays bounded to decision-core evidence and does not imply product-level topic memory."
+        ]
+      }
+    ]
+  },
+  "empty_or_sparse_state": {
+    "is_empty": false,
+    "is_sparse": false,
+    "reasons": []
+  }
+}
