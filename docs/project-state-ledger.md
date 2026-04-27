@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P4C.
+This ledger records the accepted project state for `forefield-product-shell` through P4D1.
 
 ## Repository Split
 
@@ -61,6 +61,19 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - no API / DB / auth / persistence added
 - no dependencies added
 - `npm run validate`, `npm test`, and `npm run build` passed
+- P4D1 completed
+- P4D1 commit: `5c98097d7ca08a03cc898d47e2eb20bce7390e1e`
+- minimal / rich local fixture selector added
+- default fixture remains `rich`
+- UI still derives `TopicWorkspaceViewState` through `buildTopicWorkspaceViewState(...)`
+- UI does not render product mainline objects directly
+- switching fixture resets `WorkspaceInteractionState` by remounting `TopicWorkspacePage`
+- switching fixture closes drawer and clears `selected_cluster_id` / `drawer_cluster_id`
+- `EvidenceDrawer` behavior from P4C remains intact
+- no `package.json` / `package-lock.json` changes
+- no API / DB / auth / persistence / dependencies added
+- `npm run validate`, `npm test`, and `npm run build` passed
+- product tests remain `58 / 58` passing
 
 ## Current Product-Shell Capabilities
 
@@ -83,8 +96,11 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - `WorkspaceInteractionState` is ephemeral / session-scoped / non-persistent
 - `WorkspaceInteractionState` is not `UserAction`, `SavedItem`, analytics, or business truth
 - renders a minimal static Topic Workspace UI from local product fixtures
+- provides a local minimal / rich fixture selector for static UI demo flows
 - uses `WorkspaceInteractionState` for UI cluster selection
 - renders static EvidenceDrawer content through `buildTopicWorkspaceViewState(richProductMainline, { selectedClusterId })`
+- resets `WorkspaceInteractionState` on fixture switch by remounting `TopicWorkspacePage`
+- clears selection and closes drawer on fixture switch
 - does not directly consume handoff, mapper output, or decision-core internals in UI
 - no mapper source changed
 - no product read-model / helper / mapper source changed in P4C
@@ -103,7 +119,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- P4D: fixture selector, empty/sparse state refinement, and layout polish
+- P4D2: Empty/sparse state display refinement
 
 ## Pre-Flight Checklist For Future Phases
 
