@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P3C.
+This ledger records the accepted project state for `forefield-product-shell` through P4B.
 
 ## Repository Split
 
@@ -38,6 +38,15 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - `WorkspaceInteractionState` helper / reducer module added
 - `WorkspaceInteractionState` fixture snapshots added
 - `WorkspaceInteractionState` tests added
+- P4B completed
+- P4B commit: `1bae88af87293e68fc08adb634534b8c1a23a1c6`
+- minimal static `Vite + React` Topic Workspace UI added
+- UI consumes rich `TopicWorkspaceViewState` fixture only
+- UI uses `WorkspaceInteractionState` helper for cluster selection
+- selectCluster does not open Evidence Drawer
+- EvidenceDrawer interaction deferred to P4C
+- build passed
+- product tests remain `58 / 58` passing
 
 ## Current Product-Shell Capabilities
 
@@ -59,13 +68,15 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - closeEvidenceDrawer preserves selected_cluster_id
 - `WorkspaceInteractionState` is ephemeral / session-scoped / non-persistent
 - `WorkspaceInteractionState` is not `UserAction`, `SavedItem`, analytics, or business truth
+- renders a minimal static Topic Workspace UI from the rich `TopicWorkspaceViewState` fixture
+- uses `WorkspaceInteractionState` for UI cluster selection
+- does not directly consume handoff, mapper output, or decision-core internals in UI
 - no mapper source changed
-- no UI / API / DB / persistence added
+- no API / DB / auth / persistence added
 - no confirmed `Topic` by default
 
 ## Current Product-Shell Non-Capabilities
 
-- no UI
 - no API
 - no DB
 - no auth / workspace runtime
@@ -76,7 +87,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- P4A: Topic Workspace UI planning
+- P4C: EvidenceDrawer interaction
 
 ## Pre-Flight Checklist For Future Phases
 
