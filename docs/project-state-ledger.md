@@ -782,6 +782,38 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - `npm run smoke:browser` passed against the local dev server
   - current tests remain `118 / 118` passing because the browser smoke harness is intentionally kept separate from `npm test`
   - working tree was clean after implementation commit validation
+- P8E-B final closeout accepted
+- P8E-B final state:
+  - P8E-B implementation commit: `6a9cfe572a8c7fb973b35af5b7d360b2dbe4f12f`
+  - P8E-B ledger commit: `6370e45fb801f6dc3b17d49683d0edafe721a59b`
+- smoke verification:
+  - `rich + standard baseline -> Workspace`: PASS
+  - `empty + standard baseline -> EmptySparseState`: PASS
+  - `sparse + standard baseline -> limited notice + cluster still visible`: PASS
+  - `no_evidence + standard baseline -> Evidence unavailable disabled`: PASS
+  - `rich + baseline_failed -> failed fallback`: PASS
+  - `rich + baseline_stuck -> stuck fallback`: PASS
+  - `rich normal path -> Evidence Drawer open / close`: PASS
+  - `console.error` and `pageerror` checks stayed clean during smoke coverage
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - `npm run smoke:browser` passed
+  - current tests remain `118 / 118` passing
+  - working tree was clean after previous commits
+- current decision:
+  - `P8E-B` is accepted and closed
+- explicit deferred items:
+  - `smoke:browser` remains local-only and is not CI-blocking
+  - Saved Tab full state flow remains manual / deferred
+  - Watch / Save / Not relevant full interaction matrix remains manual / deferred
+  - malformed / unknown fixture / unexpected status browser automation remains deferred
+  - module-format cleanup remains deferred
+  - API / DB / auth / persistence remains deferred
+  - `BaselineBrief` remains deferred
+  - `Copilot` remains deferred
+  - Figma-level visual design remains deferred
 
 ## Technical Debt
 
