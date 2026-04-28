@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P9B` baseline brief contract / fixture / read-model closeout, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B closeouts.
+This ledger records the accepted project state for `forefield-product-shell` through `P9C` local baseline brief preview shell implementation, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B closeouts and `P9B` brief contract / read-model closeout.
 
 ## Repository Split
 
@@ -871,6 +871,38 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - browser ESM parity for the Brief read-model should be revisited before any browser UI imports this builder
   - module-format cleanup remains deferred
   - Figma-level visual design remains deferred
+- P9C completed
+- P9C implementation commit: `8a2e08c1165d8c638bd2e77f065074ed2d1690a9`
+- commit message: `feat(ui): add local baseline brief preview`
+- modified:
+  - `src/product/read-models/build-baseline-brief-state.browser.mjs`
+  - `src/ui/components/BriefPreview.jsx`
+  - `src/ui/TopicWorkspacePage.jsx`
+  - `src/ui/components/WorkspaceHeader.jsx`
+  - `src/ui/pages/TopicWorkspaceShellPage.jsx`
+  - `src/ui/styles.css`
+  - `tests/product-workspace/build-baseline-brief-state.test.js`
+  - `tests/smoke/browser-smoke.mjs`
+- concise summary:
+  - added a browser-safe `BaselineBrief` builder bridge and a local-only right-side Brief Preview shell that opens from a single workspace-header trigger without replacing Topic Workspace as the default review surface
+  - keeps the preview read-only, Topic-scoped, evidence-grounded, and mutually exclusive with Evidence Drawer while using the controlled `P9B` brief state as-is
+  - treats this as Layer 1 Brief Preview shell only; brief synthesis-quality work and any LLM-assisted narrative layer remain deferred
+- confirmed:
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no Brief export / copy-to-clipboard
+  - no LLM generation
+  - no `Copilot`
+  - no runtime contract or runtime payload shape change
+  - no action semantic change
+  - no `src/runtime/*` changes
+  - no fixture changes
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - `npm run smoke:browser` passed
+  - current tests: `128 / 128` passing
+  - working tree was clean after implementation commit validation
 
 ## Technical Debt
 
@@ -1134,7 +1166,10 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - provides a local-only `npm run smoke:browser` harness for the most important prototype routes and fallback surfaces without making browser smoke part of `npm run validate`
 - provides a local-first `BaselineBrief` contract and deterministic read-model using only product-visible Topic scope, workspace review state, curated evidence, and saved / watched user state
 - keeps `BaselineBrief` optional, Topic-scoped, evidence-grounded, and unavailable for empty / failed / stuck / malformed prototype states
-- current test count: 127 / 127 passing
+- exposes a single workspace-header `Preview Brief` trigger and a read-only right-side Brief Preview shell without turning Brief into the default result page or a generic report surface
+- keeps Brief Preview mutually exclusive with Evidence Drawer and labels sparse-eligible previews as preliminary / limited-evidence rather than upgrading them into stronger conclusions
+- treats current Brief UI as Layer 1 preview shell only; synthesis-quality improvements and LLM-assisted narrative remain deferred
+- current test count: 128 / 128 passing
 
 ## Current Product-Shell Non-Capabilities
 
@@ -1145,15 +1180,16 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - no real LLM calls
 - no real data collection
 - no confirmed `Topic` promotion
-- no `BaselineBrief` preview UI / export / persistence behavior
+- no `BaselineBrief` export / copy / persistence behavior
+- no final `BaselineBrief` synthesis-quality layer
 - no `Copilot` behavior
 - no live decision-core integration
 
 ## Recommended Next Step
 
-- recommended next step: `P9C` local Brief preview UI planning
-- focus the next pass on defining how the new `BaselineBrief` read-model becomes a user-triggered preview surface without turning it into a default result page, generic report system, or export workflow
-- do not move into API / DB / auth / persistence, `Copilot`, or visual redesign by default
+- recommended next step: `P9D` Brief synthesis-quality planning
+- focus the next pass on evaluating whether the controlled Brief object provides value beyond rearranging current cluster content, how takeaways should be synthesized without unsupported conclusions, and how saved / watched emphasis should shape but not overstate the preview
+- do not move into LLM generation, `Copilot`, API / DB / auth / persistence, or visual redesign by default
 
 ## Pre-Flight Checklist For Future Phases
 
