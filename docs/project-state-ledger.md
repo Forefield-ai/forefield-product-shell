@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P9B` baseline brief contract / fixture / read-model implementation, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B closeouts.
+This ledger records the accepted project state for `forefield-product-shell` through `P9B` baseline brief contract / fixture / read-model closeout, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B closeouts.
 
 ## Repository Split
 
@@ -846,6 +846,31 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - `npm run smoke:browser` passed against the local dev server
   - current tests: `127 / 127` passing
   - working tree was clean after implementation commit validation
+- P9B final closeout accepted
+- P9B implementation commit: `3e194ebfb7c1c5ba569574a9e312b373b4e2c50b`
+- P9B ledger update commit: `59485e05eead0d79fbb9d40d82019e7774c96027`
+- final closeout summary:
+  - `BaselineBrief` contract documentation, local-first deterministic read-model, sample fixtures, and eligibility coverage are accepted for the current product-shell scope
+  - `BaselineBrief` remains optional, Topic-scoped, evidence-grounded, and not the default result page
+  - no Brief UI, markdown export, copy-to-clipboard flow, LLM generation, `Copilot`, or API / DB / auth / persistence work was added in this phase
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - `npm run smoke:browser` passed
+  - current tests: `127 / 127` passing
+  - working tree was clean after previous commits
+- current decision:
+  - `P9B` is accepted and closed
+- explicit deferred items:
+  - Brief Preview UI remains deferred to `P9C`
+  - markdown export / copy-to-clipboard remains deferred
+  - LLM generation remains deferred
+  - `Copilot` remains deferred
+  - API / DB / auth / persistence remains deferred
+  - browser ESM parity for the Brief read-model should be revisited before any browser UI imports this builder
+  - module-format cleanup remains deferred
+  - Figma-level visual design remains deferred
 
 ## Technical Debt
 
@@ -1120,7 +1145,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - no real LLM calls
 - no real data collection
 - no confirmed `Topic` promotion
-- no `BaselineBrief` / `Copilot` behavior
+- no `BaselineBrief` preview UI / export / persistence behavior
+- no `Copilot` behavior
 - no live decision-core integration
 
 ## Recommended Next Step
