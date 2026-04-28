@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P7B.
+This ledger records the accepted project state for `forefield-product-shell` through P7D.
 
 ## Repository Split
 
@@ -237,6 +237,41 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - `UserAction` and `SavedItem` should be planned as related runtime objects, not isolated features
 - `InitialTopicMap` should be treated first as a workspace snapshot before over-normalizing persistence
 - auth / workspace should start from a backend-ready stub contract, not full auth implementation
+- P7D completed
+- P7D commit: `7a31feb9afd3a68c389ed84f6e11011e6d8b85bc`
+- minimal runtime adapter boundary added
+- created:
+  - `src/runtime/session/current-user-context.js`
+  - `src/runtime/contracts/runtime-adapter-contract.js`
+  - `src/runtime/adapters/local-runtime-adapter.js`
+  - `tests/runtime/local-runtime-adapter.test.js`
+  - `tests/runtime/runtime-boundary.test.js`
+- scope covered:
+  - demo user / workspace context
+  - runtime contract guard
+  - local in-memory runtime adapter
+  - runtime boundary tests
+- confirmed:
+  - UI files unchanged
+  - `App.jsx` unchanged
+  - fixture selector unchanged
+  - product action helper unchanged
+  - no API routes added
+  - no DB / schema / migration added
+  - no auth added
+  - no persistence added
+  - no browser storage added
+  - no dependencies added
+  - no decision-core imports added
+  - no `fetch` / `localStorage` / `sessionStorage` usage
+  - adapter uses P6B `user-action-state` helper for action semantics
+  - `openSavedCluster` / `openSavedEvidence` are not adapter methods
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `107 / 107` passing
+- P7D adapter is not wired to UI yet
+- current app still runs through existing local / session state in App / Shell
+- runtime adapter validates future boundary only
+- next step is not API / DB / auth / persistence by default
 
 ## Current Product-Shell Capabilities
 
@@ -296,7 +331,11 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - Open saved evidence does not highlight a specific evidence item in P6D
 - Saved Briefs is only a deferred note, not a working `BaselineBrief` feature
 - Saved Tab remains a topic-level local view, not a workspace-level Evidence Library
-- current test count: 88 / 88 passing
+- provides a minimal runtime adapter boundary under `src/runtime`
+- includes a backend-ready demo user / workspace context stub
+- includes a local in-memory runtime adapter that wraps existing P6B action semantics
+- keeps runtime boundary validation separate from UI wiring
+- current test count: 107 / 107 passing
 
 ## Current Product-Shell Non-Capabilities
 
@@ -312,7 +351,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P7C` planning only
+- recommended next planning step: `P7E` App / Shell migration to local runtime adapter
 - do not implement API / DB / auth / persistence by default
 
 ## Pre-Flight Checklist For Future Phases
