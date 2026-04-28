@@ -5,20 +5,20 @@ import SourceCoverageStrip from './components/SourceCoverageStrip';
 import SignalClusterList from './components/SignalClusterList';
 import EmptySparseState from './components/EmptySparseState';
 import EvidenceDrawer from './components/EvidenceDrawer';
-import { buildTopicWorkspaceViewState } from '../product/read-models/build-topic-workspace-view-state';
+import { buildTopicWorkspaceViewState } from '../product/read-models/build-topic-workspace-view-state.browser.mjs';
 import {
   initialActionState,
   isClusterHidden,
   isClusterSaved,
   isClusterWatched,
   isEvidenceSaved,
-} from '../product/actions/user-action-state';
+} from '../product/actions/user-action-state.browser.mjs';
 import {
   closeEvidenceDrawer,
   initialWorkspaceInteractionState,
   openEvidenceDrawer,
   selectCluster,
-} from '../product/workspace/workspace-interaction-state';
+} from '../product/workspace/workspace-interaction-state.browser.mjs';
 
 function getClusterTitleSnapshot(clusterSection) {
   return (

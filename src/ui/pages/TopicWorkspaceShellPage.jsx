@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import SavedTab from '../components/SavedTab';
 import TopicWorkspacePage from '../TopicWorkspacePage';
-import { buildTopicWorkspaceViewState } from '../../product/read-models/build-topic-workspace-view-state';
+import { buildTopicWorkspaceViewState } from '../../product/read-models/build-topic-workspace-view-state.browser.mjs';
 import {
   getSavedClusters,
   getSavedEvidence,
   initialActionState,
   isClusterHidden,
-} from '../../product/actions/user-action-state';
+} from '../../product/actions/user-action-state.browser.mjs';
 
 export default function TopicWorkspaceShellPage({
   topic,

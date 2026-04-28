@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BASELINE_BUILDING_STAGES } from '../flow/local-topic-flow';
+import { BASELINE_BUILDING_STAGES } from '../flow/local-topic-flow.browser.mjs';
 
 const STAGE_DELAY_MS = 420;
 

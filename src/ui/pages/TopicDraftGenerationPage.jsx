@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { generateLocalTopicDraftFromInput } from '../flow/generate-local-topic-draft';
-import { DRAFT_GENERATION_STAGES } from '../flow/local-topic-flow';
+import { generateLocalTopicDraftFromInput } from '../flow/generate-local-topic-draft.browser.mjs';
+import { DRAFT_GENERATION_STAGES } from '../flow/local-topic-flow.browser.mjs';
 
 const STAGE_DELAY_MS = 450;
 

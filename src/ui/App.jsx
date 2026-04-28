@@ -8,16 +8,16 @@ import TopicListPage from './pages/TopicListPage';
 import TopicWorkspaceShellPage from './pages/TopicWorkspaceShellPage';
 import minimalProductMainline from '../../fixtures/product/product-mainline.sample.json';
 import richProductMainline from '../../fixtures/product/rich-product-mainline.sample.json';
-import { createLocalRuntimeAdapter } from '../runtime/adapters/local-runtime-adapter';
-import { buildProductMainlineCompatibilityPayload } from '../runtime/workspace/local-workspace-payload';
-import { initialActionState } from '../product/actions/user-action-state';
+import { createLocalRuntimeAdapter } from '../runtime/adapters/local-runtime-adapter.browser.mjs';
+import { buildProductMainlineCompatibilityPayload } from '../runtime/workspace/local-workspace-payload.browser.mjs';
+import { initialActionState } from '../product/actions/user-action-state.browser.mjs';
 import {
   createLocalTopicRecord,
   SCREEN_IDS,
   TOPIC_STATUSES,
   updateLocalTopicRecord,
   updateLocalTopicStatus,
-} from './flow/local-topic-flow';
+} from './flow/local-topic-flow.browser.mjs';
 
 const PRODUCT_MAINLINE_FIXTURES = {
   minimal: minimalProductMainline,

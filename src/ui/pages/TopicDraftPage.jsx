@@ -1,5 +1,5 @@
 import React from 'react';
-import { generateLocalTopicDraftFromInput } from '../flow/generate-local-topic-draft';
+import { generateLocalTopicDraftFromInput } from '../flow/generate-local-topic-draft.browser.mjs';
 
 function listToText(values) {
   return Array.isArray(values) ? values.join('\n') : '';

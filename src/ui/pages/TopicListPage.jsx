@@ -1,5 +1,5 @@
 import React from 'react';
-import { TOPIC_STATUSES } from '../flow/local-topic-flow';
+import { TOPIC_STATUSES } from '../flow/local-topic-flow.browser.mjs';
 
 function formatTimestamp(value) {
   if (typeof value !== 'string' || !value.trim()) {
