@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P7G.
+This ledger records the accepted project state for `forefield-product-shell` through P8A.
 
 ## Repository Split
 
@@ -311,6 +311,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - API / DB / auth / persistence remains deferred
 - P7G completed
 - P7G implementation commit: `47671f74ca1a0268bbef1b556a2a17c854e42345`
+- P7G ledger commit: `6d3ac55209df30638229ebe57645c5bc2b419185`
 - local runtime workspace payload wrapper / adapter path added
 - modified:
   - `src/runtime/workspace/local-workspace-payload.js`
@@ -333,8 +334,57 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - working tree was clean after implementation commit validation
 - workspace payloads remain local / session-only and fixture-backed in this phase
 - `buildTopicWorkspaceViewState` compatibility is currently maintained through a narrow App-layer runtime workspace conversion path
+- P8A completed
+- P8A implementation commit: `a3d55da7c69e0a4cc10f4f976bd79065677c9fae`
+- Product Workspace UX alignment completed
+- modified:
+  - `src/ui/components/WorkspaceHeader.jsx`
+  - `src/ui/components/ReviewSummaryStrip.jsx`
+  - `src/ui/components/SourceCoverageStrip.jsx`
+  - `src/ui/components/SignalClusterList.jsx`
+  - `src/ui/components/SignalClusterCard.jsx`
+  - `src/ui/components/EmptySparseState.jsx`
+  - `src/ui/styles.css`
+- concise summary:
+  - Topic Workspace is framed more clearly as an Initial Topic Map / Initial Review surface
+  - Review Summary now reads more like a review outcome summary with suggested next-step guidance
+  - Source Coverage now emphasizes signal availability and evidence basis without surfacing internal cluster ids as primary copy
+  - Signal Cluster list and cluster cards now better explain how to review clusters, what the current evidence basis looks like, and how to use Watch / Save / Not relevant without changing action semantics
+  - Empty / sparse states now use more cautious and actionable trust-building language
+- confirmed:
+  - no API / DB / auth / persistence / browser storage / `fetch` added
+  - no live decision-core integration added
+  - no `BaselineBrief` added
+  - no `Copilot` added
+  - runtime workspace payload shape was not changed
+  - `buildTopicWorkspaceViewState` was not changed
+  - `src/runtime/*`, fixtures, and `src/product/actions/user-action-state.js` were not changed
+  - current Topic Workspace behavior remains intact while product framing is improved
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `109 / 109` passing
+- working tree was clean after implementation commit validation
 
 ## Technical Debt
+
+### Topic Draft Generation Double Source Mock
+
+- observed / introduced phase: identified in `P8`
+- reason: `TopicDraftGenerationPage` still completes through a local generator while `App` also routes draft creation through the runtime adapter, so draft-generation ownership still crosses a transitional seam
+- current impact: current local UX still works, but draft-generation semantics remain split between progress UI and adapter-backed creation
+- risk: future draft-generation cleanup or runtime migration may drift if both paths evolve independently
+- status: identified, unresolved transitional debt
+- revisit / trigger condition: revisit before draft-generation cleanup or any runtime-backed Topic Draft work
+- potential cleanup: make the progress page UI-only and let the runtime adapter become the single source for draft creation
+
+### Dev / Demo Copy Leakage Into Primary Review Surfaces
+
+- observed / introduced phase: identified in `P8`, partially reduced in `P8A`
+- reason: local shell and flow pages still carry demo / local / fixture framing even though the primary Topic Workspace surfaces are now more product-owned
+- current impact: the main review surfaces feel less demo-like after `P8A`, but the overall flow still mixes product review language with local-shell scaffolding language
+- risk: users can still read parts of the experience as a prototype walkthrough instead of a credible Initial Review product path
+- status: partially reduced, unresolved
+- revisit / trigger condition: revisit before any broader MVP demo, README refresh, or future shell-flow polish phase
+- potential cleanup: continue moving demo/local framing into debug-only or shell-only affordances while keeping primary review surfaces product-owned
 
 ### Vite CommonJS Compatibility Allowlist
 
@@ -390,7 +440,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 - observed / introduced phase: identified in `P7G`
 - reason: `buildTopicWorkspaceViewState` currently includes `source_bundle_id`, `source_bundle_status`, `handoff_version`, and `imported_at` inside `workspace_header`. Whether every field is rendered depends on `WorkspaceHeader.jsx`, but these fields are already present in the UI-facing read model.
-- current impact: acceptable for local fixture/demo visibility, but these fields are intake / bundle / handoff provenance rather than durable customer-facing product semantics.
+- current impact: `P8A` reduced their primary emphasis in the workspace header, but these fields still exist in the UI-facing read model and remain available to future surfaces by accident.
 - risk: future runtime/API payload work may accidentally promote ingestion provenance into customer-facing runtime contracts or confuse product-owned workspace metadata with decision-core/source-bundle metadata.
 - status: identified, unresolved.
 - revisit / trigger condition: revisit during `P7G` workspace payload wrapper implementation and before any API/runtime workspace payload is treated as production-facing.
@@ -475,6 +525,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - preserves current Topic Workspace rendering through a narrow App-layer compatibility conversion from runtime workspace payloads back into the existing presenter input shape
 - keeps workspace fixture / `productMainline` data flow unchanged while runtime wiring is migrated incrementally
 - keeps `selectedFixtureKey` and per-topic `fixtureKey` behavior unchanged during runtime wiring migration
+- frames the Topic Workspace more clearly as an Initial Topic Map / Initial Review surface rather than a fixture/import surface
+- reframes review summary, source coverage, cluster list guidance, cluster card guidance, and sparse messaging using existing data only
+- preserves current Topic Workspace behavior while making the local review surface more credible for Initial Review validation
 - current test count: 109 / 109 passing
 
 ## Current Product-Shell Non-Capabilities
@@ -491,9 +544,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next planning step: `P7H`
-- decide whether `P7H` should focus on dev fixture adapter cleanup, runtime workspace contract hardening, or API / persistence readiness
-- do not implement API / DB / auth / persistence by default
+- recommended next phase: `P8B`
+- focus `P8B` on Evidence Drawer trust-layer enhancement without changing runtime contracts or moving into API / persistence work
+- do not implement API / DB / auth / persistence, `BaselineBrief`, or `Copilot` by default
 
 ## Pre-Flight Checklist For Future Phases
 
