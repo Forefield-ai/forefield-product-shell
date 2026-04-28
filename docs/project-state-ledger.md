@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P10B` Copilot guided action contract implementation, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B / `P9B` / `P9C` / `P9E-B` / `P9F-B` milestones.
+This ledger records the accepted project state for `forefield-product-shell` through `P10B` Copilot guided action contract closeout, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B / `P9B` / `P9C` / `P9E-B` / `P9F-B` milestones.
 
 ## Repository Split
 
@@ -1083,6 +1083,34 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - `npm run smoke:browser` passed against the local dev server
   - current tests: `142 / 142` passing
   - working tree was clean after implementation commit validation
+- P10B final closeout accepted
+- P10B implementation commit: `36e6522dfd3c7d07596b3c560eb6f9751677165f`
+- P10B previous ledger update commit: `30cf12afc3da7ef95a5cf0538d620c6504b08968`
+- closeout summary:
+  - added Copilot guided action contract documentation and a product-layer deterministic guided-action state builder without introducing Copilot UI or LLM integration
+  - kept the MVP action set explicitly bounded to `explain_cluster`, `explain_brief_takeaway_support`, `summarize_caveats`, `generate_validation_questions`, and `suggest_what_to_watch_next`
+  - added deterministic mock outputs with structured `status`, `preliminary`, `what_this_currently_supports`, `what_remains_limited`, `what_to_validate_next`, trace refs where applicable, and unavailable-state fields where applicable
+  - kept Copilot Topic-scoped, evidence-grounded, and guided-actions only rather than expanding it into open-ended chat or a generic market research assistant
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - `npm run smoke:browser` passed
+  - current tests: `142 / 142` passing
+  - working tree was clean after previous commits
+- current decision:
+  - `P10B` is accepted and closed
+- explicit deferred items:
+  - Copilot UI remains deferred
+  - floating assistant remains deferred
+  - open-ended chat remains deferred
+  - LLM integration remains deferred
+  - Copilot browser-safe UI integration remains deferred
+  - API / DB / auth / persistence remains deferred
+  - Brief export / markdown / copy-to-clipboard remains deferred
+  - runtime contract expansion remains deferred
+  - Figma-level visual design remains deferred
+  - broad module-format cleanup remains deferred
 
 ## Technical Debt
 
@@ -1296,6 +1324,16 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - revisit / trigger condition: revisit before real ingestion/API/persistence, export/citation support, or any production-backed Brief generation path
 - potential cleanup: re-evaluate trace metadata and handoff wording once real evidence variability is available, while preserving the current product-visible boundary
 
+### Future Copilot Browser-Safe Integration
+
+- observed / introduced phase: identified in `P10B` closeout
+- reason: the product-layer Copilot guided-action builder currently exists as a Node / CommonJS module and is not yet consumed by any browser-side UI surface
+- current impact: the current contract and deterministic mock layer remain safe and testable in Node, but future `P10C` UI work will need a careful browser-safe integration path rather than a direct leaf import
+- risk: a future Copilot guided-action UI shell could reintroduce the same CJS / browser ESM compatibility drift already seen in other product-layer builders if the bridge is added casually
+- status: deferred
+- revisit / trigger condition: revisit before implementing any Copilot guided-action UI shell or broader browser-side Copilot integration
+- potential cleanup: add a narrowly aligned browser-safe adapter or ESM counterpart only when the first Copilot UI consumer exists, and keep parity coverage in place when that bridge is introduced
+
 ### Copilot Scope Creep Risk
 
 - observed / introduced phase: identified in `P10A`, actively constrained in `P10B`
@@ -1313,7 +1351,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - current impact: the product now has a safe way to validate Copilot action boundaries and tone without introducing LLMs, but the output quality is still tuned to curated sample data
 - risk: future readers may overread these deterministic outputs as proof that Copilot is already ready for noisier real evidence, real user history, or production-backed guidance
 - status: accepted current MVP-shell limitation
-- revisit / trigger condition: revisit before Copilot UI implementation, real ingestion/API/persistence, or any LLM-assisted Copilot path
+- revisit / trigger condition: revisit before LLM integration, real ingestion/API/persistence, or any production Copilot behavior beyond the current bounded mock layer
 - potential cleanup: add more diverse product-visible fixtures and state scenarios before expanding Copilot outputs beyond the current bounded mock layer
 
 ### Unsupported Conclusion Risk
@@ -1332,8 +1370,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - reason: Copilot now has a bounded action contract layer, which creates a tempting path to add LLM-generated narrative before the deterministic action boundary and real-evidence grounding are mature enough
 - current impact: the current phase avoids that risk by keeping outputs deterministic and contract-driven
 - risk: introducing LLM rewriting too early could turn guided actions into stronger-seeming narrative that outruns sparse evidence, monitoring gaps, or current traceability limits
-- status: deferred, monitor closely
-- revisit / trigger condition: revisit before any Copilot LLM integration planning or implementation
+- status: deferred; no LLM added in `P10B`
+- revisit / trigger condition: revisit in `P10D` LLM integration planning or before any Copilot LLM implementation
 - potential cleanup: require an evidence-grounded prompt boundary, stronger traceability references, and more mature real-evidence validation before introducing any LLM-generated Copilot output
 
 ### Generic Report Creep
@@ -1462,9 +1500,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P10B` closeout review and Copilot contract-boundary verification
-- focus the next pass on confirming that the current Copilot action set stays guided, Topic-scoped, evidence-grounded, and clearly separated from Brief export, open-ended chat, and LLM narrative
-- do not move directly into Copilot UI, LLM-assisted narrative, API / DB / auth / persistence, or visual redesign by default
+- recommended next step: `P10C` Local Copilot Guided Action UI Planning
+- focus the next pass on deciding where guided Copilot actions should surface first, how they should hand off to current Workspace / Drawer / Brief contexts, and how to avoid turning the product into a floating assistant or open-ended chat surface
+- do not move directly into Copilot LLM integration, API / DB / auth / persistence, or visual redesign by default
 
 ## Pre-Flight Checklist For Future Phases
 
