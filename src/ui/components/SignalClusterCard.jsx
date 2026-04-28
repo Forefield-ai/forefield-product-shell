@@ -52,6 +52,14 @@ function getClusterReviewGuidance(signalClusterSection) {
   return 'Use the Evidence Drawer to verify what currently supports this cluster.';
 }
 
+function getEvidenceAccessMessage(signalClusterSection) {
+  if (signalClusterSection?.drawer_available) {
+    return 'Open the drawer to verify supporting sources';
+  }
+
+  return 'Evidence is not available for this cluster in the current snapshot';
+}
+
 export default function SignalClusterCard({
   signalClusterSection,
   isSelected,
@@ -128,9 +136,7 @@ export default function SignalClusterCard({
           <div className="cluster-card__footer-meta">
             <span className="cluster-card__stat">{getEvidenceBasisSummary(signalClusterSection)}</span>
             <span className="cluster-card__stat">
-              {signalClusterSection.drawer_available
-                ? 'Open the drawer to verify supporting sources'
-                : 'No evidence drawer data available yet'}
+              {getEvidenceAccessMessage(signalClusterSection)}
             </span>
           </div>
 
@@ -157,7 +163,7 @@ export default function SignalClusterCard({
             onViewEvidence(signalClusterSection.cluster_id);
           }}
         >
-          View Evidence
+          {signalClusterSection.drawer_available ? 'View Evidence' : 'Evidence unavailable'}
         </button>
       </div>
     </article>

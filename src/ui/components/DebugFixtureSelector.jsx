@@ -1,5 +1,13 @@
 import React from 'react';
 
+const FIXTURE_OPTIONS = [
+  { value: 'rich', label: 'Rich review snapshot' },
+  { value: 'minimal', label: 'Minimal review snapshot' },
+  { value: 'sparse', label: 'Sparse review snapshot' },
+  { value: 'no_evidence', label: 'Cluster without evidence' },
+  { value: 'empty', label: 'Empty review snapshot' },
+];
+
 export default function DebugFixtureSelector({ selectedFixtureKey, onSelectFixture }) {
   return (
     <section className="fixture-selector" aria-label="Development preview controls">
@@ -19,8 +27,11 @@ export default function DebugFixtureSelector({ selectedFixtureKey, onSelectFixtu
             value={selectedFixtureKey}
             onChange={(event) => onSelectFixture(event.target.value)}
           >
-            <option value="minimal">minimal</option>
-            <option value="rich">rich</option>
+            {FIXTURE_OPTIONS.map((fixtureOption) => (
+              <option key={fixtureOption.value} value={fixtureOption.value}>
+                {fixtureOption.label}
+              </option>
+            ))}
           </select>
         </label>
       </div>

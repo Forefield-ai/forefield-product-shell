@@ -1,9 +1,9 @@
 import React from 'react';
 
 const REASON_LABELS = {
-  no_signal_clusters: 'No signal clusters',
-  no_curated_evidence_records: 'No curated evidence',
-  no_public_source_refs: 'No public source refs',
+  no_signal_clusters: 'No reviewable signal clusters yet',
+  no_curated_evidence_records: 'No reviewable evidence records yet',
+  no_public_source_refs: 'No supporting source links yet',
 };
 
 function formatReason(reason) {
@@ -39,8 +39,8 @@ export default function EmptySparseState({ emptyOrSparseState }) {
     ? 'No signal clusters are ready for review yet'
     : 'Signal coverage is limited right now';
   const description = isEmpty
-    ? 'Forefield is holding back rather than forcing a conclusion from weak or missing signals. This topic can stay open until the next review snapshot surfaces something worth checking.'
-    : 'There is still reviewable material here, but the current evidence basis is thin. Open the Evidence Drawer before relying on any cluster and treat limited coverage cautiously.';
+    ? 'Forefield is holding back rather than forcing a conclusion from weak or missing signals. This snapshot does not have enough reviewable signal to support a confident workspace yet.'
+    : 'There is still reviewable material here, but the current evidence basis is limited. Keep the visible clusters in review, open evidence where available, and treat thin coverage cautiously.';
   const sectionClassName = isEmpty
     ? 'empty-state empty-state--primary'
     : 'empty-state empty-state--notice';
@@ -53,7 +53,7 @@ export default function EmptySparseState({ emptyOrSparseState }) {
     : [
       'Start with the cluster that looks closest to your topic, then verify the supporting evidence before acting on it.',
       'Use Watch for clusters worth monitoring later, Save for useful evidence, and Not relevant to trim noisy scope.',
-      'If coverage stays weak, refine the topic scope or revisit the review later.',
+      'If coverage stays weak, refine the topic scope or revisit the review later instead of forcing a strong conclusion.',
     ];
 
   return (

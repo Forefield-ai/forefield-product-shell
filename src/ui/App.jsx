@@ -8,6 +8,9 @@ import TopicListPage from './pages/TopicListPage';
 import TopicWorkspaceShellPage from './pages/TopicWorkspaceShellPage';
 import minimalProductMainline from '../../fixtures/product/product-mainline.sample.json';
 import richProductMainline from '../../fixtures/product/rich-product-mainline.sample.json';
+import emptyProductMainline from '../../fixtures/product/empty-product-mainline.sample.json';
+import sparseProductMainline from '../../fixtures/product/sparse-product-mainline.sample.json';
+import noEvidenceProductMainline from '../../fixtures/product/no-evidence-product-mainline.sample.json';
 import { createLocalRuntimeAdapter } from '../runtime/adapters/local-runtime-adapter.browser.mjs';
 import { buildProductMainlineCompatibilityPayload } from '../runtime/workspace/local-workspace-payload.browser.mjs';
 import { initialActionState } from '../product/actions/user-action-state.browser.mjs';
@@ -22,6 +25,9 @@ import {
 const PRODUCT_MAINLINE_FIXTURES = {
   minimal: minimalProductMainline,
   rich: richProductMainline,
+  empty: emptyProductMainline,
+  sparse: sparseProductMainline,
+  no_evidence: noEvidenceProductMainline,
 };
 
 function sortTopicSnapshots(topics) {
