@@ -412,6 +412,42 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - `npm run validate`, `npm test`, and `npm run build` passed
 - current tests: `109 / 109` passing
 - working tree was clean after implementation commit
+- P8A final closeout accepted
+- P8A final state:
+  - P8A implementation commit: `a3d55da7c69e0a4cc10f4f976bd79065677c9fae`
+  - P8A ledger commit: `c4ad8fcd9cae8acd334d9da97937a23e2b530993`
+  - P8A browser white-screen blocker fix: `b2271bfcd0632c3b94cad50078cdf21e8210d474`
+  - white-screen blocker ledger update: `0161eb64ddc2ad46387ccedaec3ed9f526a37fa9`
+  - P8A product-surface hygiene implementation: `a801760d4d7670dbb5eca90931d2591bee4fe538`
+  - P8A product-surface hygiene ledger update: `1370d1adebdf72819700203e24878bcb5e1a3038`
+- manual browser verification:
+  - browser renders correctly
+  - Home page opens
+  - Topic Draft flow works
+  - Topic Draft Confirmation works
+  - Workspace renders
+  - Recent Topics works
+  - Overview and Saved tabs render
+  - Evidence Drawer opens and closes
+  - Watch / Save / Not relevant interactions work
+  - Saved Tab displays saved items and related actions
+- product-surface hygiene spot check passed:
+  - Signal Focus no longer exposes raw enum labels in primary UI
+  - `TopicWorkspaceViewState` wording is removed from primary UI
+  - fixture-driven product view state wording is removed from primary UI
+  - raw `monitoring_run_id` is no longer displayed in primary UI
+  - status labels are clarified enough for the current local prototype stage
+- accepted current limitations:
+  - simulated fixture data remains accepted for the current local prototype stage
+  - Topic and fixture content may not fully match
+  - Evidence Drawer content is still thin and should be handled in `P8B` planning
+  - `example.com` evidence links remain fixture data
+  - Figma-level visual design is deferred
+  - API / DB / auth / persistence remain deferred
+  - `BaselineBrief` and `Copilot` remain deferred
+  - Browser ESM / CommonJS Compatibility Bridge remains accepted temporary technical debt
+- no functional blocker remains for `P8A`
+- P8A is accepted and closed
 
 ## Technical Debt
 
