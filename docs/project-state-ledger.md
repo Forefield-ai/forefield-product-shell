@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P8A plus the post-smoke browser white-screen blocker fix.
+This ledger records the accepted project state for `forefield-product-shell` through P8A plus post-smoke browser stability and product-surface hygiene follow-ups.
 
 ## Repository Split
 
@@ -386,6 +386,32 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - `npm run validate`, `npm test`, and `npm run build` passed
 - current tests: `109 / 109` passing
 - working tree was clean after bugfix commit
+- P8A-followup Product Surface Hygiene Patch completed
+- P8A-followup implementation commit: `a801760d4d7670dbb5eca90931d2591bee4fe538`
+- commit message: `fix(ui): clean prototype-facing internal labels`
+- modified:
+  - `src/ui/components/DebugFixtureSelector.jsx`
+  - `src/ui/components/WorkspaceHeader.jsx`
+  - `src/ui/pages/TopicDraftPage.jsx`
+  - `src/ui/pages/TopicWorkspaceShellPage.jsx`
+- concise summary:
+  - Signal Focus values remain canonical internally but render as user-facing labels in Topic Draft Confirmation
+  - top-level fixture tooling is reframed as development preview / sample workspace data
+  - Workspace Shell copy no longer exposes shell-layer or fixture-driven implementation details as primary user-facing narrative
+  - Initial Topic Map no longer displays raw `monitoring_run_id`
+  - workspace and shell status labels now distinguish review readiness from topic definition status
+- confirmed:
+  - no product behavior change beyond display hygiene
+  - no runtime contract or runtime payload shape change
+  - no read-model semantic change
+  - no fixture change
+  - no action semantic change
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no `BaselineBrief`
+  - no `Copilot`
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `109 / 109` passing
+- working tree was clean after implementation commit
 
 ## Technical Debt
 
@@ -401,11 +427,11 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ### Dev / Demo Copy Leakage Into Primary Review Surfaces
 
-- observed / introduced phase: identified in `P8`, partially reduced in `P8A`
-- reason: local shell and flow pages still carry demo / local / fixture framing even though the primary Topic Workspace surfaces are now more product-owned
-- current impact: the main review surfaces feel less demo-like after `P8A`, but the overall flow still mixes product review language with local-shell scaffolding language
-- risk: users can still read parts of the experience as a prototype walkthrough instead of a credible Initial Review product path
-- status: partially reduced, unresolved
+- observed / introduced phase: identified in `P8`, partially reduced in `P8A` and `P8A-followup`
+- reason: local shell and flow pages still carry some demo / local framing even though the primary Topic Workspace surfaces are now more product-owned
+- current impact: primary workspace and shell surfaces no longer foreground fixture-driven / shell-layer implementation terms, but earlier flow pages still make local prototype status explicit
+- risk: users can still read parts of the broader flow as a prototype walkthrough instead of a credible Initial Review product path
+- status: reduced, still partially unresolved
 - revisit / trigger condition: revisit before any broader MVP demo, README refresh, or future shell-flow polish phase
 - potential cleanup: continue moving demo/local framing into debug-only or shell-only affordances while keeping primary review surfaces product-owned
 
@@ -492,12 +518,12 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 ### Raw Signal Focus Enum Exposure / Topic Draft Confirmation Product Surface Gap
 
 - observed / introduced phase: identified after `P8A` browser smoke
-- reason: Topic Draft Confirmation can still expose raw `signal_focus` enum-like values in the user-facing product surface
-- current impact: the flow works, but some Topic Draft confirmation text can feel implementation-shaped rather than product-authored
-- risk: users may read draft scope fields as internal taxonomy instead of clear review intent, weakening confidence before entering the Initial Review
-- status: identified, unresolved product-surface debt
-- revisit / trigger condition: revisit during a future Topic Draft UX polish phase, not during the browser white-screen blocker fix
-- potential cleanup: map signal-focus values to user-readable labels at the UI/presenter edge without changing draft generation semantics or runtime payload shape
+- reason: Topic Draft Confirmation exposed raw `signal_focus` enum-like values in the user-facing product surface
+- current impact: `P8A-followup` now maps known canonical values to user-readable labels in the UI while preserving internal values in data/state
+- risk: future draft fields or newly added signal-focus values may expose raw internal taxonomy again if they are not added to the display mapping
+- status: addressed for current known values, monitor for future enum additions
+- revisit / trigger condition: revisit during future Topic Draft UX polish or whenever new `signal_focus` values are introduced
+- potential cleanup: centralize signal-focus display labels in a shared UI presenter helper if more surfaces need the same mapping
 
 ## Current Product-Shell Capabilities
 
@@ -572,6 +598,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - reframes review summary, source coverage, cluster list guidance, cluster card guidance, and sparse messaging using existing data only
 - preserves current Topic Workspace behavior while making the local review surface more credible for Initial Review validation
 - uses browser-safe `.browser.mjs` compatibility modules for UI-imported local flow, product, and runtime helpers so Vite dev-server pages render without CommonJS missing-export white-screens
+- renders current Signal Focus values with user-facing labels while preserving canonical internal values
+- reframes top-level sample-data controls and workspace shell copy to avoid exposing implementation terms like `TopicWorkspaceViewState`, product mainline fixtures, or fixture-driven product view state as primary UI copy
+- hides raw `monitoring_run_id` from the primary Initial Topic Map display and clarifies review-vs-topic-definition status labels
 - current test count: 109 / 109 passing
 
 ## Current Product-Shell Non-Capabilities
