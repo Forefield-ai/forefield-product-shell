@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P8B Evidence Drawer trust-layer implementation plus prior P8A browser stability and product-surface hygiene follow-ups.
+This ledger records the accepted project state for `forefield-product-shell` through P8B final closeout plus prior P8A browser stability and product-surface hygiene follow-ups.
 
 ## Repository Split
 
@@ -450,6 +450,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - P8A is accepted and closed
 - P8B completed
 - P8B implementation commit: `81e6b0341b2a4ca88ae0e0029feb0536b0088d11`
+- P8B ledger commit: `8f926b2d70af08820ba8f09005c973324f8498bc`
 - commit message: `fix(ui): strengthen evidence drawer trust layer`
 - modified:
   - `src/ui/components/EvidenceDrawer.jsx`
@@ -473,10 +474,27 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - no `Copilot`
   - no `src/runtime/*` changes
   - no `src/product/actions/*` changes
-  - no `build-evidence-drawer-state` / browser equivalent changes
+- no `build-evidence-drawer-state` / browser equivalent changes
 - `npm run validate`, `npm test`, and `npm run build` passed
 - current tests: `109 / 109` passing
 - working tree was clean after implementation commit validation
+- P8B final closeout accepted
+- manual browser verification:
+  - Evidence Drawer opens correctly
+  - Evidence Drawer closes correctly
+  - Save Evidence works
+  - Unsave Evidence works
+  - Saved Tab displays saved evidence
+  - opening saved evidence from Saved Tab returns to the correct drawer context
+  - no raw / internal fields were observed in the drawer
+  - no fake source platform, source title, published date, support role, or excerpt was introduced
+- accepted current limitations:
+  - evidence data remains simulated fixture data
+  - source platform, source title, published date, support role, and real excerpt remain unavailable
+  - the Evidence Drawer trust layer is improved using existing data only; it is not yet a full evidence data model
+  - runtime contracts, fixtures, actions, API / DB / auth / persistence, `BaselineBrief`, and `Copilot` remain deferred
+- no functional blocker remains for `P8B`
+- P8B is accepted and closed
 
 ## Technical Debt
 
@@ -694,8 +712,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P8B` post-implementation self-audit / closeout
-- focus the next pass on verifying drawer trust-layer behavior, browser smoke outcomes, and whether any further Evidence Drawer improvement now requires explicit fixture / read-model preparation instead of more UI-only shaping
+- recommended next step: `P8C` planning
+- focus the next pass on deciding which remaining trust / interpretation gaps should be addressed next without moving into API / DB / auth / persistence or broader evidence-model expansion by default
 - do not move into API / DB / auth / persistence, `BaselineBrief`, or `Copilot` by default
 
 ## Pre-Flight Checklist For Future Phases
