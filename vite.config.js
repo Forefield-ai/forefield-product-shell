@@ -9,6 +9,7 @@ module.exports = defineConfig({
         /node_modules/,
         /src\/product\/.+\.js$/,
         /src\/ui\/flow\/.+\.js$/,
+        /src\/runtime\/.+\.js$/,
       ],
     },
   },

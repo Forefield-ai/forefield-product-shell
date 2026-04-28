@@ -5,23 +5,22 @@ import { buildTopicWorkspaceViewState } from '../../product/read-models/build-to
 import {
   getSavedClusters,
   getSavedEvidence,
-  hideCluster,
   initialActionState,
   isClusterHidden,
-  saveCluster,
-  saveEvidence,
-  undoHideCluster,
-  unsaveCluster,
-  unsaveEvidence,
-  unwatchCluster,
-  watchCluster,
 } from '../../product/actions/user-action-state';
 
 export default function TopicWorkspaceShellPage({
   topic,
   topicActionState,
   productMainline,
-  onUpdateTopicActionState,
+  onWatchCluster,
+  onUnwatchCluster,
+  onSaveCluster,
+  onUnsaveCluster,
+  onHideCluster,
+  onUndoHideCluster,
+  onSaveEvidence,
+  onUnsaveEvidence,
   onOpenTopicList,
   onCreateNewTopic,
 }) {
@@ -47,28 +46,18 @@ export default function TopicWorkspaceShellPage({
   const savedClusters = getSavedClusters(currentActionState);
   const savedEvidence = getSavedEvidence(currentActionState);
 
-  const applyTopicActionUpdate = (updater) => {
-    if (typeof onUpdateTopicActionState !== 'function') {
-      return;
-    }
-
-    onUpdateTopicActionState(topic.id, updater);
-  };
-
   const handleWatchCluster = ({ clusterId, metadata }) => {
-    applyTopicActionUpdate((currentState) => watchCluster(currentState, {
-      localTopicId: topic.id,
+    onWatchCluster?.({
       clusterId,
       metadata,
-    }));
+    });
   };
 
   const handleUnwatchCluster = ({ clusterId, metadata }) => {
-    applyTopicActionUpdate((currentState) => unwatchCluster(currentState, {
-      localTopicId: topic.id,
+    onUnwatchCluster?.({
       clusterId,
       metadata,
-    }));
+    });
   };
 
   const handleSaveCluster = ({
@@ -78,38 +67,34 @@ export default function TopicWorkspaceShellPage({
     sourceLinksSnapshot,
     metadata,
   }) => {
-    applyTopicActionUpdate((currentState) => saveCluster(currentState, {
-      localTopicId: topic.id,
+    onSaveCluster?.({
       clusterId,
       titleSnapshot,
       summarySnapshot,
       sourceLinksSnapshot,
       metadata,
-    }));
+    });
   };
 
   const handleUnsaveCluster = ({ clusterId, metadata }) => {
-    applyTopicActionUpdate((currentState) => unsaveCluster(currentState, {
-      localTopicId: topic.id,
+    onUnsaveCluster?.({
       clusterId,
       metadata,
-    }));
+    });
   };
 
   const handleHideCluster = ({ clusterId, metadata }) => {
-    applyTopicActionUpdate((currentState) => hideCluster(currentState, {
-      localTopicId: topic.id,
+    onHideCluster?.({
       clusterId,
       metadata,
-    }));
+    });
   };
 
   const handleUndoHideCluster = ({ clusterId, metadata }) => {
-    applyTopicActionUpdate((currentState) => undoHideCluster(currentState, {
-      localTopicId: topic.id,
+    onUndoHideCluster?.({
       clusterId,
       metadata,
-    }));
+    });
   };
 
   const handleSaveEvidence = ({
@@ -120,15 +105,14 @@ export default function TopicWorkspaceShellPage({
     sourceLinksSnapshot,
     metadata,
   }) => {
-    applyTopicActionUpdate((currentState) => saveEvidence(currentState, {
-      localTopicId: topic.id,
+    onSaveEvidence?.({
       clusterId,
       evidenceId,
       titleSnapshot,
       summarySnapshot,
       sourceLinksSnapshot,
       metadata,
-    }));
+    });
   };
 
   const handleUnsaveEvidence = ({
@@ -136,12 +120,11 @@ export default function TopicWorkspaceShellPage({
     evidenceId,
     metadata,
   }) => {
-    applyTopicActionUpdate((currentState) => unsaveEvidence(currentState, {
-      localTopicId: topic.id,
+    onUnsaveEvidence?.({
       clusterId,
       evidenceId,
       metadata,
-    }));
+    });
   };
 
   const handleOpenOverviewCluster = (clusterId) => {
