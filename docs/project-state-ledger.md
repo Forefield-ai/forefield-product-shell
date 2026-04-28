@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P9C` local baseline brief preview shell implementation, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B closeouts and `P9B` brief contract / read-model closeout.
+This ledger records the accepted project state for `forefield-product-shell` through `P9C` local baseline brief preview shell closeout, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B closeouts and `P9B` brief contract / read-model closeout.
 
 ## Repository Split
 
@@ -903,6 +903,34 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - `npm run smoke:browser` passed
   - current tests: `128 / 128` passing
   - working tree was clean after implementation commit validation
+- P9C final closeout accepted
+- P9C implementation commit: `8a2e08c1165d8c638bd2e77f065074ed2d1690a9`
+- P9C ledger update commit: `f4894f0dd5c2743d04dae20de1e35b6b4fd520f4`
+- final closeout summary:
+  - added a single primary workspace-level Brief trigger and a local read-only right-side Brief Preview panel without replacing Topic Workspace as the default review surface
+  - kept Evidence Drawer and Brief Preview mutually exclusive and routed all browser-facing brief-state preparation through the browser-safe builder bridge rather than direct leaf-component CommonJS imports
+  - `P9C` remains Layer 1 Brief Preview shell only; synthesis-quality work, LLM-assisted narrative, and any export/copy flows remain deferred
+- manual spot check:
+  - local Brief Preview UI spot check passed
+  - rich, sparse, empty, and `no_evidence` Brief Preview eligibility behavior looked correct in the current local prototype
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - `npm run smoke:browser` passed
+  - current tests: `128 / 128` passing
+  - working tree was clean after previous commits
+- current decision:
+  - `P9C` is accepted and closed
+- explicit deferred items:
+  - Brief synthesis-quality work remains deferred to `P9D`
+  - LLM-assisted narrative remains deferred
+  - Brief export / markdown / copy-to-clipboard remains deferred
+  - `Copilot` remains deferred
+  - API / DB / auth / persistence remains deferred
+  - runtime contract expansion remains deferred
+  - Figma-level visual design remains deferred
+  - module-format cleanup remains deferred
 
 ## Technical Debt
 
