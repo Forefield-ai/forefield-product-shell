@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P9C` local baseline brief preview shell closeout, plus subsequent `P9E-B` deterministic brief synthesis implementation notes and prior P8A / P8B / P8C / P8D / P8E-A / P8E-B / `P9B` milestones.
+This ledger records the accepted project state for `forefield-product-shell` through `P9E-B` deterministic brief synthesis closeout, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B / `P9B` / `P9C` milestones.
 
 ## Repository Split
 
@@ -961,6 +961,33 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - `npm run smoke:browser` passed against the local dev server
   - current tests: `130 / 130` passing
   - working tree was clean after implementation commit validation
+- P9E-B final closeout accepted
+- P9E-B implementation commits:
+  - original implementation: `a526d11701cbb33728d30de9c8a9f2127858cf72`
+  - follow-up fix: `a2f9a481a9a66d1a5599009c6f834181d8ef3cbf`
+- P9E-B previous ledger update commit: `b8cfd83d45585c92068f0840154cd9a5d3bef9b6`
+- final closeout summary:
+  - deterministic `BaselineBrief` synthesis is now accepted for the current local product-shell scope as a clearer separation between supported takeaways, monitoring candidates, and visible caveats rather than a simple rearrangement of cluster copy
+  - no-evidence clusters stay out of `Evidence-Backed Takeaways`, sparse states remain visibly preliminary, and saved / watched / hidden actions continue to shape emphasis without inflating evidence strength
+  - the narrow follow-up fix tightened no-evidence next actions, replaced source-link-missing `Public source` labels with curated-evidence wording, deduplicated repeated preliminary caveats, moved contradiction handling into a more readable caveat layer, and aligned supporting-evidence ordering on `source_url`
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - `npm run smoke:browser` passed
+  - current tests: `131 / 131` passing
+  - working tree was clean after previous commits
+- current decision:
+  - `P9E-B` is accepted and closed
+- explicit deferred items:
+  - Brief traceability / evidence reference interaction remains deferred
+  - LLM-assisted narrative remains deferred
+  - `Copilot` remains deferred
+  - Brief export / markdown / copy-to-clipboard remains deferred
+  - API / DB / auth / persistence remains deferred
+  - runtime contract expansion remains deferred
+  - Figma-level visual design remains deferred
+  - broad module-format cleanup remains deferred
 
 ## Technical Debt
 
@@ -1144,6 +1171,16 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - revisit / trigger condition: revisit before any export/copy work, LLM-assisted narrative layer, or persistence-backed evidence enrichment
 - potential cleanup: expand product-owned evidence presentation inputs intentionally, with contract-first fields, before asking synthesis or narrative layers to do more than current local fixtures can justify
 
+### Brief Traceability Gap
+
+- observed / introduced phase: identified during `P9E-B` review and closeout
+- reason: takeaways are now more synthesized than raw cluster summaries, but the current Brief Preview still does not give the user a stronger interaction path back from each takeaway to its supporting cluster and evidence context
+- current impact: synthesis quality is stronger, but users still rely on the surrounding Workspace and Evidence Drawer context rather than in-brief trace references when they want to verify a takeaway
+- risk: stronger synthesis without clearer traceability can reduce trust or make the Brief feel more report-like than evidence-grounded
+- status: deferred
+- revisit / trigger condition: revisit during `P9F` Brief Traceability / Evidence Reference Planning or before any export/share surface that could separate the Brief from the active Workspace context
+- potential cleanup: add bounded takeaway-to-cluster / evidence references or interactions without expanding runtime contracts or turning Brief into a generic report system
+
 ### Unsupported Conclusion Risk
 
 - observed / introduced phase: identified in `P9D`, reduced in `P9E-B`
@@ -1259,7 +1296,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - treats current Brief UI as Layer 1 preview shell only; synthesis-quality improvements and LLM-assisted narrative remain deferred
 - improves deterministic Brief synthesis so key clusters are prioritized as current review priorities, evidence-backed takeaways are separated from monitoring candidates, and visible caveats remain explicit in sparse and no-evidence states
 - keeps saved / watched / hidden actions as review-emphasis signals only, without inflating evidence strength or promoting hidden clusters into negative market evidence
-- current test count: 130 / 130 passing
+- current test count: 131 / 131 passing
 
 ## Current Product-Shell Non-Capabilities
 
@@ -1277,9 +1314,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: review and accept `P9E-B`, then evaluate whether `P9F` should focus on LLM-assisted narrative planning or trace/export planning for the already-bounded Brief object
-- focus the next pass on whether the improved deterministic Brief is now valuable enough to justify a narrative layer, not on broadening Brief into a generic report, persistence surface, or cross-topic summary system
-- do not move into `Copilot`, API / DB / auth / persistence, or visual redesign by default
+- recommended next step: `P9F` Brief Traceability / Evidence Reference Planning
+- focus the next pass on how synthesized takeaways should point back to supporting clusters and curated evidence so the Brief becomes easier to trust without turning it into export, narrative, or generic-report work
+- do not move into LLM-assisted narrative, `Copilot`, API / DB / auth / persistence, or visual redesign by default
 
 ## Pre-Flight Checklist For Future Phases
 
