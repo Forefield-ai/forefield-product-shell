@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PrototypeFallbackState from '../components/PrototypeFallbackState';
 import SavedTab from '../components/SavedTab';
 import TopicWorkspacePage from '../TopicWorkspacePage';
+import { buildBaselineBriefState } from '../../product/read-models/build-baseline-brief-state.browser.mjs';
 import { buildTopicWorkspaceViewState } from '../../product/read-models/build-topic-workspace-view-state.browser.mjs';
 import {
   getSavedClusters,
@@ -41,6 +42,7 @@ export default function TopicWorkspaceShellPage({
   onCreateNewTopic,
 }) {
   const [activeWorkspaceTab, setActiveWorkspaceTab] = useState('overview');
+  const [isBriefPreviewOpen, setIsBriefPreviewOpen] = useState(false);
   const [workspaceCommand, setWorkspaceCommand] = useState(null);
   const [savedTabNotice, setSavedTabNotice] = useState('');
   const currentActionState = topicActionState || initialActionState();
@@ -64,6 +66,37 @@ export default function TopicWorkspaceShellPage({
   }, [productMainline]);
   const topicStatusIsKnown = Object.values(TOPIC_STATUSES).includes(topic?.status);
   const workspaceViewState = workspaceViewStateResult.ok ? workspaceViewStateResult.value : null;
+  const briefState = useMemo(() => buildBaselineBriefState({
+    topicScope: {
+      topic_id: topic?.id || '',
+      topic_status: topic?.status || '',
+      topic_name: topic?.draft?.topic_name || '',
+      topic_summary: topic?.draft?.topic_summary || '',
+      target_audience: topic?.draft?.target_audience || '',
+      problem_space: topic?.draft?.problem_space || '',
+      monitoring_intent: topic?.draft?.monitoring_intent || '',
+      monitoring_run_id: topic?.runId || '',
+    },
+    productMainline,
+    actionState: currentActionState,
+  }), [currentActionState, productMainline, topic]);
+  const briefPreviewIsEligible = Boolean(briefState?.eligibility?.is_eligible);
+
+  useEffect(() => {
+    setIsBriefPreviewOpen(false);
+  }, [topic?.id]);
+
+  useEffect(() => {
+    if (activeWorkspaceTab !== 'overview' && isBriefPreviewOpen) {
+      setIsBriefPreviewOpen(false);
+    }
+  }, [activeWorkspaceTab, isBriefPreviewOpen]);
+
+  useEffect(() => {
+    if (!briefPreviewIsEligible && isBriefPreviewOpen) {
+      setIsBriefPreviewOpen(false);
+    }
+  }, [briefPreviewIsEligible, isBriefPreviewOpen]);
 
   if (!topic) {
     return (
@@ -222,6 +255,7 @@ export default function TopicWorkspaceShellPage({
 
   const handleOpenOverviewCluster = (clusterId) => {
     setActiveWorkspaceTab('overview');
+    setIsBriefPreviewOpen(false);
     setSavedTabNotice('');
     setWorkspaceCommand({
       commandId: `workspace_command__select_cluster__${clusterId}__${Date.now()}`,
@@ -232,6 +266,7 @@ export default function TopicWorkspaceShellPage({
 
   const handleOpenOverviewEvidence = (clusterId) => {
     setActiveWorkspaceTab('overview');
+    setIsBriefPreviewOpen(false);
     setSavedTabNotice('');
     setWorkspaceCommand({
       commandId: `workspace_command__open_evidence__${clusterId}__${Date.now()}`,
@@ -337,6 +372,18 @@ export default function TopicWorkspaceShellPage({
     });
   };
 
+  const handleOpenBriefPreview = () => {
+    if (!briefPreviewIsEligible) {
+      return;
+    }
+
+    setIsBriefPreviewOpen(true);
+  };
+
+  const handleCloseBriefPreview = () => {
+    setIsBriefPreviewOpen(false);
+  };
+
   return (
     <div className="workspace-shell-page">
       <section className="flow-shell">
@@ -388,6 +435,7 @@ export default function TopicWorkspaceShellPage({
                 className={`workspace-shell-tabs__button${activeWorkspaceTab === 'overview' ? ' workspace-shell-tabs__button--active' : ''}`}
                 onClick={() => {
                   setActiveWorkspaceTab('overview');
+                  setIsBriefPreviewOpen(false);
                   setSavedTabNotice('');
                 }}
               >
@@ -398,7 +446,10 @@ export default function TopicWorkspaceShellPage({
                 role="tab"
                 aria-selected={activeWorkspaceTab === 'saved'}
                 className={`workspace-shell-tabs__button${activeWorkspaceTab === 'saved' ? ' workspace-shell-tabs__button--active' : ''}`}
-                onClick={() => setActiveWorkspaceTab('saved')}
+                onClick={() => {
+                  setIsBriefPreviewOpen(false);
+                  setActiveWorkspaceTab('saved');
+                }}
               >
                 Saved
               </button>
@@ -413,6 +464,10 @@ export default function TopicWorkspaceShellPage({
           productMainline={productMainline}
           actionState={currentActionState}
           workspaceCommand={workspaceCommand}
+          briefState={briefState}
+          isBriefPreviewOpen={isBriefPreviewOpen}
+          onOpenBriefPreview={handleOpenBriefPreview}
+          onCloseBriefPreview={handleCloseBriefPreview}
           onWatchCluster={handleWatchCluster}
           onUnwatchCluster={handleUnwatchCluster}
           onSaveCluster={handleSaveCluster}

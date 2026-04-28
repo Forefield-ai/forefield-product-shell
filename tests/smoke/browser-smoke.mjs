@@ -208,6 +208,19 @@ async function main() {
       await page.getByRole('button', { name: 'Close' }).click();
       await expect(page.locator('.evidence-drawer')).toHaveCount(0);
     });
+
+    await runScenario(browser, 'rich + standard baseline -> Brief Preview open/close', async (page) => {
+      await selectLocalScenario(page, 'rich', 'default');
+      await startTopicFlow(page);
+      await expectWorkspace(page);
+      await page.getByRole('button', { name: 'Preview Brief' }).click();
+      await expect(page.getByLabel('Baseline brief preview')).toBeVisible({ timeout: STEP_TIMEOUT_MS });
+      await expect(page.getByRole('heading', { name: 'Baseline Brief' })).toBeVisible({
+        timeout: STEP_TIMEOUT_MS,
+      });
+      await page.getByRole('button', { name: 'Close' }).last().click();
+      await expect(page.getByLabel('Baseline brief preview')).toHaveCount(0);
+    });
   } finally {
     await browser.close();
   }

@@ -24,20 +24,52 @@ function formatTopicDefinitionStatus(value) {
   return formatLabel(value) || 'Defined';
 }
 
-export default function WorkspaceHeader({ workspaceHeader, topicDraftSummary }) {
+export default function WorkspaceHeader({
+  workspaceHeader,
+  topicDraftSummary,
+  briefEligibility = null,
+  isBriefPreviewOpen = false,
+  onOpenBriefPreview,
+  onCloseBriefPreview,
+}) {
   const topicDefinitionStatus = formatTopicDefinitionStatus(workspaceHeader?.draft_state_label);
   const reviewSnapshot = formatTimestamp(workspaceHeader?.imported_at);
   const limitationsSummary = typeof topicDraftSummary?.limitations_summary === 'string'
     ? topicDraftSummary.limitations_summary.trim()
     : '';
+  const briefIsEligible = Boolean(briefEligibility?.is_eligible);
+  const briefIsPreliminary = briefEligibility?.brief_mode === 'preliminary';
+  const briefTriggerLabel = isBriefPreviewOpen ? 'Close Brief' : 'Preview Brief';
+  const briefHelperText = briefIsEligible
+    ? (briefIsPreliminary
+      ? 'Opens a preliminary preview with limited-evidence caveats.'
+      : 'Opens a read-only preview built from the current workspace state.')
+    : (typeof briefEligibility?.summary === 'string' ? briefEligibility.summary : '');
 
   return (
     <header className="workspace-header">
-      <p className="workspace-header__section-label">Initial Topic Map</p>
-      <div className="workspace-header__eyebrow">
-        <span className="workspace-header__pill">Initial Review</span>
-        <span className="workspace-header__pill">Topic definition: {topicDefinitionStatus}</span>
-        <span className="workspace-header__pill">Review status: Initial Review Ready</span>
+      <div className="workspace-header__topbar">
+        <div>
+          <p className="workspace-header__section-label">Initial Topic Map</p>
+          <div className="workspace-header__eyebrow">
+            <span className="workspace-header__pill">Initial Review</span>
+            <span className="workspace-header__pill">Topic definition: {topicDefinitionStatus}</span>
+            <span className="workspace-header__pill">Review status: Initial Review Ready</span>
+          </div>
+        </div>
+        <div className="workspace-header__actions">
+          <button
+            className="flow-button flow-button--secondary"
+            type="button"
+            onClick={isBriefPreviewOpen ? onCloseBriefPreview : onOpenBriefPreview}
+            disabled={!briefIsEligible}
+          >
+            {briefTriggerLabel}
+          </button>
+          {briefHelperText ? (
+            <p className="workspace-header__brief-note">{briefHelperText}</p>
+          ) : null}
+        </div>
       </div>
       <h1 className="workspace-header__title">{workspaceHeader.workspace_title}</h1>
       <p className="workspace-header__summary">{topicDraftSummary.summary}</p>

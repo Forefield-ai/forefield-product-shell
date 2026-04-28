@@ -256,3 +256,23 @@ test('baseline brief output does not expose prohibited internal fields', () => {
     });
   });
 });
+
+test('browser-safe baseline brief builder stays aligned with the CommonJS builder', async () => {
+  const browserModule = await import('../../src/product/read-models/build-baseline-brief-state.browser.mjs');
+  const browserBriefState = browserModule.buildBaselineBriefState({
+    topicScope: SAMPLE_TOPIC_SCOPE,
+    productMainline: richProductMainlineFixture,
+  });
+  const commonJsBriefState = buildBaselineBriefState({
+    topicScope: SAMPLE_TOPIC_SCOPE,
+    productMainline: richProductMainlineFixture,
+  });
+
+  assert.deepEqual(browserBriefState, commonJsBriefState);
+  assert.equal(browserModule.BASELINE_BRIEF_KIND, BASELINE_BRIEF_KIND);
+  assert.equal(browserModule.BASELINE_BRIEF_MODES.PRELIMINARY, BASELINE_BRIEF_MODES.PRELIMINARY);
+  assert.equal(
+    browserModule.BASELINE_BRIEF_UNAVAILABLE_REASONS.EMPTY_WORKSPACE,
+    BASELINE_BRIEF_UNAVAILABLE_REASONS.EMPTY_WORKSPACE
+  );
+});

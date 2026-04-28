@@ -5,6 +5,7 @@ import SourceCoverageStrip from './components/SourceCoverageStrip';
 import SignalClusterList from './components/SignalClusterList';
 import EmptySparseState from './components/EmptySparseState';
 import EvidenceDrawer from './components/EvidenceDrawer';
+import BriefPreview from './components/BriefPreview';
 import { buildTopicWorkspaceViewState } from '../product/read-models/build-topic-workspace-view-state.browser.mjs';
 import {
   initialActionState,
@@ -80,6 +81,10 @@ export default function TopicWorkspacePage({
   productMainline,
   actionState = initialActionState(),
   workspaceCommand,
+  briefState = null,
+  isBriefPreviewOpen = false,
+  onOpenBriefPreview,
+  onCloseBriefPreview,
   onWatchCluster,
   onUnwatchCluster,
   onSaveCluster,
@@ -118,11 +123,16 @@ export default function TopicWorkspacePage({
     })
     : null;
   const selectedEvidenceDrawer = drawerWorkspaceViewState?.selected_evidence_drawer || null;
+  const briefPreviewIsEligible = Boolean(briefState?.eligibility?.is_eligible);
 
   const handleSelectCluster = (clusterId) => {
     setInteractionState((currentState) => selectCluster(currentState, clusterId));
   };
   const handleOpenEvidenceDrawer = (clusterId) => {
+    if (isBriefPreviewOpen) {
+      onCloseBriefPreview?.();
+    }
+
     setInteractionState((currentState) => openEvidenceDrawer(currentState, clusterId));
   };
   const handleCloseEvidenceDrawer = () => {
@@ -212,6 +222,12 @@ export default function TopicWorkspacePage({
   }, [isDrawerClusterHidden]);
 
   useEffect(() => {
+    if (!briefPreviewIsEligible && isBriefPreviewOpen) {
+      onCloseBriefPreview?.();
+    }
+  }, [briefPreviewIsEligible, isBriefPreviewOpen, onCloseBriefPreview]);
+
+  useEffect(() => {
     if (!workspaceCommand || !workspaceCommand.commandId || !workspaceCommand.clusterId) {
       return;
     }
@@ -225,6 +241,10 @@ export default function TopicWorkspacePage({
     }
 
     if (workspaceCommand.type === 'open_evidence') {
+      if (isBriefPreviewOpen) {
+        onCloseBriefPreview?.();
+      }
+
       setInteractionState((currentState) => openEvidenceDrawer(currentState, workspaceCommand.clusterId));
       lastHandledWorkspaceCommandId.current = workspaceCommand.commandId;
       return;
@@ -242,6 +262,16 @@ export default function TopicWorkspacePage({
         <WorkspaceHeader
           workspaceHeader={workspaceViewState.workspace_header}
           topicDraftSummary={workspaceViewState.topic_draft_summary}
+          briefEligibility={briefState?.eligibility || null}
+          isBriefPreviewOpen={isBriefPreviewOpen}
+          onOpenBriefPreview={() => {
+            if (interactionState.drawer_state === 'open') {
+              setInteractionState((currentState) => closeEvidenceDrawer(currentState));
+            }
+
+            onOpenBriefPreview?.();
+          }}
+          onCloseBriefPreview={onCloseBriefPreview}
         />
 
         <ReviewSummaryStrip reviewSummary={workspaceViewState.review_summary} />
@@ -279,6 +309,13 @@ export default function TopicWorkspacePage({
               onSaveEvidence={handleSaveEvidence}
               onUnsaveEvidence={handleUnsaveEvidence}
               onClose={handleCloseEvidenceDrawer}
+            />
+          ) : null}
+
+          {!isEmptyState && isBriefPreviewOpen && briefPreviewIsEligible ? (
+            <BriefPreview
+              briefState={briefState}
+              onClose={onCloseBriefPreview}
             />
           ) : null}
         </div>
