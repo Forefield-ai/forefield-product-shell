@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P9F-B` brief traceability handoff implementation, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B / `P9B` / `P9C` / `P9E-B` milestones.
+This ledger records the accepted project state for `forefield-product-shell` through `P9F-B` brief traceability handoff closeout, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B / `P9B` / `P9C` / `P9E-B` milestones.
 
 ## Repository Split
 
@@ -1021,6 +1021,37 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - `npm run smoke:browser` passed against the local dev server
   - current tests: `131 / 131` passing
   - working tree was clean after implementation commit validation
+- P9F-B final closeout accepted
+- P9F-B implementation commit: `cfee31504d55c47a871a3fd80aeaf00eb07ab521`
+- P9F-B previous ledger update commit: `3fdbecc5407c7d8b8f0c300a86ed21f699887028`
+- final closeout summary:
+  - Brief Preview traceability is now accepted for the current local MVP-shell scope as a bounded handoff layer from synthesized takeaways and review-priority clusters back into Workspace cluster context and the existing Evidence Drawer
+  - evidence-backed takeaways now trace to a supporting cluster and supporting evidence references, while no-evidence clusters stay inside monitoring-gap routing and do not fake support
+  - the current trace model remains local-first, read-only, evidence-grounded, and intentionally smaller than a citation/report system
+- manual trace-handoff spot check:
+  - rich Brief -> Evidence-Backed Takeaway -> `View supporting evidence`: passed
+  - rich Brief -> Key Signal Cluster -> `Open cluster`: passed
+  - rich Brief -> Key Signal Cluster -> `View supporting evidence`: passed
+  - no_evidence Brief -> `View monitoring gap`: passed
+  - Drawer / Brief mutual exclusivity: passed
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - `npm run smoke:browser` passed
+  - current tests: `131 / 131` passing
+  - working tree was clean after previous commits
+- current decision:
+  - `P9F-B` is accepted and closed
+- explicit deferred items:
+  - LLM-assisted narrative remains deferred
+  - `Copilot` remains deferred
+  - Brief export / markdown / copy-to-clipboard remains deferred
+  - API / DB / auth / persistence remains deferred
+  - runtime contract expansion remains deferred
+  - Figma-level visual design remains deferred
+  - broad module-format cleanup remains deferred
+  - full citation / report system remains deferred
 
 ## Technical Debt
 
@@ -1220,7 +1251,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - reason: brief traceability now adds minimal trace metadata to key clusters and evidence-backed takeaways so the preview can hand off into cluster and drawer context
 - current impact: the `BaselineBrief` state stays bounded, but it now carries more presentation-specific fields that future work could keep expanding if traceability, export, or narrative needs are layered on too casually
 - risk: the brief object can drift toward an early report/citation system or become harder to reason about if every new surface adds more embedded trace semantics
-- status: identified, keep minimal in current MVP-shell scope
+- status: accepted and kept minimal in `P9F-B`
 - revisit / trigger condition: revisit before export/copy work, LLM-assisted narrative, or persistence-backed Brief generation
 - potential cleanup: keep trace metadata narrowly scoped to current UI handoff needs and move any richer citation/export concerns into a separate layer instead of continually expanding the core brief state
 
@@ -1369,9 +1400,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P9F-B` closeout review and trust / traceability verification
-- focus the next pass on validating that the current trace handoff is still bounded, evidence-grounded, and does not reintroduce hidden clusters or fake support before moving into any richer Brief reference, export, or narrative work
-- do not move into LLM-assisted narrative, `Copilot`, API / DB / auth / persistence, or visual redesign by default
+- recommended next step: `P9G` Brief Export / Copy Readiness Planning, or a broader `P10` planning checkpoint before choosing between export/copy, `Copilot`, API / persistence, or UX polish
+- focus the next pass on whether the current brief object and traceability layer are ready to support lightweight sharing/copy behavior without drifting into a report system or outrunning evidence-grounded boundaries
+- do not move directly into LLM-assisted narrative, `Copilot`, API / DB / auth / persistence, or visual redesign by default
 
 ## Pre-Flight Checklist For Future Phases
 
