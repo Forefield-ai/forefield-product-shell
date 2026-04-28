@@ -160,6 +160,50 @@ select {
   color: var(--muted);
 }
 
+.flow-status-panel {
+  margin-top: 22px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1px solid rgba(212, 198, 178, 0.9);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-soft);
+}
+
+.flow-status-panel--error {
+  border-color: rgba(141, 29, 23, 0.28);
+  background: rgba(255, 243, 241, 0.95);
+}
+
+.flow-status-panel--warning {
+  border-color: rgba(138, 91, 31, 0.24);
+  background: rgba(255, 248, 237, 0.92);
+}
+
+.flow-status-panel__eyebrow,
+.flow-status-panel__title,
+.flow-status-panel__copy {
+  margin: 0;
+}
+
+.flow-status-panel__eyebrow {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.flow-status-panel__title {
+  margin-top: 8px;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.flow-status-panel__copy {
+  margin-top: 10px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
 .flow-actions {
   display: flex;
   flex-wrap: wrap;
@@ -440,6 +484,13 @@ select {
   min-width: 160px;
   color: var(--muted);
   font-size: 14px;
+}
+
+.fixture-selector__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: end;
 }
 
 .fixture-selector__control span {

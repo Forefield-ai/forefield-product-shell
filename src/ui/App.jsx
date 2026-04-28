@@ -16,6 +16,7 @@ import { buildProductMainlineCompatibilityPayload } from '../runtime/workspace/l
 import { initialActionState } from '../product/actions/user-action-state.browser.mjs';
 import {
   createLocalTopicRecord,
+  LOCAL_BASELINE_SCENARIO_KEYS,
   SCREEN_IDS,
   TOPIC_STATUSES,
   updateLocalTopicRecord,
@@ -28,6 +29,20 @@ const PRODUCT_MAINLINE_FIXTURES = {
   empty: emptyProductMainline,
   sparse: sparseProductMainline,
   no_evidence: noEvidenceProductMainline,
+};
+
+const FIXTURE_PREVIEW_LABELS = {
+  rich: 'Rich review snapshot',
+  minimal: 'Minimal review snapshot',
+  empty: 'Empty review snapshot',
+  sparse: 'Sparse review snapshot',
+  no_evidence: 'Cluster without evidence',
+};
+
+const BASELINE_SCENARIO_LABELS = {
+  [LOCAL_BASELINE_SCENARIO_KEYS.DEFAULT]: 'standard local baseline path',
+  [LOCAL_BASELINE_SCENARIO_KEYS.FAILED]: 'failed local baseline scenario',
+  [LOCAL_BASELINE_SCENARIO_KEYS.STUCK]: 'stuck local baseline scenario',
 };
 
 function sortTopicSnapshots(topics) {
@@ -85,6 +100,9 @@ function resolveAdapterTopicUpdatedAt(adapterTopic, existingSnapshot) {
 export default function App() {
   const runtimeAdapterRef = useRef(null);
   const [selectedFixtureKey, setSelectedFixtureKey] = useState('rich');
+  const [selectedBaselineScenarioKey, setSelectedBaselineScenarioKey] = useState(
+    LOCAL_BASELINE_SCENARIO_KEYS.DEFAULT
+  );
   const [currentScreen, setCurrentScreen] = useState(SCREEN_IDS.HOME);
   const [currentInput, setCurrentInput] = useState('');
   const [currentTopicDraft, setCurrentTopicDraft] = useState(null);
@@ -98,6 +116,12 @@ export default function App() {
   const activeTopicActionState = activeTopicId
     ? topicActionStateById[activeTopicId] || initialActionState()
     : initialActionState();
+  const activeFixturePreviewLabel = FIXTURE_PREVIEW_LABELS[selectedFixtureKey] || FIXTURE_PREVIEW_LABELS.rich;
+  const activeBaselineScenarioLabel = BASELINE_SCENARIO_LABELS[selectedBaselineScenarioKey]
+    || BASELINE_SCENARIO_LABELS[LOCAL_BASELINE_SCENARIO_KEYS.DEFAULT];
+  const homeFixtureNoteLabel = selectedBaselineScenarioKey === LOCAL_BASELINE_SCENARIO_KEYS.DEFAULT
+    ? activeFixturePreviewLabel
+    : `${activeFixturePreviewLabel} with ${activeBaselineScenarioLabel}`;
 
   if (!runtimeAdapterRef.current) {
     runtimeAdapterRef.current = createLocalRuntimeAdapter();
@@ -161,6 +185,7 @@ export default function App() {
       return {
         ...nextSnapshot,
         originalInput: existingSnapshot?.originalInput || nextSnapshot.originalInput,
+        baselineScenarioKey: existingSnapshot?.baselineScenarioKey || selectedBaselineScenarioKey,
         runId: existingSnapshot?.runId || null,
         runtimeSource: 'adapter',
       };
@@ -183,11 +208,15 @@ export default function App() {
       fixtureKey: selectedFixtureKey,
       status: TOPIC_STATUSES.DRAFT,
     });
+    const nextTopicSnapshot = {
+      ...nextTopicRecord,
+      baselineScenarioKey: selectedBaselineScenarioKey,
+    };
 
     setCurrentTopicDraft(nextDraft);
-    setActiveTopicId(nextTopicRecord.id);
-    setLocalTopics((currentTopics) => [nextTopicRecord, ...currentTopics]);
-    ensureTopicActionStateBucket(nextTopicRecord.id);
+    setActiveTopicId(nextTopicSnapshot.id);
+    setLocalTopics((currentTopics) => [nextTopicSnapshot, ...currentTopics]);
+    ensureTopicActionStateBucket(nextTopicSnapshot.id);
     setCurrentScreen(SCREEN_IDS.TOPIC_DRAFT_CONFIRMATION);
   };
 
@@ -230,6 +259,7 @@ export default function App() {
     });
     const nextTopicSnapshot = {
       ...seedSnapshot,
+      baselineScenarioKey: currentTopicRecord?.baselineScenarioKey || selectedBaselineScenarioKey,
       runId: run.id,
       runtimeSource: 'adapter',
     };
@@ -349,6 +379,7 @@ export default function App() {
           <BaselineBuildingPage
             topic={activeTopic}
             onComplete={handleBaselineComplete}
+            onBackHome={goHome}
             onOpenTopicList={openTopicList}
           />
         );
@@ -496,7 +527,7 @@ export default function App() {
             onSubmit={handleCreateTopicDraft}
             onOpenTopicList={openTopicList}
             topicsCount={localTopics.length}
-            selectedFixtureKey={selectedFixtureKey}
+            selectedFixtureKey={homeFixtureNoteLabel}
           />
         );
     }
@@ -507,6 +538,8 @@ export default function App() {
       <DebugFixtureSelector
         selectedFixtureKey={selectedFixtureKey}
         onSelectFixture={setSelectedFixtureKey}
+        selectedBaselineScenarioKey={selectedBaselineScenarioKey}
+        onSelectBaselineScenario={setSelectedBaselineScenarioKey}
       />
       {renderCurrentScreen()}
     </div>
