@@ -21,7 +21,7 @@
     },
     "review_snapshot": {
       "brief_mode": "preliminary",
-      "summary": "1 reviewable clusters are available, but the current evidence basis is limited enough that this brief should be treated as preliminary.",
+      "summary": "This preliminary review snapshot surfaces 1 reviewable cluster, but only 1 evidence-backed takeaway currently qualify for cautious sharing.",
       "signal_cluster_count": 1,
       "curated_evidence_record_count": 1,
       "public_source_ref_count": 0,
@@ -31,13 +31,13 @@
       "saved_evidence_count": 0,
       "watched_cluster_count": 0,
       "visible_cluster_count": 1,
-      "preliminary_caveat": "This brief is preliminary because at least one reviewable cluster has limited source-link coverage in the current snapshot."
+      "preliminary_caveat": "This brief is preliminary because public source coverage is incomplete for part of the current snapshot."
     },
     "key_signal_clusters": [
       {
         "cluster_id": "signal_cluster_ps__bundle-sparse-payroll-onboarding__r1",
         "headline": "Some teams may still need extra payroll onboarding support.",
-        "summary": "A possible need is visible, but the current evidence basis stays thin and incomplete.",
+        "summary": "Keep this cluster in the current review because current review hints that some teams may still need extra payroll onboarding support, but the evidence basis stays thin and public source coverage is incomplete.",
         "confidence_label": "exploratory",
         "confidence_summary": "Confidence remains exploratory because a curated record exists but public-source coverage is incomplete.",
         "evidence_count": 1,
@@ -54,7 +54,7 @@
       {
         "cluster_id": "signal_cluster_ps__bundle-sparse-payroll-onboarding__r1",
         "headline": "Some teams may still need extra payroll onboarding support.",
-        "takeaway_summary": "A possible need is visible, but the current evidence basis stays thin and incomplete.",
+        "takeaway_summary": "Current review hints that some teams may still need extra payroll onboarding support. This takeaway is currently supported by 1 evidence record, but public source coverage is incomplete in the current snapshot. Treat this as a preliminary reading rather than a settled conclusion.",
         "confidence_label": "exploratory",
         "supporting_evidence": [
           {
@@ -68,14 +68,17 @@
     ],
     "caveats_and_limitations": {
       "workspace_limitations": [
+        "This brief is preliminary because public source coverage is incomplete for part of the current snapshot.",
+        "Public source coverage remains incomplete for part of the current snapshot, so some takeaways are evidence-backed but still thin.",
         "public source coverage incomplete",
         "thin evidence basis"
       ],
-      "preliminary_caveat": "This brief is preliminary because at least one reviewable cluster has limited source-link coverage in the current snapshot."
+      "preliminary_caveat": "This brief is preliminary because public source coverage is incomplete for part of the current snapshot."
     },
     "suggested_next_review_actions": [
-      "Treat this brief as preliminary and verify the strongest cluster again before using it as a durable roadmap input.",
-      "Save the most decision-relevant clusters or evidence items before turning this brief into a follow-up workflow."
+      "Reopen the strongest evidence-backed cluster before sharing this brief as a decision input.",
+      "Save the most decision-relevant supported cluster or evidence item before the next review pass.",
+      "Collect more evidence before sharing preliminary findings beyond the current review group."
     ]
   }
 }

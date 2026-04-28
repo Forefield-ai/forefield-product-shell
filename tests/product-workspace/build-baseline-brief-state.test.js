@@ -11,6 +11,7 @@ const {
   hideCluster,
   initialActionState,
   saveCluster,
+  saveEvidence,
   watchCluster,
 } = require('../../src/product/actions/user-action-state');
 const {
@@ -55,6 +56,18 @@ const PROHIBITED_KEYS = new Set([
   'observed_at',
   'support_role',
 ]);
+const FORBIDDEN_PHRASES = [
+  'clear demand',
+  'confirmed demand',
+  'proves strong demand',
+  'market size',
+  'purchase intent',
+  'competitor strategy',
+  'opportunity ranking',
+  'roi',
+  'adoption forecast',
+  'trend acceleration',
+];
 
 function collectKeys(value, keys = []) {
   if (Array.isArray(value)) {
@@ -74,6 +87,28 @@ function collectKeys(value, keys = []) {
   return keys;
 }
 
+function collectStrings(value, strings = []) {
+  if (Array.isArray(value)) {
+    value.forEach((entry) => collectStrings(entry, strings));
+    return strings;
+  }
+
+  if (typeof value === 'string') {
+    strings.push(value);
+    return strings;
+  }
+
+  if (!value || typeof value !== 'object') {
+    return strings;
+  }
+
+  Object.values(value).forEach((entry) => {
+    collectStrings(entry, strings);
+  });
+
+  return strings;
+}
+
 test('rich workspace builds the standard baseline brief fixture', () => {
   const briefState = buildBaselineBriefState({
     topicScope: SAMPLE_TOPIC_SCOPE,
@@ -81,6 +116,18 @@ test('rich workspace builds the standard baseline brief fixture', () => {
   });
 
   assert.deepEqual(briefState, richBaselineBriefFixture);
+  assert.match(
+    briefState.sections.key_signal_clusters[0].summary,
+    /current review suggests/i
+  );
+  assert.notEqual(
+    briefState.sections.evidence_backed_takeaways[0].takeaway_summary,
+    richProductMainlineFixture.signal_clusters[0].summary
+  );
+  assert.match(
+    briefState.sections.review_snapshot.summary,
+    /evidence-backed takeaways/i
+  );
 });
 
 test('sparse workspace builds a preliminary baseline brief fixture', () => {
@@ -92,6 +139,10 @@ test('sparse workspace builds a preliminary baseline brief fixture', () => {
   assert.deepEqual(briefState, sparseBaselineBriefFixture);
   assert.equal(briefState.eligibility.brief_mode, BASELINE_BRIEF_MODES.PRELIMINARY);
   assert.match(briefState.sections.review_snapshot.preliminary_caveat, /preliminary/i);
+  assert.match(
+    briefState.sections.evidence_backed_takeaways[0].takeaway_summary,
+    /preliminary reading/i
+  );
 });
 
 test('no-evidence workspace remains eligible but excludes evidence-backed takeaways', () => {
@@ -105,6 +156,14 @@ test('no-evidence workspace remains eligible but excludes evidence-backed takeaw
   assert.equal(briefState.eligibility.brief_mode, BASELINE_BRIEF_MODES.PRELIMINARY);
   assert.equal(briefState.sections.key_signal_clusters.length, 1);
   assert.equal(briefState.sections.evidence_backed_takeaways.length, 0);
+  assert.match(
+    briefState.sections.key_signal_clusters[0].summary,
+    /monitoring candidate/i
+  );
+  assert.match(
+    briefState.sections.caveats_and_limitations.workspace_limitations.join(' '),
+    /monitoring candidate|evidence-backed takeaway/i
+  );
 });
 
 test('empty workspace does not produce a normal baseline brief', () => {
@@ -207,8 +266,46 @@ test('saved, watched, and hidden state influences the brief without changing eli
   assert.equal(briefState.sections.review_snapshot.watched_cluster_count, 1);
   assert.equal(briefState.sections.review_snapshot.visible_cluster_count, 1);
   assert.equal(briefState.sections.key_signal_clusters.length, 1);
+  assert.equal(briefState.sections.evidence_backed_takeaways.length, 1);
   assert.equal(briefState.sections.key_signal_clusters[0].cluster_id, richProductMainlineFixture.signal_clusters[1].id);
   assert.equal(briefState.sections.key_signal_clusters[0].is_saved, true);
+  assert.equal(
+    briefState.sections.evidence_backed_takeaways[0].cluster_id,
+    richProductMainlineFixture.signal_clusters[1].id
+  );
+});
+
+test('saved evidence influences supporting-evidence order without inflating evidence strength', () => {
+  let actionState = initialActionState();
+
+  actionState = saveEvidence(actionState, {
+    localTopicId: SAMPLE_TOPIC_SCOPE.topic_id,
+    evidenceId: richProductMainlineFixture.curated_evidence_records[1].id,
+    clusterId: richProductMainlineFixture.signal_clusters[0].id,
+    labelSnapshot: richProductMainlineFixture.curated_evidence_records[1].label,
+    summarySnapshot: richProductMainlineFixture.curated_evidence_records[1].summary,
+    sourceUrlSnapshot: richProductMainlineFixture.curated_evidence_records[1].source_url,
+  }, { now: '2026-04-28T12:03:00.000Z' });
+
+  const briefState = buildBaselineBriefState({
+    topicScope: SAMPLE_TOPIC_SCOPE,
+    productMainline: richProductMainlineFixture,
+    actionState,
+  });
+
+  assert.equal(briefState.sections.review_snapshot.saved_evidence_count, 1);
+  assert.equal(
+    briefState.sections.evidence_backed_takeaways[0].supporting_evidence[0].evidence_id,
+    richProductMainlineFixture.curated_evidence_records[1].id
+  );
+  assert.equal(
+    briefState.sections.evidence_backed_takeaways[0].confidence_label,
+    'directional'
+  );
+  assert.doesNotMatch(
+    briefState.sections.evidence_backed_takeaways[0].takeaway_summary,
+    /proved|confirmed|clear demand/i
+  );
 });
 
 test('malformed product mainline returns data-unavailable instead of a normal or empty brief', () => {
@@ -253,6 +350,37 @@ test('baseline brief output does not expose prohibited internal fields', () => {
 
     keys.forEach((key) => {
       assert.equal(PROHIBITED_KEYS.has(key), false, `Unexpected prohibited key found: ${key}`);
+    });
+  });
+});
+
+test('baseline brief output does not synthesize forbidden unsupported claims', () => {
+  const values = [
+    buildBaselineBriefState({
+      topicScope: SAMPLE_TOPIC_SCOPE,
+      productMainline: richProductMainlineFixture,
+    }),
+    buildBaselineBriefState({
+      topicScope: SAMPLE_TOPIC_SCOPE,
+      productMainline: sparseProductMainlineFixture,
+    }),
+    buildBaselineBriefState({
+      topicScope: SAMPLE_TOPIC_SCOPE,
+      productMainline: noEvidenceProductMainlineFixture,
+    }),
+  ];
+
+  values.forEach((value) => {
+    const strings = collectStrings(value).map((entry) => entry.toLowerCase());
+
+    FORBIDDEN_PHRASES.forEach((phrase) => {
+      strings.forEach((entry) => {
+        assert.equal(
+          entry.includes(phrase),
+          false,
+          `Unexpected forbidden phrase found: ${phrase}`
+        );
+      });
     });
   });
 });

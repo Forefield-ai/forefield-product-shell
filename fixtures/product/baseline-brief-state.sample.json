@@ -21,7 +21,7 @@
     },
     "review_snapshot": {
       "brief_mode": "standard",
-      "summary": "2 reviewable clusters are available, supported by 5 evidence records and 5 public source links.",
+      "summary": "This review snapshot surfaces 2 reviewable clusters with 2 evidence-backed takeaways supported by 5 evidence records across 5 public source links.",
       "signal_cluster_count": 2,
       "curated_evidence_record_count": 5,
       "public_source_ref_count": 5,
@@ -37,7 +37,7 @@
       {
         "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
         "headline": "Teams want clearer privacy controls across shared workflows.",
-        "summary": "The signal is strong enough to justify the next bounded validation step because corroborated support spans more than one public source family.",
+        "summary": "Prioritize this cluster because current review suggests that teams want clearer privacy controls across shared workflows, with 3 evidence records across 3 public source links.",
         "confidence_label": "directional",
         "confidence_summary": "Confidence is directional because bounded support spans multiple source families with no material contradiction.",
         "evidence_count": 3,
@@ -53,7 +53,7 @@
       {
         "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
         "headline": "Smaller teams still struggle with manual workflow handoffs.",
-        "summary": "The demand signal is worth monitoring, but current support stays narrow and contradiction pressure remains present.",
+        "summary": "Keep this cluster high in the current review because current review hints that smaller teams still struggle with manual workflow handoffs, with product-visible support strong enough to track but still too narrow to treat as a settled conclusion.",
         "confidence_label": "exploratory",
         "confidence_summary": "Confidence remains exploratory because the current corroboration set stays single-source and contradiction-aware.",
         "evidence_count": 2,
@@ -71,7 +71,7 @@
       {
         "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
         "headline": "Teams want clearer privacy controls across shared workflows.",
-        "takeaway_summary": "The signal is strong enough to justify the next bounded validation step because corroborated support spans more than one public source family.",
+        "takeaway_summary": "Current review suggests that teams want clearer privacy controls across shared workflows. This takeaway is supported by 3 evidence records across 3 public source links. Visible contradiction risk is still present in the current review.",
         "confidence_label": "directional",
         "supporting_evidence": [
           {
@@ -97,7 +97,7 @@
       {
         "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
         "headline": "Smaller teams still struggle with manual workflow handoffs.",
-        "takeaway_summary": "The demand signal is worth monitoring, but current support stays narrow and contradiction pressure remains present.",
+        "takeaway_summary": "Current review hints that smaller teams still struggle with manual workflow handoffs. This takeaway is supported by 2 evidence records across 2 public source links. Treat this as an early pattern rather than a settled conclusion. Visible contradiction risk is still present in the current review.",
         "confidence_label": "exploratory",
         "supporting_evidence": [
           {
@@ -124,8 +124,8 @@
       "preliminary_caveat": null
     },
     "suggested_next_review_actions": [
-      "Reopen the strongest cluster evidence before sharing this brief more broadly or using it as a decision input.",
-      "Save the most decision-relevant clusters or evidence items before turning this brief into a follow-up workflow."
+      "Reopen the strongest evidence-backed cluster before sharing this brief as a decision input.",
+      "Save the most decision-relevant supported cluster or evidence item before the next review pass."
     ]
   }
 }
