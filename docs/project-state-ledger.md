@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P7D.
+This ledger records the accepted project state for `forefield-product-shell` through P7E.
 
 ## Repository Split
 
@@ -272,6 +272,55 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - current app still runs through existing local / session state in App / Shell
 - runtime adapter validates future boundary only
 - next step is not API / DB / auth / persistence by default
+- P7E completed
+- P7E commit: `cb7e5081e28e9e7e305a5729101790745cff4b35`
+- App / Shell migration to local runtime adapter completed
+- scope covered:
+  - App creates and owns a stable local runtime adapter instance
+  - Topic Draft generation routes through `adapter.topics.createTopicDraft`
+  - Topic confirmation / local topic creation routes through `adapter.topics.confirmTopicDraft`
+  - topic list snapshot syncs through `adapter.topics.listTopics`
+  - baseline run start / status routes through `adapter.runs.startInitialReview` and `adapter.runs.getRunStatus` where scoped
+  - Watch / Save / Hide / Undo / Unsave route through `adapter.actions.*`
+  - `topicActionStateById` is now an adapter-returned React snapshot
+- modified:
+  - `src/ui/App.jsx`
+  - `src/ui/pages/TopicWorkspaceShellPage.jsx`
+  - `vite.config.js`
+- confirmed:
+  - no new files created
+  - no leaf UI components changed
+  - no `local-runtime-adapter` changes
+  - no product action helper changes
+  - no product read-model / mapper / fixture changes
+  - workspace fixture / `productMainline` path remains unchanged
+  - `selectedFixtureKey` and per-topic `fixtureKey` behavior remain unchanged
+  - View Evidence remains UI interaction, not adapter action
+  - `openSavedCluster` / `openSavedEvidence` remain shell orchestration
+  - no API / DB / auth / persistence / browser storage added
+  - no `fetch` added
+  - no dependencies added
+  - no live decision-core integration added
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `107 / 107` passing
+- `vite.config.js` was updated only for Vite / CommonJS compatibility with `src/runtime` imports
+- this is accepted as build compatibility, not product behavior change
+- technical debt: CommonJS compatibility allowlist is expanding; revisit module format before production runtime / API work
+- runtime adapter is now used by App / Shell for topic / run / action flows
+- workspace payload migration remains deferred
+- API / DB / auth / persistence remains deferred
+
+## Technical Debt
+
+### Vite CommonJS Compatibility Allowlist
+
+- `vite.config.js` was updated for CommonJS compatibility when `App.jsx` started importing `src/runtime`
+- this is accepted as build compatibility, not product behavior change
+- similar compatibility handling already exists for other UI-imported helper areas
+- risk: the CommonJS allowlist may keep expanding as `src/runtime` grows
+- do not fix during P7E
+- revisit before implementing `api-runtime-adapter`, a real API / `fetch` client layer, or production build hardening
+- potential cleanup: standardize UI-facing runtime / product helper modules to ESM, or introduce explicit ESM adapter wrappers, or centralize / document the compatibility boundary
 
 ## Current Product-Shell Capabilities
 
@@ -335,6 +384,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - includes a backend-ready demo user / workspace context stub
 - includes a local in-memory runtime adapter that wraps existing P6B action semantics
 - keeps runtime boundary validation separate from UI wiring
+- uses the local runtime adapter from App / Shell for topic draft, topic creation, topic list, baseline run, and action flows
+- keeps workspace fixture / `productMainline` data flow unchanged while runtime wiring is migrated incrementally
+- keeps `selectedFixtureKey` and per-topic `fixtureKey` behavior unchanged during runtime wiring migration
 - current test count: 107 / 107 passing
 
 ## Current Product-Shell Non-Capabilities
@@ -351,7 +403,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next planning step: `P7E` App / Shell migration to local runtime adapter
+- recommended next planning step: `P7F`
+- decide whether `P7F` should focus on dev fixture adapter cleanup, workspace payload migration planning, or API / persistence readiness
 - do not implement API / DB / auth / persistence by default
 
 ## Pre-Flight Checklist For Future Phases
