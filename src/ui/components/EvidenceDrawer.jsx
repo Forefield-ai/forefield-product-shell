@@ -16,6 +16,42 @@ function getEvidenceItemId(item) {
   return '';
 }
 
+function getSourceHostLabel(url) {
+  if (typeof url !== 'string' || !url.trim()) {
+    return '';
+  }
+
+  try {
+    return new URL(url).host.replace(/^www\./i, '');
+  } catch {
+    return '';
+  }
+}
+
+function formatConfidenceLabel(label) {
+  if (typeof label !== 'string' || !label.trim()) {
+    return '';
+  }
+
+  return label
+    .split(/[_\s-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+function buildWhyIncludedCopy(item, clusterHeadline) {
+  if (typeof item?.summary === 'string' && item.summary.trim()) {
+    if (typeof clusterHeadline === 'string' && clusterHeadline.trim()) {
+      return `Included to help verify the cluster "${clusterHeadline}" against a public source.`;
+    }
+
+    return 'Included to help verify the selected cluster against a public source.';
+  }
+
+  return 'Included as part of the current public-source evidence set for this cluster.';
+}
+
 export default function EvidenceDrawer({
   evidenceDrawer,
   isEvidenceSaved,
@@ -24,6 +60,7 @@ export default function EvidenceDrawer({
   onClose,
 }) {
   const clusterId = evidenceDrawer?.signal_cluster_ref?.signal_cluster_id || '';
+  const clusterHeadline = evidenceDrawer?.display_summary?.headline || '';
 
   return (
     <aside className="evidence-drawer" aria-label="Evidence drawer">
@@ -45,11 +82,16 @@ export default function EvidenceDrawer({
         {evidenceDrawer.display_summary?.summary}
       </p>
 
+      <p className="evidence-drawer__review-note">
+        Use these sources to verify what supports this cluster before deciding what to save,
+        watch, or trim from scope.
+      </p>
+
       {evidenceDrawer.confidence_display ? (
         <section className="evidence-drawer__section">
-          <h3>Confidence</h3>
+          <h3>Review confidence</h3>
           <p className="evidence-drawer__confidence-label">
-            {evidenceDrawer.confidence_display.label}
+            {formatConfidenceLabel(evidenceDrawer.confidence_display.label)}
           </p>
           <p>{evidenceDrawer.confidence_display.summary}</p>
         </section>
@@ -57,7 +99,7 @@ export default function EvidenceDrawer({
 
       {evidenceDrawer.limitations?.length ? (
         <section className="evidence-drawer__section">
-          <h3>Limitations</h3>
+          <h3>Caveats to keep in mind</h3>
           <ul className="evidence-drawer__limitations">
             {evidenceDrawer.limitations.map((limitation) => (
               <li key={limitation}>{limitation}</li>
@@ -67,13 +109,18 @@ export default function EvidenceDrawer({
       ) : null}
 
       <section className="evidence-drawer__section">
-        <h3>Evidence Items</h3>
+        <h3>Evidence to verify</h3>
         <ul className="evidence-drawer__items">
           {evidenceDrawer.evidence_items.map((item) => (
             <li className="evidence-drawer__item" key={item.id}>
               <div className="evidence-drawer__item-header">
                 <div>
                   <p className="evidence-drawer__item-label">{item.label}</p>
+                  {getSourceHostLabel(item.url) ? (
+                    <p className="evidence-drawer__item-source">
+                      Source: {getSourceHostLabel(item.url)}
+                    </p>
+                  ) : null}
                   {isEvidenceSaved?.(getEvidenceItemId(item)) ? (
                     <span className="evidence-drawer__item-badge">Saved</span>
                   ) : null}
@@ -99,23 +146,43 @@ export default function EvidenceDrawer({
                   {isEvidenceSaved?.(getEvidenceItemId(item)) ? 'Unsave' : 'Save Evidence'}
                 </button>
               </div>
-              <p className="evidence-drawer__item-summary">{item.summary}</p>
-              <a className="evidence-drawer__item-link" href={item.url} target="_blank" rel="noreferrer">
-                {item.url}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="evidence-drawer__section">
-        <h3>Source Links</h3>
-        <ul className="evidence-drawer__links">
-          {evidenceDrawer.source_links.map((sourceLink) => (
-            <li key={sourceLink}>
-              <a className="evidence-drawer__source-link" href={sourceLink} target="_blank" rel="noreferrer">
-                {sourceLink}
-              </a>
+              <div className="evidence-drawer__item-body">
+                <div className="evidence-drawer__item-block">
+                  <p className="evidence-drawer__item-block-label">Evidence summary</p>
+                  <p className="evidence-drawer__item-summary">{item.summary || 'No summary is available for this source yet.'}</p>
+                </div>
+                <div className="evidence-drawer__item-block">
+                  <p className="evidence-drawer__item-block-label">Why this is included</p>
+                  <p className="evidence-drawer__item-why">
+                    {buildWhyIncludedCopy(item, clusterHeadline)}
+                  </p>
+                </div>
+                {evidenceDrawer.confidence_display || evidenceDrawer.limitations?.length ? (
+                  <div className="evidence-drawer__item-block">
+                    <p className="evidence-drawer__item-block-label">Review note</p>
+                    {evidenceDrawer.confidence_display ? (
+                      <p className="evidence-drawer__item-note">
+                        {formatConfidenceLabel(evidenceDrawer.confidence_display.label)} confidence. Verify alongside the current cluster caveats.
+                      </p>
+                    ) : null}
+                    {evidenceDrawer.limitations?.length ? (
+                      <ul className="evidence-drawer__item-caveats">
+                        {evidenceDrawer.limitations.map((limitation) => (
+                          <li key={`${item.id}__${limitation}`}>{limitation}</li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                ) : null}
+                {item.url ? (
+                  <div className="evidence-drawer__item-block">
+                    <p className="evidence-drawer__item-block-label">Open source link</p>
+                    <a className="evidence-drawer__item-link" href={item.url} target="_blank" rel="noreferrer">
+                      {item.url}
+                    </a>
+                  </div>
+                ) : null}
+              </div>
             </li>
           ))}
         </ul>
