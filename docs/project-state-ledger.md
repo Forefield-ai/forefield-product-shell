@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P8D-B local failed / stuck UI fallback implementation plus prior P8A / P8B / P8C closeouts.
+This ledger records the accepted project state for `forefield-product-shell` through the P8D-B local failed / stuck UI fallback implementation and the no-evidence fixture selector follow-up, plus prior P8A / P8B / P8C closeouts.
 
 ## Repository Split
 
@@ -636,6 +636,31 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - `npm run validate`, `npm test`, and `npm run build` passed
 - current tests: `118 / 118` passing
 - working tree was clean after implementation commit validation
+- P8D-B no-evidence fixture selector follow-up completed
+- follow-up implementation commit: `75c0d84`
+- commit message: `fix(ui): expose no-evidence fixture selector`
+- modified:
+  - `src/ui/App.jsx`
+  - `src/ui/components/DebugFixtureSelector.jsx`
+- root cause:
+  - the `no_evidence` fixture was already imported and registered correctly, but its visible label (`Cluster without evidence`) was easy to miss during manual browser smoke and did not clearly read as the dedicated no-evidence state
+- concise summary:
+  - updated the local Development Preview fixture label to `No-evidence cluster` in both the selector and home preview note while preserving the existing `no_evidence` fixture key and selector wiring
+  - no fixture content, runtime contract, or action semantics changed
+- manual browser verification:
+  - `No-evidence cluster` is visible in the Sample selector
+  - `no_evidence + standard baseline` can be selected successfully
+  - Workspace renders
+  - the cluster remains visible
+  - the Evidence CTA shows `Evidence unavailable` in a disabled state
+  - selecting the cluster does not open a misleading normal Evidence Drawer
+  - browser console error check was clean
+- confirmed:
+  - no runtime contract or runtime payload shape change
+  - no action semantic change
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no `BaselineBrief`
+  - no `Copilot`
 
 ## Technical Debt
 
