@@ -36,7 +36,7 @@ const FIXTURE_PREVIEW_LABELS = {
   minimal: 'Minimal review snapshot',
   empty: 'Empty review snapshot',
   sparse: 'Sparse review snapshot',
-  no_evidence: 'Cluster without evidence',
+  no_evidence: 'No-evidence cluster',
 };
 
 const BASELINE_SCENARIO_LABELS = {
