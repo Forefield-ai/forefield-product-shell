@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P9C` local baseline brief preview shell closeout, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B closeouts and `P9B` brief contract / read-model closeout.
+This ledger records the accepted project state for `forefield-product-shell` through `P9C` local baseline brief preview shell closeout, plus subsequent `P9E-B` deterministic brief synthesis implementation notes and prior P8A / P8B / P8C / P8D / P8E-A / P8E-B / `P9B` milestones.
 
 ## Repository Split
 
@@ -931,6 +931,36 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - runtime contract expansion remains deferred
   - Figma-level visual design remains deferred
   - module-format cleanup remains deferred
+- P9E-B completed
+- P9E-B implementation commit: `a526d11`
+- commit message: `feat(product): improve deterministic brief synthesis`
+- modified:
+  - `fixtures/product/baseline-brief-state.sample.json`
+  - `fixtures/product/baseline-brief-sparse-state.sample.json`
+  - `src/product/read-models/build-baseline-brief-state.js`
+  - `src/product/read-models/build-baseline-brief-state.browser.mjs`
+  - `tests/product-workspace/build-baseline-brief-state.test.js`
+- concise summary:
+  - improved Layer 2 deterministic brief synthesis so `BaselineBrief` now separates supported takeaways, monitoring candidates, and caveats more clearly instead of mainly rearranging cluster copy
+  - strengthened review-priority ordering for key clusters using product-visible evidence support, confidence label, limitation burden, and saved / watched emphasis without turning the brief into opportunity ranking
+  - made sparse and no-evidence paths more conservative by tightening preliminary wording, excluding no-evidence clusters from evidence-backed takeaways, and surfacing monitoring-gap caveats and review-oriented next actions
+- confirmed:
+  - no Brief UI redesign
+  - no markdown export or copy-to-clipboard
+  - no LLM generation
+  - no `Copilot`
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no runtime contract or runtime payload shape change
+  - no action semantic change
+  - no `src/runtime/*` changes
+  - current Brief Preview shell continues consuming the improved brief state without new product objects
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - `npm run smoke:browser` passed against the local dev server
+  - current tests: `130 / 130` passing
+  - working tree was clean after implementation commit validation
 
 ## Technical Debt
 
@@ -1016,12 +1046,12 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ### Browser ESM / CommonJS Compatibility Bridge
 
-- observed / introduced phase: `P8A` blocker white-screen fix
-- reason: browser-facing UI now uses `.browser.mjs` compatibility modules while Node / runtime / tests still use original CommonJS modules
-- current impact: fixes Vite dev-server missing-export white-screens without changing product behavior
-- risk: duplicated logic can drift between CommonJS and browser-safe ESM versions
-- status: accepted temporary fix
-- revisit / trigger condition: revisit before broader module-format cleanup, Vite / browser hardening, or any larger UI / runtime flow refactor
+- observed / introduced phase: `P8A` blocker white-screen fix, amplified in `P9C` / `P9E-B`
+- reason: browser-facing UI now uses `.browser.mjs` compatibility modules while Node / runtime / tests still use original CommonJS modules; the deterministic Brief builder now has matching logic on both sides
+- current impact: fixes Vite dev-server missing-export white-screens without changing product behavior, and parity tests now guard the browser-safe Brief builder against silent drift
+- risk: duplicated logic can still drift between CommonJS and browser-safe ESM versions as synthesis logic grows
+- status: accepted temporary fix with parity coverage
+- revisit / trigger condition: revisit before broader module-format cleanup, Vite / browser hardening, or any larger UI / runtime flow refactor that expands browser-side product read-model imports
 - potential cleanup: standardize UI-facing `src/ui/flow`, `src/product`, and small UI-imported runtime surfaces on a single primary ESM implementation, then provide explicit Node / test compatibility wrappers instead of maintaining parallel `.js` and `.browser.mjs` sources
 
 ### README Current Phase Documentation Drift
@@ -1103,6 +1133,36 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - status: accepted current limitation
 - revisit / trigger condition: revisit before any fixture / read-model preparation that expands evidence-record presentation depth
 - potential cleanup: add explicit product-owned evidence presentation fields such as source title, source platform label, published / observed date, excerpt text, and support-role only when fixture / contract work is intentionally in scope
+
+### Fixture-Driven Brief Synthesis Limitations
+
+- observed / introduced phase: identified in `P9D`, carried into `P9E-B`
+- reason: deterministic Brief synthesis still operates entirely on local product-visible fixtures and current read-model outputs rather than richer persisted evidence context or live source metadata
+- current impact: the improved brief can now synthesize supported takeaways, monitoring candidates, and caveats more clearly, but its content quality is bounded by the thin local fixture data it receives
+- risk: future readers may overread synthesis quality improvements as proof that the product can already support richer narrative, export, or market-level conclusions
+- status: accepted current limitation
+- revisit / trigger condition: revisit before any export/copy work, LLM-assisted narrative layer, or persistence-backed evidence enrichment
+- potential cleanup: expand product-owned evidence presentation inputs intentionally, with contract-first fields, before asking synthesis or narrative layers to do more than current local fixtures can justify
+
+### Unsupported Conclusion Risk
+
+- observed / introduced phase: identified in `P9D`, reduced in `P9E-B`
+- reason: improving deterministic synthesis increases the temptation to write stronger narrative than the current product-visible evidence can support
+- current impact: the brief builder now uses more constrained phrasing, stronger preliminary caveats, no-evidence exclusion from evidence-backed takeaways, and explicit guardrail tests for forbidden claim patterns
+- risk: future copy changes, richer synthesis logic, or LLM-assisted narrative work could still reintroduce demand certainty, market-size, competitor-strategy, or causal claims that the product data does not support
+- status: reduced, actively guarded by tests
+- revisit / trigger condition: revisit before any brief export/copy work, LLM-assisted narrative planning, or broader Brief surface expansion
+- potential cleanup: keep a small forbidden-claims regression suite and trace every stronger takeaway phrasing rule back to product-visible evidence support conditions
+
+### Generic Report Creep
+
+- observed / introduced phase: identified in `P9A` / `P9D`, still active in `P9E-B`
+- reason: once Brief sections become more readable and synthetic, the product can drift from a bounded Topic-scoped review brief into a broader report surface
+- current impact: current synthesis improvements stay inside the existing `BaselineBrief` object and preview shell, but they increase the importance of preserving topic scope, review orientation, and evidence-grounded wording
+- risk: future export, narrative, or cross-topic summary work may slowly turn Brief into a generic report generator that outruns the current evidence workflow
+- status: identified, unresolved product-shape risk
+- revisit / trigger condition: revisit before adding export/copy, LLM-assisted narrative, cross-topic views, or broader stakeholder-sharing flows
+- potential cleanup: preserve a strict product role statement for Brief and treat any report-like expansion as a separate product decision rather than incremental copy polish
 
 ## Current Product-Shell Capabilities
 
@@ -1197,7 +1257,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - exposes a single workspace-header `Preview Brief` trigger and a read-only right-side Brief Preview shell without turning Brief into the default result page or a generic report surface
 - keeps Brief Preview mutually exclusive with Evidence Drawer and labels sparse-eligible previews as preliminary / limited-evidence rather than upgrading them into stronger conclusions
 - treats current Brief UI as Layer 1 preview shell only; synthesis-quality improvements and LLM-assisted narrative remain deferred
-- current test count: 128 / 128 passing
+- improves deterministic Brief synthesis so key clusters are prioritized as current review priorities, evidence-backed takeaways are separated from monitoring candidates, and visible caveats remain explicit in sparse and no-evidence states
+- keeps saved / watched / hidden actions as review-emphasis signals only, without inflating evidence strength or promoting hidden clusters into negative market evidence
+- current test count: 130 / 130 passing
 
 ## Current Product-Shell Non-Capabilities
 
@@ -1215,9 +1277,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P9D` Brief synthesis-quality planning
-- focus the next pass on evaluating whether the controlled Brief object provides value beyond rearranging current cluster content, how takeaways should be synthesized without unsupported conclusions, and how saved / watched emphasis should shape but not overstate the preview
-- do not move into LLM generation, `Copilot`, API / DB / auth / persistence, or visual redesign by default
+- recommended next step: review and accept `P9E-B`, then evaluate whether `P9F` should focus on LLM-assisted narrative planning or trace/export planning for the already-bounded Brief object
+- focus the next pass on whether the improved deterministic Brief is now valuable enough to justify a narrative layer, not on broadening Brief into a generic report, persistence surface, or cross-topic summary system
+- do not move into `Copilot`, API / DB / auth / persistence, or visual redesign by default
 
 ## Pre-Flight Checklist For Future Phases
 
