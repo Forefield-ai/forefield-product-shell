@@ -27,6 +27,33 @@ const BASELINE_BUILDING_STAGES = [
   'Preparing your Initial Topic Map',
 ];
 
+const LOCAL_BASELINE_SCENARIO_KEYS = {
+  DEFAULT: 'default',
+  FAILED: 'baseline_failed',
+  STUCK: 'baseline_stuck',
+};
+
+const LOCAL_BASELINE_SCENARIOS = Object.freeze({
+  [LOCAL_BASELINE_SCENARIO_KEYS.DEFAULT]: Object.freeze({
+    key: LOCAL_BASELINE_SCENARIO_KEYS.DEFAULT,
+    outcome: 'success',
+    terminal_stage_index: BASELINE_BUILDING_STAGES.length - 1,
+    auto_complete: true,
+  }),
+  [LOCAL_BASELINE_SCENARIO_KEYS.FAILED]: Object.freeze({
+    key: LOCAL_BASELINE_SCENARIO_KEYS.FAILED,
+    outcome: 'failed',
+    terminal_stage_index: BASELINE_BUILDING_STAGES.length - 1,
+    auto_complete: false,
+  }),
+  [LOCAL_BASELINE_SCENARIO_KEYS.STUCK]: Object.freeze({
+    key: LOCAL_BASELINE_SCENARIO_KEYS.STUCK,
+    outcome: 'stuck',
+    terminal_stage_index: Math.max(BASELINE_BUILDING_STAGES.length - 2, 0),
+    auto_complete: false,
+  }),
+});
+
 function ensureDraft(draft) {
   if (!draft || typeof draft !== 'object' || Array.isArray(draft)) {
     throw new Error('Local topic flow requires a draft object.');
@@ -59,6 +86,56 @@ function ensureStatus(status) {
   }
 
   return status;
+}
+
+function normalizeBaselineStageIndex(index) {
+  if (!Number.isInteger(index)) {
+    return 0;
+  }
+
+  if (index < 0) {
+    return 0;
+  }
+
+  const maxIndex = Math.max(BASELINE_BUILDING_STAGES.length - 1, 0);
+
+  if (index > maxIndex) {
+    return maxIndex;
+  }
+
+  return index;
+}
+
+function getLocalBaselineScenario(fixtureKey) {
+  if (typeof fixtureKey === 'string' && fixtureKey.trim()) {
+    const normalizedFixtureKey = fixtureKey.trim();
+
+    if (Object.prototype.hasOwnProperty.call(LOCAL_BASELINE_SCENARIOS, normalizedFixtureKey)) {
+      return LOCAL_BASELINE_SCENARIOS[normalizedFixtureKey];
+    }
+  }
+
+  return LOCAL_BASELINE_SCENARIOS[LOCAL_BASELINE_SCENARIO_KEYS.DEFAULT];
+}
+
+function resolveNextBaselineStageIndex({ currentStageIndex = 0, fixtureKey } = {}) {
+  const scenario = getLocalBaselineScenario(fixtureKey);
+  const safeStageIndex = normalizeBaselineStageIndex(currentStageIndex);
+  const terminalStageIndex = normalizeBaselineStageIndex(scenario.terminal_stage_index);
+
+  if (safeStageIndex < terminalStageIndex) {
+    return safeStageIndex + 1;
+  }
+
+  return safeStageIndex;
+}
+
+function shouldAutoCompleteBaselineBuild({ currentStageIndex = 0, fixtureKey } = {}) {
+  const scenario = getLocalBaselineScenario(fixtureKey);
+  const safeStageIndex = normalizeBaselineStageIndex(currentStageIndex);
+  const terminalStageIndex = normalizeBaselineStageIndex(scenario.terminal_stage_index);
+
+  return Boolean(scenario.auto_complete) && safeStageIndex >= terminalStageIndex;
 }
 
 function slugifyTopicIdPart(value) {
@@ -135,6 +212,10 @@ module.exports = {
   TOPIC_STATUSES,
   DRAFT_GENERATION_STAGES,
   BASELINE_BUILDING_STAGES,
+  LOCAL_BASELINE_SCENARIO_KEYS,
+  getLocalBaselineScenario,
+  resolveNextBaselineStageIndex,
+  shouldAutoCompleteBaselineBuild,
   createLocalTopicRecord,
   updateLocalTopicRecord,
   updateLocalTopicStatus,

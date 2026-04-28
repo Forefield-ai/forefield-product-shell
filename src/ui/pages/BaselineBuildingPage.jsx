@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { BASELINE_BUILDING_STAGES } from '../flow/local-topic-flow.browser.mjs';
+import {
+  BASELINE_BUILDING_STAGES,
+  resolveNextBaselineStageIndex,
+  shouldAutoCompleteBaselineBuild,
+} from '../flow/local-topic-flow.browser.mjs';
 
 const STAGE_DELAY_MS = 420;
 
@@ -7,21 +11,29 @@ export default function BaselineBuildingPage({ topic, onComplete, onOpenTopicLis
   const [stageIndex, setStageIndex] = useState(0);
 
   useEffect(() => {
-    if (stageIndex >= BASELINE_BUILDING_STAGES.length) {
+    if (shouldAutoCompleteBaselineBuild({
+      currentStageIndex: stageIndex,
+      fixtureKey: topic?.fixtureKey,
+    })) {
+      onComplete();
+      return undefined;
+    }
+
+    const nextStageIndex = resolveNextBaselineStageIndex({
+      currentStageIndex: stageIndex,
+      fixtureKey: topic?.fixtureKey,
+    });
+
+    if (nextStageIndex === stageIndex) {
       return undefined;
     }
 
     const timerId = setTimeout(() => {
-      if (stageIndex === BASELINE_BUILDING_STAGES.length - 1) {
-        onComplete();
-        return;
-      }
-
-      setStageIndex((currentIndex) => currentIndex + 1);
+      setStageIndex(nextStageIndex);
     }, STAGE_DELAY_MS);
 
     return () => clearTimeout(timerId);
-  }, [onComplete, stageIndex]);
+  }, [onComplete, stageIndex, topic?.fixtureKey]);
 
   return (
     <main className="flow-shell">

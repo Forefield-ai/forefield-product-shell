@@ -5,7 +5,11 @@ const {
   BASELINE_BUILDING_STAGES,
   createLocalTopicRecord,
   DRAFT_GENERATION_STAGES,
+  getLocalBaselineScenario,
+  LOCAL_BASELINE_SCENARIO_KEYS,
+  resolveNextBaselineStageIndex,
   SCREEN_IDS,
+  shouldAutoCompleteBaselineBuild,
   TOPIC_STATUSES,
   updateLocalTopicStatus,
 } = require('../../src/ui/flow/local-topic-flow');
@@ -114,6 +118,82 @@ test('status can be updated through helper', () => {
   assert.equal(buildingTopic.status, TOPIC_STATUSES.BUILDING);
   assert.equal(readyTopic.status, TOPIC_STATUSES.READY);
   assert.equal(readyTopic.updatedAt, '2026-04-27T12:10:00.000Z');
+});
+
+test('local baseline scenario defaults to success for current review fixtures', () => {
+  [
+    'rich',
+    'minimal',
+    'empty',
+    'sparse',
+    'no_evidence',
+    'unknown_fixture_key',
+  ].forEach((fixtureKey) => {
+    const scenario = getLocalBaselineScenario(fixtureKey);
+
+    assert.equal(scenario.key, LOCAL_BASELINE_SCENARIO_KEYS.DEFAULT);
+    assert.equal(scenario.outcome, 'success');
+    assert.equal(scenario.auto_complete, true);
+    assert.equal(
+      shouldAutoCompleteBaselineBuild({
+        currentStageIndex: BASELINE_BUILDING_STAGES.length - 1,
+        fixtureKey,
+      }),
+      true
+    );
+  });
+});
+
+test('baseline failed scenario reaches a terminal stage without auto-completing', () => {
+  const scenario = getLocalBaselineScenario(LOCAL_BASELINE_SCENARIO_KEYS.FAILED);
+  let currentStageIndex = 0;
+
+  while (currentStageIndex < BASELINE_BUILDING_STAGES.length - 1) {
+    currentStageIndex = resolveNextBaselineStageIndex({
+      currentStageIndex,
+      fixtureKey: LOCAL_BASELINE_SCENARIO_KEYS.FAILED,
+    });
+  }
+
+  assert.equal(scenario.outcome, 'failed');
+  assert.equal(scenario.auto_complete, false);
+  assert.equal(currentStageIndex, BASELINE_BUILDING_STAGES.length - 1);
+  assert.equal(
+    shouldAutoCompleteBaselineBuild({
+      currentStageIndex,
+      fixtureKey: LOCAL_BASELINE_SCENARIO_KEYS.FAILED,
+    }),
+    false
+  );
+});
+
+test('baseline stuck scenario stops before the final success stage and does not auto-complete', () => {
+  const scenario = getLocalBaselineScenario(LOCAL_BASELINE_SCENARIO_KEYS.STUCK);
+  let currentStageIndex = 0;
+  let nextStageIndex = resolveNextBaselineStageIndex({
+    currentStageIndex,
+    fixtureKey: LOCAL_BASELINE_SCENARIO_KEYS.STUCK,
+  });
+
+  while (nextStageIndex !== currentStageIndex) {
+    currentStageIndex = nextStageIndex;
+    nextStageIndex = resolveNextBaselineStageIndex({
+      currentStageIndex,
+      fixtureKey: LOCAL_BASELINE_SCENARIO_KEYS.STUCK,
+    });
+  }
+
+  assert.equal(scenario.outcome, 'stuck');
+  assert.equal(scenario.auto_complete, false);
+  assert.equal(currentStageIndex, BASELINE_BUILDING_STAGES.length - 2);
+  assert.equal(currentStageIndex < BASELINE_BUILDING_STAGES.length - 1, true);
+  assert.equal(
+    shouldAutoCompleteBaselineBuild({
+      currentStageIndex,
+      fixtureKey: LOCAL_BASELINE_SCENARIO_KEYS.STUCK,
+    }),
+    false
+  );
 });
 
 test('no prohibited decision-core fields appear', () => {

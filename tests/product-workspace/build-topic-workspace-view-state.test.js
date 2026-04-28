@@ -245,6 +245,17 @@ test('malformed product mainline throws instead of collapsing into a no-demand s
   );
 });
 
+test('missing monitoring run throws instead of collapsing into a sparse or empty review state', () => {
+  assert.throws(
+    () => buildTopicWorkspaceViewState({
+      topic_draft: {},
+      signal_clusters: [],
+      curated_evidence_records: [],
+    }),
+    /productMainline\.monitoring_run must be an object/i
+  );
+});
+
 test('prohibited fields are absent from workspace view', () => {
   const minimalViewState = buildTopicWorkspaceViewState(minimalProductMainlineFixture);
   const richViewState = buildTopicWorkspaceViewState(richProductMainlineFixture);
