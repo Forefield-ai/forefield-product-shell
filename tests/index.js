@@ -8,3 +8,5 @@ require('./product-workspace/workspace-interaction-state.test');
 require('./product-actions/user-action-state.test');
 require('./ui-flow/generate-local-topic-draft.test');
 require('./ui-flow/local-topic-flow.test');
+require('./runtime/local-runtime-adapter.test');
+require('./runtime/runtime-boundary.test');

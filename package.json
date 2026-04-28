@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "test": "node --test tests",
-    "validate": "node --check src/product/utils/make-product-id.js && node --check src/product/mappers/map-decision-core-handoff-to-product-mainline.js && node --check src/product/read-models/build-evidence-drawer-state.js && node --check src/product/read-models/build-topic-workspace-view-state.js && node --check src/product/workspace/workspace-interaction-state.js && node --check src/product/actions/user-action-state.js && node --check src/ui/flow/generate-local-topic-draft.js && node --check src/ui/flow/local-topic-flow.js && node --check vite.config.js && npm test"
+    "validate": "node --check src/product/utils/make-product-id.js && node --check src/product/mappers/map-decision-core-handoff-to-product-mainline.js && node --check src/product/read-models/build-evidence-drawer-state.js && node --check src/product/read-models/build-topic-workspace-view-state.js && node --check src/product/workspace/workspace-interaction-state.js && node --check src/product/actions/user-action-state.js && node --check src/ui/flow/generate-local-topic-draft.js && node --check src/ui/flow/local-topic-flow.js && node --check src/runtime/session/current-user-context.js && node --check src/runtime/contracts/runtime-adapter-contract.js && node --check src/runtime/adapters/local-runtime-adapter.js && node --check vite.config.js && npm test"
   },
   "dependencies": {
     "react": "^19.1.1",
