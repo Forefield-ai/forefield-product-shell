@@ -1,12 +1,31 @@
 import React from 'react';
 import { TOPIC_STATUSES } from '../flow/local-topic-flow.browser.mjs';
 
+const TOPIC_STATUS_CARD_LABELS = {
+  [TOPIC_STATUSES.DRAFT]: 'Draft',
+  [TOPIC_STATUSES.BUILDING]: 'Initial Review Building',
+  [TOPIC_STATUSES.READY]: 'Review Ready',
+};
+
 function formatTimestamp(value) {
   if (typeof value !== 'string' || !value.trim()) {
     return 'Local session';
   }
 
   return value.replace('T', ' ').replace('Z', '');
+}
+
+function isKnownTopicStatus(status) {
+  return typeof status === 'string'
+    && Object.values(TOPIC_STATUSES).includes(status);
+}
+
+function formatTopicStatusLabel(status) {
+  if (!isKnownTopicStatus(status)) {
+    return 'Local status unavailable';
+  }
+
+  return TOPIC_STATUS_CARD_LABELS[status];
 }
 
 export default function TopicListPage({
@@ -50,13 +69,20 @@ export default function TopicListPage({
                 >
                   <div className="flow-topic-card__header">
                     <div>
-                      <p className="flow-topic-card__eyebrow">{topic.status}</p>
+                      <p className="flow-topic-card__eyebrow">{formatTopicStatusLabel(topic.status)}</p>
                       <h2>{topic.draft?.topic_name || 'Untitled local topic'}</h2>
                     </div>
                     <span className="flow-topic-card__fixture">{topic.fixtureKey}</span>
                   </div>
 
                   <p className="flow-topic-card__summary">{topic.draft?.topic_summary}</p>
+
+                  {!isKnownTopicStatus(topic.status) ? (
+                    <p className="flow-message flow-message--warning">
+                      This local topic is in an unsupported prototype state and cannot safely route
+                      into the normal draft, building, or workspace flow yet.
+                    </p>
+                  ) : null}
 
                   <dl className="flow-topic-card__meta">
                     <div>

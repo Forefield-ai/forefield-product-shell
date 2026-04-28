@@ -19,6 +19,7 @@ export default function DebugFixtureSelector({
   onSelectFixture,
   selectedBaselineScenarioKey,
   onSelectBaselineScenario,
+  fixtureNotice = '',
 }) {
   return (
     <section className="fixture-selector" aria-label="Development preview controls">
@@ -63,6 +64,10 @@ export default function DebugFixtureSelector({
             </select>
           </label>
         </div>
+
+        {fixtureNotice ? (
+          <p className="flow-message flow-message--warning">{fixtureNotice}</p>
+        ) : null}
       </div>
     </section>
   );

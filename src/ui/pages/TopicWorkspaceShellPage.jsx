@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import PrototypeFallbackState from '../components/PrototypeFallbackState';
 import SavedTab from '../components/SavedTab';
 import TopicWorkspacePage from '../TopicWorkspacePage';
 import { buildTopicWorkspaceViewState } from '../../product/read-models/build-topic-workspace-view-state.browser.mjs';
@@ -8,6 +9,7 @@ import {
   initialActionState,
   isClusterHidden,
 } from '../../product/actions/user-action-state.browser.mjs';
+import { TOPIC_STATUSES } from '../flow/local-topic-flow.browser.mjs';
 
 const TOPIC_STATUS_LABELS = {
   draft: 'Topic Definition Draft',
@@ -17,10 +19,10 @@ const TOPIC_STATUS_LABELS = {
 
 function formatTopicStatus(status) {
   if (typeof status !== 'string' || !status.trim()) {
-    return 'Review Pending';
+    return 'Local status unavailable';
   }
 
-  return TOPIC_STATUS_LABELS[status] || status;
+  return TOPIC_STATUS_LABELS[status] || 'Local status unavailable';
 }
 
 export default function TopicWorkspaceShellPage({
@@ -38,18 +40,95 @@ export default function TopicWorkspaceShellPage({
   onOpenTopicList,
   onCreateNewTopic,
 }) {
-  if (!topic) {
-    return null;
-  }
-
   const [activeWorkspaceTab, setActiveWorkspaceTab] = useState('overview');
   const [workspaceCommand, setWorkspaceCommand] = useState(null);
   const [savedTabNotice, setSavedTabNotice] = useState('');
   const currentActionState = topicActionState || initialActionState();
-  const workspaceViewState = useMemo(
-    () => buildTopicWorkspaceViewState(productMainline),
-    [productMainline]
-  );
+  const workspaceViewStateResult = useMemo(() => {
+    if (!productMainline || typeof productMainline !== 'object' || Array.isArray(productMainline)) {
+      return {
+        ok: false,
+      };
+    }
+
+    try {
+      return {
+        ok: true,
+        value: buildTopicWorkspaceViewState(productMainline),
+      };
+    } catch (error) {
+      return {
+        ok: false,
+      };
+    }
+  }, [productMainline]);
+  const topicStatusIsKnown = Object.values(TOPIC_STATUSES).includes(topic?.status);
+  const workspaceViewState = workspaceViewStateResult.ok ? workspaceViewStateResult.value : null;
+
+  if (!topic) {
+    return (
+      <PrototypeFallbackState
+        eyebrow="Local prototype route unavailable"
+        title="This topic workspace preview is unavailable"
+        copy="The local prototype could not find the topic linked to this workspace route. This is a prototype routing issue, not a market signal conclusion."
+        detail="Return to Topics or start a new topic from Home to continue safely."
+        variant="warning"
+        actions={[
+          { label: 'Back to Topics', onClick: onOpenTopicList, variant: 'secondary' },
+          { label: 'New Topic', onClick: onCreateNewTopic, variant: 'primary' },
+        ]}
+      />
+    );
+  }
+
+  if (!topicStatusIsKnown) {
+    return (
+      <PrototypeFallbackState
+        eyebrow="Local status unavailable"
+        title="This topic is in an unsupported prototype state"
+        copy="The current local topic status is not recognized safely by this prototype shell. This is a lifecycle/status issue, not a market signal conclusion."
+        detail="Return to Topics or start a new topic instead of treating this as a completed review, sparse signal, or failed baseline state."
+        variant="warning"
+        actions={[
+          { label: 'Back to Topics', onClick: onOpenTopicList, variant: 'secondary' },
+          { label: 'New Topic', onClick: onCreateNewTopic, variant: 'primary' },
+        ]}
+      />
+    );
+  }
+
+  if (topic.status !== TOPIC_STATUSES.READY) {
+    return (
+      <PrototypeFallbackState
+        eyebrow="Review not ready"
+        title="This topic is not ready for the workspace yet"
+        copy="The normal Topic Workspace only opens after the local prototype marks the review ready. This route is unavailable for draft or building states."
+        detail="Return to Topics to reopen the draft or building flow instead of treating this as sparse signal, empty demand, or a finished review."
+        variant="warning"
+        actions={[
+          { label: 'Back to Topics', onClick: onOpenTopicList, variant: 'secondary' },
+          { label: 'New Topic', onClick: onCreateNewTopic, variant: 'primary' },
+        ]}
+      />
+    );
+  }
+
+  if (!workspaceViewState) {
+    return (
+      <PrototypeFallbackState
+        eyebrow="Prototype data unavailable"
+        title="This review snapshot could not be rendered safely"
+        copy="The local prototype could not build a safe workspace view for this topic. This is a prototype data issue, not a market signal conclusion."
+        detail="Return to Topics or start a new topic instead of interpreting this as sparse signal, empty demand, or a normal no-evidence review state."
+        variant="error"
+        actions={[
+          { label: 'Back to Topics', onClick: onOpenTopicList, variant: 'secondary' },
+          { label: 'New Topic', onClick: onCreateNewTopic, variant: 'primary' },
+        ]}
+      />
+    );
+  }
+
   const signalClusterSections = Array.isArray(workspaceViewState?.signal_cluster_sections)
     ? workspaceViewState.signal_cluster_sections
     : [];

@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import DebugFixtureSelector from './components/DebugFixtureSelector';
+import PrototypeFallbackState from './components/PrototypeFallbackState';
 import HomePage from './pages/HomePage';
 import TopicDraftGenerationPage from './pages/TopicDraftGenerationPage';
 import TopicDraftPage from './pages/TopicDraftPage';
@@ -44,6 +45,19 @@ const BASELINE_SCENARIO_LABELS = {
   [LOCAL_BASELINE_SCENARIO_KEYS.FAILED]: 'failed local baseline scenario',
   [LOCAL_BASELINE_SCENARIO_KEYS.STUCK]: 'stuck local baseline scenario',
 };
+
+function isKnownFixtureKey(fixtureKey) {
+  return typeof fixtureKey === 'string'
+    && Object.prototype.hasOwnProperty.call(PRODUCT_MAINLINE_FIXTURES, fixtureKey);
+}
+
+function getFixturePreviewLabel(fixtureKey) {
+  if (isKnownFixtureKey(fixtureKey)) {
+    return FIXTURE_PREVIEW_LABELS[fixtureKey];
+  }
+
+  return 'Unavailable sample workspace';
+}
 
 function sortTopicSnapshots(topics) {
   return [...topics].sort((left, right) => {
@@ -112,16 +126,21 @@ export default function App() {
 
   const activeTopic = localTopics.find((topic) => topic.id === activeTopicId) || null;
   const activeTopicFixtureKey = activeTopic?.fixtureKey || selectedFixtureKey;
-  const activeProductMainline = PRODUCT_MAINLINE_FIXTURES[activeTopicFixtureKey] || richProductMainline;
+  const activeProductMainline = isKnownFixtureKey(activeTopicFixtureKey)
+    ? PRODUCT_MAINLINE_FIXTURES[activeTopicFixtureKey]
+    : null;
   const activeTopicActionState = activeTopicId
     ? topicActionStateById[activeTopicId] || initialActionState()
     : initialActionState();
-  const activeFixturePreviewLabel = FIXTURE_PREVIEW_LABELS[selectedFixtureKey] || FIXTURE_PREVIEW_LABELS.rich;
+  const activeFixturePreviewLabel = getFixturePreviewLabel(selectedFixtureKey);
   const activeBaselineScenarioLabel = BASELINE_SCENARIO_LABELS[selectedBaselineScenarioKey]
     || BASELINE_SCENARIO_LABELS[LOCAL_BASELINE_SCENARIO_KEYS.DEFAULT];
   const homeFixtureNoteLabel = selectedBaselineScenarioKey === LOCAL_BASELINE_SCENARIO_KEYS.DEFAULT
     ? activeFixturePreviewLabel
     : `${activeFixturePreviewLabel} with ${activeBaselineScenarioLabel}`;
+  const fixtureSelectorNotice = isKnownFixtureKey(selectedFixtureKey)
+    ? ''
+    : 'The selected sample workspace is unavailable in this local prototype. Choose another sample to continue safely.';
 
   if (!runtimeAdapterRef.current) {
     runtimeAdapterRef.current = createLocalRuntimeAdapter();
@@ -385,16 +404,66 @@ export default function App() {
         );
       case SCREEN_IDS.TOPIC_WORKSPACE:
         {
+          if (!activeTopic) {
+            return (
+              <PrototypeFallbackState
+                eyebrow="Local prototype route unavailable"
+                title="This topic workspace preview is unavailable"
+                copy="The local prototype could not find the topic linked to this workspace route. This is a prototype routing issue, not a market signal conclusion."
+                detail="Return Home or open Recent Topics to continue from a safe local prototype state."
+                variant="warning"
+                actions={[
+                  { label: 'Back to Home', onClick: goHome, variant: 'secondary' },
+                  { label: 'View Recent Topics', onClick: openTopicList, variant: 'primary' },
+                ]}
+              />
+            );
+          }
+
+          if (!isKnownFixtureKey(activeTopicFixtureKey)) {
+            return (
+              <PrototypeFallbackState
+                eyebrow="Sample workspace unavailable"
+                title="This local sample review snapshot is unavailable"
+                copy="The topic is linked to a local sample workspace the prototype can no longer load safely. This is a local fixture issue, not a review conclusion."
+                detail="Return Home or open Recent Topics to continue with a valid local sample."
+                variant="warning"
+                actions={[
+                  { label: 'Back to Home', onClick: goHome, variant: 'secondary' },
+                  { label: 'View Recent Topics', onClick: openTopicList, variant: 'primary' },
+                ]}
+              />
+            );
+          }
+
+          let activeWorkspaceProductMainline = activeProductMainline;
+
+          try {
           const activeRuntimeWorkspaceData = activeTopicId
             ? runtimeAdapter.workspace.getTopicWorkspace(activeTopicId, {
               productMainline: activeProductMainline,
             })
             : null;
-          const activeWorkspaceProductMainline = activeRuntimeWorkspaceData
+          activeWorkspaceProductMainline = activeRuntimeWorkspaceData
             ? buildProductMainlineCompatibilityPayload(activeRuntimeWorkspaceData, {
               productMainline: activeProductMainline,
             })
             : activeProductMainline;
+          } catch (error) {
+            return (
+              <PrototypeFallbackState
+                eyebrow="Prototype data unavailable"
+                title="This review snapshot could not be rendered safely"
+                copy="The local prototype ran into a sample data problem before the workspace could be shown. This is a prototype data issue, not a market signal conclusion."
+                detail="Return Home or open Recent Topics instead of treating this as sparse demand, empty demand, or a completed review state."
+                variant="error"
+                actions={[
+                  { label: 'Back to Home', onClick: goHome, variant: 'secondary' },
+                  { label: 'View Recent Topics', onClick: openTopicList, variant: 'primary' },
+                ]}
+              />
+            );
+          }
 
         return (
           <TopicWorkspaceShellPage
@@ -540,6 +609,7 @@ export default function App() {
         onSelectFixture={setSelectedFixtureKey}
         selectedBaselineScenarioKey={selectedBaselineScenarioKey}
         onSelectBaselineScenario={setSelectedBaselineScenarioKey}
+        fixtureNotice={fixtureSelectorNotice}
       />
       {renderCurrentScreen()}
     </div>
