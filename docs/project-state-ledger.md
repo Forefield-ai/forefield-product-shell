@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through the final P8D closeout for local baseline failed / stuck prototype fallback work, plus prior P8A / P8B / P8C closeouts.
+This ledger records the accepted project state for `forefield-product-shell` through `P8E-A` prototype error / data-unavailable fallback implementation, plus prior P8A / P8B / P8C / P8D closeouts.
 
 ## Repository Split
 
@@ -694,18 +694,76 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - `BaselineBrief` and `Copilot` remain deferred
   - full Monitoring Health engine remains deferred
   - Figma-level visual design remains deferred
+- P8E-A completed
+- P8E-A implementation commit: `aebcf56`
+- commit message: `fix(ui): add prototype data-unavailable fallbacks`
+- modified:
+  - `src/ui/App.jsx`
+  - `src/ui/components/DebugFixtureSelector.jsx`
+  - `src/ui/components/PrototypeFallbackState.jsx`
+  - `src/ui/pages/TopicWorkspaceShellPage.jsx`
+  - `src/ui/pages/TopicListPage.jsx`
+- concise summary:
+  - added local prototype fallback surfaces for missing topic routes, unavailable sample fixture keys, malformed workspace payload / compatibility failures, unsupported topic statuses, and non-ready workspace routing
+  - kept these states explicitly separate from sparse, empty, no-evidence, failed, and stuck review states
+  - added selector-level visibility when the chosen sample workspace key is unavailable instead of silently previewing a normal fixture path
+- confirmed:
+  - no runtime contract or runtime payload shape change
+  - no action semantic change
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no `BaselineBrief`
+  - no `Copilot`
+  - no `src/runtime/*` changes
+  - no `src/product/actions/*` changes
+  - no changes to `EvidenceDrawer.jsx` or `SavedTab.jsx`
+- browser / manual smoke:
+  - not performed in this phase to conserve browser-testing budget after the fallback surfaces were added
+  - existing manual browser coverage from `P8D` remains the latest accepted end-to-end prototype smoke baseline
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `118 / 118` passing
+- working tree was clean after implementation commit validation
 
 ## Technical Debt
 
 ### Prototype Malformed Payload / Unknown Error Fallback Gap
 
-- observed / introduced phase: identified in `P8D-A`, reduced in `P8D-B`
-- reason: failed and stuck baseline scenarios now have dedicated local UI fallback, but malformed workspace payloads, unavailable local fixtures, and unknown prototype rendering errors still resolve as engineering failures rather than user-facing prototype fallback states
-- current impact: failed / stuck states are now clearly separated from sparse / empty review states in the browser, while malformed or unavailable prototype data still lacks a safe user-facing fallback surface
-- risk: uncaught prototype data or rendering failures could still surface as abrupt errors or blank-state regressions if they are not explicitly handled in a later phase
+- observed / introduced phase: identified in `P8D-A`, reduced in `P8D-B`, further reduced in `P8E-A`
+- reason: the prototype now guards malformed workspace payload / compatibility failures in the App and Topic Workspace shell, but it still does not have a broad production-style error boundary for every unknown render failure
+- current impact: malformed workspace payloads no longer fall through as sparse / empty review conclusions, and current local prototype data-unavailable cases now show explicit fallback surfaces
+- risk: truly unknown render errors outside the guarded workspace path could still surface abruptly until a broader fallback strategy exists
 - status: reduced, partially unresolved
-- revisit / trigger condition: revisit before any next-phase work that addresses malformed payload, prototype data unavailable, or unknown local error fallback handling
-- potential cleanup: add explicit local prototype fallback surfaces for malformed payload, unavailable fixture data, and unknown system error states without expanding runtime / API contracts
+- revisit / trigger condition: revisit before any future work that broadens runtime pathways, adds new local prototype routes, or introduces more complex shell rendering dependencies
+- potential cleanup: add a bounded local prototype error boundary / unknown-error fallback layer without expanding runtime or API contracts
+
+### Unknown Fixture Key Explicit Fallback Gap
+
+- observed / introduced phase: identified in `P8D` closeout, reduced in `P8E-A`
+- reason: the local selector and workspace path previously depended on silent rich-fixture fallback when a fixture key was stale or unavailable
+- current impact: unknown fixture keys now produce explicit local sample-unavailable messaging in the selector and a safe workspace fallback instead of silently rendering the rich review path
+- risk: future fixture additions could still drift if selector options, fixture registry, and stored topic fixture keys stop moving together
+- status: reduced for the current local prototype, monitor for future fixture growth
+- revisit / trigger condition: revisit when adding new sample workspace fixtures, changing selector ownership, or moving fixture selection deeper into runtime-backed flows
+- potential cleanup: source selector labels, fixture registry, and topic-level fixture validation from a single prototype fixture manifest
+
+### Unexpected Topic Status Fallback Gap
+
+- observed / introduced phase: identified in `P8D` closeout, reduced in `P8E-A`
+- reason: unknown local topic statuses previously surfaced as raw values or ambiguous routing with no clear explanation
+- current impact: unsupported statuses now render explicit local status-unavailable messaging in Topic List and are blocked from silently entering the normal workspace path
+- risk: future local or runtime-backed status additions can drift again if status-display and routing guards are not updated together
+- status: reduced for current known local prototype states, monitor for future status expansion
+- revisit / trigger condition: revisit before any new topic lifecycle states, runtime-backed status integration, or API persistence work
+- potential cleanup: centralize topic lifecycle display labels and routing guards behind a shared product-shell status helper once the runtime status model stabilizes
+
+### Manual Browser Smoke Burden
+
+- observed / introduced phase: identified during `P8A`-`P8D` manual verification, carried into `P8E-A`
+- reason: selector visibility, route integrity, disabled CTA semantics, and fallback-surface correctness still rely heavily on manual browser smoke because the current automated test suite is primarily fixture/read-model/runtime oriented
+- current impact: the local prototype is stable, but regression confidence for cross-screen UI wiring still depends on manual checking and operator discipline
+- risk: future narrow UI or shell changes may pass unit/build validation while still regressing selector visibility, routing, or fallback semantics
+- status: deferred
+- revisit / trigger condition: after `P8E-A` fallback surfaces stabilize; consider `P8E-B` lightweight browser smoke harness planning
+- potential cleanup: add a very small automated smoke layer for key local prototype paths without introducing a heavy new end-to-end framework
 
 ### Sparse / Empty Fixture Selector Coverage Gap
 
@@ -923,6 +981,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - exposes local-only baseline scenario controls for standard, failed, and stuck prototype runs through the development preview selector
 - renders dedicated baseline failed and delayed fallback surfaces that keep unsuccessful local runs out of Workspace while preserving safe navigation to Home and Recent Topics
 - keeps malformed workspace payloads as explicit engineering errors instead of silently converting them into review conclusions
+- surfaces explicit local prototype data-unavailable fallbacks for unavailable fixture keys, unsupported topic statuses, missing topic routes, and malformed workspace compatibility/render paths
 - current test count: 118 / 118 passing
 
 ## Current Product-Shell Non-Capabilities
@@ -939,8 +998,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: planning for malformed / unavailable prototype fallback handling before any deeper runtime, API, or monitoring-health work
-- focus the next pass on explicitly separating prototype data unavailable / malformed payload / unknown local error states from review conclusions without expanding runtime contracts
+- recommended next step: `P8E-B` lightweight browser smoke harness planning
+- focus the next pass on reducing manual browser smoke burden for selector visibility, route integrity, and fallback semantics without introducing a heavy new end-to-end test stack
 - do not move into API / DB / auth / persistence, `BaselineBrief`, or `Copilot` by default
 
 ## Pre-Flight Checklist For Future Phases
