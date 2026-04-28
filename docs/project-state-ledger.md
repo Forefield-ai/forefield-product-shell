@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P8A plus post-smoke browser stability and product-surface hygiene follow-ups.
+This ledger records the accepted project state for `forefield-product-shell` through P8B Evidence Drawer trust-layer implementation plus prior P8A browser stability and product-surface hygiene follow-ups.
 
 ## Repository Split
 
@@ -448,6 +448,35 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - Browser ESM / CommonJS Compatibility Bridge remains accepted temporary technical debt
 - no functional blocker remains for `P8A`
 - P8A is accepted and closed
+- P8B completed
+- P8B implementation commit: `81e6b0341b2a4ca88ae0e0029feb0536b0088d11`
+- commit message: `fix(ui): strengthen evidence drawer trust layer`
+- modified:
+  - `src/ui/components/EvidenceDrawer.jsx`
+  - `src/ui/styles.css`
+- concise summary:
+  - Evidence Drawer now reads more like a trust-verification surface and less like a thin source-link list
+  - each evidence item now separates source label, evidence summary, why-included context, review note / caveats, open source link, and save / unsave action using existing data only
+  - source labels are derived only from URL host when shown, and no source title, date, excerpt, or support-role fields are fabricated
+- browser smoke covered:
+  - open Evidence Drawer
+  - close Evidence Drawer
+  - save evidence
+  - unsave evidence
+  - open saved evidence from Saved Tab back into drawer context
+- confirmed:
+  - no runtime contract or runtime payload shape change
+  - no fixture change
+  - no action semantic change
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no `BaselineBrief`
+  - no `Copilot`
+  - no `src/runtime/*` changes
+  - no `src/product/actions/*` changes
+  - no `build-evidence-drawer-state` / browser equivalent changes
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `109 / 109` passing
+- working tree was clean after implementation commit validation
 
 ## Technical Debt
 
@@ -561,6 +590,16 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - revisit / trigger condition: revisit during future Topic Draft UX polish or whenever new `signal_focus` values are introduced
 - potential cleanup: centralize signal-focus display labels in a shared UI presenter helper if more surfaces need the same mapping
 
+### Evidence Summary / Source Metadata Thinness
+
+- observed / introduced phase: identified in `P8B`
+- reason: current drawer trust-layer improvement still depends on fixture-era evidence summaries and URL-derived source labels because the product fixtures do not yet carry explicit source title, source platform metadata, published / observed date, excerpt text, or support-role fields
+- current impact: Evidence Drawer now separates summary from source URL and gives users better verification framing, but the evidence records still remain intentionally thin
+- risk: future surfaces could overread evidence summaries as excerpts or treat URL-host labels as authoritative source metadata if the distinction is not preserved
+- status: accepted current limitation
+- revisit / trigger condition: revisit before any fixture / read-model preparation that expands evidence-record presentation depth
+- potential cleanup: add explicit product-owned evidence presentation fields such as source title, source platform label, published / observed date, excerpt text, and support-role only when fixture / contract work is intentionally in scope
+
 ## Current Product-Shell Capabilities
 
 - consumes minimal and rich `DecisionCoreBoundaryHandoff` fixtures
@@ -637,6 +676,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - renders current Signal Focus values with user-facing labels while preserving canonical internal values
 - reframes top-level sample-data controls and workspace shell copy to avoid exposing implementation terms like `TopicWorkspaceViewState`, product mainline fixtures, or fixture-driven product view state as primary UI copy
 - hides raw `monitoring_run_id` from the primary Initial Topic Map display and clarifies review-vs-topic-definition status labels
+- presents Evidence Drawer items as trust-verification records with source host labels, evidence summaries, why-included copy, cluster-level review caveats, open source links, and save / unsave actions using existing data only
+- keeps evidence summaries clearly distinct from source URLs and does not fake source title, date, excerpt, or support-role fields
 - current test count: 109 / 109 passing
 
 ## Current Product-Shell Non-Capabilities
@@ -653,9 +694,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next phase: `P8B`
-- focus `P8B` on Evidence Drawer trust-layer enhancement without changing runtime contracts or moving into API / persistence work
-- do not implement API / DB / auth / persistence, `BaselineBrief`, or `Copilot` by default
+- recommended next step: `P8B` post-implementation self-audit / closeout
+- focus the next pass on verifying drawer trust-layer behavior, browser smoke outcomes, and whether any further Evidence Drawer improvement now requires explicit fixture / read-model preparation instead of more UI-only shaping
+- do not move into API / DB / auth / persistence, `BaselineBrief`, or `Copilot` by default
 
 ## Pre-Flight Checklist For Future Phases
 
