@@ -722,6 +722,39 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - `npm run validate`, `npm test`, and `npm run build` passed
 - current tests: `118 / 118` passing
 - working tree was clean after implementation commit validation
+- P8E-A final closeout accepted
+- P8E-A final state:
+  - P8E-A implementation commit: `aebcf56eaa6226811f5ac91a7396dc82d03d52ff`
+  - P8E-A ledger commit: `304f8b98127abe9636aed78878ef3ec094700a9b`
+- manual browser verification:
+  - P8E-A manual browser smoke: PASS
+  - rich + standard baseline: PASS
+  - empty + standard baseline: PASS
+  - sparse + standard baseline: PASS
+  - no_evidence + standard baseline: PASS
+  - rich + baseline_failed: PASS
+  - rich + baseline_stuck: PASS
+  - fallback behavior did not incorrectly intercept existing normal or weak-data paths
+  - console error check: clean
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - current tests: `118 / 118` passing
+  - working tree was clean after previous commits
+- current decision:
+  - `P8E-A` is accepted and closed
+- explicit deferred items:
+  - lightweight browser smoke harness remains deferred
+  - Browser ESM / CommonJS Compatibility Bridge remains deferred
+  - module-format cleanup remains deferred
+  - Runtime Workspace Compatibility Bridge remains deferred
+  - Local Topic Snapshot / Runtime Topic Dual Source Transition remains deferred
+  - Topic Draft Generation Double Source Mock remains deferred
+  - API / DB / auth / persistence remains deferred
+  - `BaselineBrief` remains deferred
+  - `Copilot` remains deferred
+  - Figma-level visual design remains deferred
 
 ## Technical Debt
 
