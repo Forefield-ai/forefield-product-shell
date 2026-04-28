@@ -20,8 +20,15 @@ export default function SignalClusterList({
   return (
     <section className="cluster-list" aria-label="Signal clusters">
       <div className="cluster-list__header">
-        <h2>Signal Clusters</h2>
-        <p>Select a cluster to focus the workspace state. View Evidence opens the drawer.</p>
+        <div>
+          <p className="cluster-list__eyebrow">Initial review path</p>
+          <h2>Signal clusters ready for review</h2>
+          <p>
+            Scan the clusters first, then open the Evidence Drawer for the one that looks most
+            relevant. Watch keeps a cluster on your monitoring radar, Save keeps useful review
+            material close, and Not relevant trims the topic boundary.
+          </p>
+        </div>
       </div>
       <div className="cluster-list__items">
         {signalClusterSections.map((signalClusterSection) => (

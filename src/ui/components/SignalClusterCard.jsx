@@ -1,6 +1,57 @@
 import React from 'react';
 import ClusterActions from './ClusterActions';
 
+function formatConfidenceLabel(label) {
+  if (typeof label !== 'string' || !label.trim()) {
+    return 'Review needed';
+  }
+
+  const normalizedLabel = label.trim().toLowerCase();
+
+  if (normalizedLabel === 'directional') {
+    return 'Stronger current signal';
+  }
+
+  if (normalizedLabel === 'exploratory') {
+    return 'Emerging signal';
+  }
+
+  return normalizedLabel
+    .split(/[_\s-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+function pluralize(count, singular, plural) {
+  return `${count} ${count === 1 ? singular : plural}`;
+}
+
+function getEvidenceBasisSummary(signalClusterSection) {
+  const evidenceCount = Number(signalClusterSection?.evidence_count || 0);
+  const sourceLinkCount = Array.isArray(signalClusterSection?.source_links)
+    ? signalClusterSection.source_links.length
+    : 0;
+
+  return `${pluralize(evidenceCount, 'evidence item', 'evidence items')} and ${pluralize(sourceLinkCount, 'source link', 'source links')} available for review.`;
+}
+
+function getClusterReviewGuidance(signalClusterSection) {
+  const normalizedLabel = typeof signalClusterSection?.confidence_display?.label === 'string'
+    ? signalClusterSection.confidence_display.label.trim().toLowerCase()
+    : '';
+
+  if (normalizedLabel === 'directional') {
+    return 'This cluster has stronger current support and is a good place to start your review.';
+  }
+
+  if (normalizedLabel === 'exploratory') {
+    return 'This cluster is worth checking, but the current evidence basis looks more exploratory.';
+  }
+
+  return 'Use the Evidence Drawer to verify what currently supports this cluster.';
+}
+
 export default function SignalClusterCard({
   signalClusterSection,
   isSelected,
@@ -31,13 +82,13 @@ export default function SignalClusterCard({
       <div className="cluster-card__header">
         <div className="cluster-card__header-copy">
           <p className="cluster-card__eyebrow">
-            {signalClusterSection.confidence_display?.label || 'unlabeled'}
+            {formatConfidenceLabel(signalClusterSection.confidence_display?.label)}
           </p>
           <h3>{signalClusterSection.headline}</h3>
         </div>
         <div className="cluster-card__header-side">
           <span className="cluster-card__badge">
-            {signalClusterSection.evidence_count} evidence
+            {pluralize(Number(signalClusterSection.evidence_count || 0), 'evidence item', 'evidence items')}
           </span>
           {(isWatched || isSaved) ? (
             <div className="cluster-card__state-badges" aria-label="Cluster state">
@@ -49,24 +100,37 @@ export default function SignalClusterCard({
       </div>
 
       <p className="cluster-card__summary">{signalClusterSection.summary}</p>
-      <p className="cluster-card__confidence">
-        {signalClusterSection.confidence_display?.summary}
-      </p>
+      <div className="cluster-card__detail-block">
+        <span className="cluster-card__detail-label">Why review this</span>
+        <p className="cluster-card__confidence">
+          {getClusterReviewGuidance(signalClusterSection)}
+        </p>
+        {signalClusterSection.confidence_display?.summary ? (
+          <p className="cluster-card__confidence-subcopy">
+            {signalClusterSection.confidence_display.summary}
+          </p>
+        ) : null}
+      </div>
 
       {signalClusterSection.limitations?.length ? (
-        <ul className="cluster-card__limitations">
-          {signalClusterSection.limitations.map((limitation) => (
-            <li key={limitation}>{limitation}</li>
-          ))}
-        </ul>
+        <div className="cluster-card__detail-block cluster-card__detail-block--warning">
+          <span className="cluster-card__detail-label">Review carefully</span>
+          <ul className="cluster-card__limitations">
+            {signalClusterSection.limitations.map((limitation) => (
+              <li key={limitation}>{limitation}</li>
+            ))}
+          </ul>
+        </div>
       ) : null}
 
       <div className="cluster-card__footer">
         <div className="cluster-card__footer-copy">
           <div className="cluster-card__footer-meta">
-            <span className="cluster-card__stat">{signalClusterSection.source_links.length} linked sources</span>
+            <span className="cluster-card__stat">{getEvidenceBasisSummary(signalClusterSection)}</span>
             <span className="cluster-card__stat">
-              {signalClusterSection.drawer_available ? 'Evidence drawer ready' : 'No drawer data'}
+              {signalClusterSection.drawer_available
+                ? 'Open the drawer to verify supporting sources'
+                : 'No evidence drawer data available yet'}
             </span>
           </div>
 
@@ -79,6 +143,10 @@ export default function SignalClusterCard({
             onUnsave={onUnsave}
             onHide={onHide}
           />
+          <p className="cluster-card__actions-note">
+            Watch keeps this cluster on your radar, Save keeps it available in this topic, and Not
+            relevant removes it from the active review without deleting the evidence basis.
+          </p>
         </div>
         <button
           type="button"

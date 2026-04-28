@@ -36,14 +36,25 @@ export default function EmptySparseState({ emptyOrSparseState }) {
     label: formatReason(reason),
   }));
   const title = isEmpty
-    ? 'No signal clusters to review yet'
-    : 'Workspace coverage is currently limited';
+    ? 'No signal clusters are ready for review yet'
+    : 'Signal coverage is limited right now';
   const description = isEmpty
-    ? 'This workspace does not currently include any signal clusters. Product review can stay paused until the next bounded input produces displayable signals.'
-    : 'Current workspace data is sparse, but the existing review content remains usable and Evidence Drawer interaction stays available.';
+    ? 'Forefield is holding back rather than forcing a conclusion from weak or missing signals. This topic can stay open until the next review snapshot surfaces something worth checking.'
+    : 'There is still reviewable material here, but the current evidence basis is thin. Open the Evidence Drawer before relying on any cluster and treat limited coverage cautiously.';
   const sectionClassName = isEmpty
     ? 'empty-state empty-state--primary'
     : 'empty-state empty-state--notice';
+  const guidanceItems = isEmpty
+    ? [
+      'Broaden the audience or problem space if the topic feels too narrow.',
+      'Add competitors or adjacent alternatives if comparison context is missing.',
+      'Retry later when more public signals are likely to be available.',
+    ]
+    : [
+      'Start with the cluster that looks closest to your topic, then verify the supporting evidence before acting on it.',
+      'Use Watch for clusters worth monitoring later, Save for useful evidence, and Not relevant to trim noisy scope.',
+      'If coverage stays weak, refine the topic scope or revisit the review later.',
+    ];
 
   return (
     <section className={sectionClassName} aria-label="Workspace state notice">
@@ -52,6 +63,16 @@ export default function EmptySparseState({ emptyOrSparseState }) {
       </p>
       <h2>{title}</h2>
       <p>{description}</p>
+      <div className="empty-state__guidance">
+        <p className="empty-state__guidance-label">
+          {isEmpty ? 'What to do next' : 'How to use this review safely'}
+        </p>
+        <ul className="empty-state__guidance-list">
+          {guidanceItems.map((guidanceItem) => (
+            <li key={guidanceItem}>{guidanceItem}</li>
+          ))}
+        </ul>
+      </div>
       {reasonLabels.length ? (
         <ul className="empty-state__reasons" aria-label="Workspace state reasons">
           {reasonLabels.map((reason) => (
