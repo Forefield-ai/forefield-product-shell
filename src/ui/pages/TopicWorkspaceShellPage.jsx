@@ -9,6 +9,20 @@ import {
   isClusterHidden,
 } from '../../product/actions/user-action-state.browser.mjs';
 
+const TOPIC_STATUS_LABELS = {
+  draft: 'Topic Definition Draft',
+  building: 'Initial Review Building',
+  ready: 'Review Ready',
+};
+
+function formatTopicStatus(status) {
+  if (typeof status !== 'string' || !status.trim()) {
+    return 'Review Pending';
+  }
+
+  return TOPIC_STATUS_LABELS[status] || status;
+}
+
 export default function TopicWorkspaceShellPage({
   topic,
   topicActionState,
@@ -251,11 +265,11 @@ export default function TopicWorkspaceShellPage({
           <section className="flow-page flow-page--workspace-shell">
             <div className="flow-page__header">
               <div>
-                <p className="flow-page__eyebrow">Local Topic Shell</p>
+                <p className="flow-page__eyebrow">Topic Workspace Preview</p>
                 <h1 className="flow-page__title">{topic.draft?.topic_name || 'Local topic'}</h1>
                 <p className="flow-page__copy">
-                  Confirmed local Topic Draft metadata stays in this shell layer. The Topic
-                  Workspace below still runs on fixture-driven product view state.
+                  This prototype uses sample review data while preserving the topic flow. Review
+                  the generated topic context below.
                 </p>
               </div>
               <div className="flow-actions flow-actions--compact">
@@ -270,8 +284,8 @@ export default function TopicWorkspaceShellPage({
 
             <div className="flow-topic-shell-meta">
               <article className="flow-topic-shell-meta__card">
-                <span>Status</span>
-                <strong>{topic.status}</strong>
+                <span>Review Status</span>
+                <strong>{formatTopicStatus(topic.status)}</strong>
               </article>
               <article className="flow-topic-shell-meta__card">
                 <span>Target Audience</span>

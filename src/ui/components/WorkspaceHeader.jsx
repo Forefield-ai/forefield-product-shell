@@ -20,12 +20,13 @@ function formatTimestamp(value) {
   return value.replace('T', ' ').replace('Z', '');
 }
 
+function formatTopicDefinitionStatus(value) {
+  return formatLabel(value) || 'Defined';
+}
+
 export default function WorkspaceHeader({ workspaceHeader, topicDraftSummary }) {
-  const topicStatus = formatLabel(workspaceHeader?.draft_state_label) || 'Active';
+  const topicDefinitionStatus = formatTopicDefinitionStatus(workspaceHeader?.draft_state_label);
   const reviewSnapshot = formatTimestamp(workspaceHeader?.imported_at);
-  const monitoringRunId = typeof workspaceHeader?.monitoring_run_id === 'string'
-    ? workspaceHeader.monitoring_run_id
-    : '';
   const limitationsSummary = typeof topicDraftSummary?.limitations_summary === 'string'
     ? topicDraftSummary.limitations_summary.trim()
     : '';
@@ -35,7 +36,8 @@ export default function WorkspaceHeader({ workspaceHeader, topicDraftSummary }) 
       <p className="workspace-header__section-label">Initial Topic Map</p>
       <div className="workspace-header__eyebrow">
         <span className="workspace-header__pill">Initial Review</span>
-        <span className="workspace-header__pill">Topic status: {topicStatus}</span>
+        <span className="workspace-header__pill">Topic definition: {topicDefinitionStatus}</span>
+        <span className="workspace-header__pill">Review status: Initial Review Ready</span>
       </div>
       <h1 className="workspace-header__title">{workspaceHeader.workspace_title}</h1>
       <p className="workspace-header__summary">{topicDraftSummary.summary}</p>
@@ -49,19 +51,17 @@ export default function WorkspaceHeader({ workspaceHeader, topicDraftSummary }) 
           <dd>Initial Topic Map</dd>
         </div>
         <div className="workspace-header__meta-item">
-          <dt>Status</dt>
-          <dd>{topicStatus}</dd>
+          <dt>Review status</dt>
+          <dd>Initial Review Ready</dd>
+        </div>
+        <div className="workspace-header__meta-item">
+          <dt>Topic definition</dt>
+          <dd>{topicDefinitionStatus}</dd>
         </div>
         {reviewSnapshot ? (
           <div className="workspace-header__meta-item">
             <dt>Snapshot updated</dt>
             <dd>{reviewSnapshot}</dd>
-          </div>
-        ) : null}
-        {monitoringRunId ? (
-          <div className="workspace-header__meta-item">
-            <dt>Monitoring run</dt>
-            <dd title={monitoringRunId}>{monitoringRunId}</dd>
           </div>
         ) : null}
       </dl>

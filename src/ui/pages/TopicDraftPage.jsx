@@ -1,8 +1,38 @@
 import React from 'react';
 import { generateLocalTopicDraftFromInput } from '../flow/generate-local-topic-draft.browser.mjs';
 
+const SIGNAL_FOCUS_LABELS = {
+  pain_point: 'Pain Points',
+  unmet_need: 'Unmet Needs',
+  workaround: 'Workarounds',
+  competitor_dissatisfaction: 'Competitor Dissatisfaction',
+  switching_signal: 'Switching Signals',
+  emerging_use_case: 'Emerging Use Cases',
+};
+
+function normalizeSignalFocusLabel(value) {
+  return String(value ?? '')
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+const SIGNAL_FOCUS_VALUE_BY_LABEL = Object.keys(SIGNAL_FOCUS_LABELS).reduce((accumulator, value) => {
+  accumulator[normalizeSignalFocusLabel(value)] = value;
+  accumulator[normalizeSignalFocusLabel(SIGNAL_FOCUS_LABELS[value])] = value;
+  return accumulator;
+}, {});
+
 function listToText(values) {
   return Array.isArray(values) ? values.join('\n') : '';
+}
+
+function signalFocusListToText(values) {
+  return Array.isArray(values)
+    ? values.map((value) => SIGNAL_FOCUS_LABELS[value] || value).join('\n')
+    : '';
 }
 
 function textToList(value) {
@@ -10,6 +40,12 @@ function textToList(value) {
     .split(/\n|,/)
     .map((entry) => entry.trim())
     .filter(Boolean);
+}
+
+function textToSignalFocusList(value) {
+  return textToList(value).map((entry) => (
+    SIGNAL_FOCUS_VALUE_BY_LABEL[normalizeSignalFocusLabel(entry)] || entry
+  ));
 }
 
 export default function TopicDraftPage({
@@ -104,8 +140,8 @@ export default function TopicDraftPage({
               <span>Signal Focus</span>
               <textarea
                 rows={6}
-                value={listToText(draft.signal_focus)}
-                onChange={(event) => updateDraft('signal_focus', textToList(event.target.value))}
+                value={signalFocusListToText(draft.signal_focus)}
+                onChange={(event) => updateDraft('signal_focus', textToSignalFocusList(event.target.value))}
               />
             </label>
 
