@@ -1,0 +1,131 @@
+{
+  "brief_kind": "baseline_brief",
+  "topic_ref": {
+    "topic_id": "local_topic__privacy-workflow-demand__20260428120000",
+    "topic_status": "ready",
+    "monitoring_run_id": "monitoring_run_ps__bundle-cross-source-demand-opportunities"
+  },
+  "eligibility": {
+    "is_eligible": true,
+    "brief_mode": "standard",
+    "unavailable_reason": null,
+    "summary": "Eligible for a standard Baseline Brief."
+  },
+  "sections": {
+    "topic_context": {
+      "topic_name": "Privacy workflow demand review",
+      "topic_summary": "Track whether recurring privacy-control complaints justify a follow-up validation pass.",
+      "target_audience": "Product and support leads",
+      "problem_space": "Shared-workflow privacy controls and complaint handling",
+      "monitoring_intent": "Monitor whether recurring public demand signals justify the next validation step."
+    },
+    "review_snapshot": {
+      "brief_mode": "standard",
+      "summary": "2 reviewable clusters are available, supported by 5 evidence records and 5 public source links.",
+      "signal_cluster_count": 2,
+      "curated_evidence_record_count": 5,
+      "public_source_ref_count": 5,
+      "directional_count": 1,
+      "exploratory_count": 1,
+      "saved_cluster_count": 0,
+      "saved_evidence_count": 0,
+      "watched_cluster_count": 0,
+      "visible_cluster_count": 2,
+      "preliminary_caveat": null
+    },
+    "key_signal_clusters": [
+      {
+        "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+        "headline": "Teams want clearer privacy controls across shared workflows.",
+        "summary": "The signal is strong enough to justify the next bounded validation step because corroborated support spans more than one public source family.",
+        "confidence_label": "directional",
+        "confidence_summary": "Confidence is directional because bounded support spans multiple source families with no material contradiction.",
+        "evidence_count": 3,
+        "source_link_count": 3,
+        "is_saved": false,
+        "is_watched": false,
+        "limitations": [
+          "limited source coverage",
+          "weak evidence",
+          "contradiction present"
+        ]
+      },
+      {
+        "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
+        "headline": "Smaller teams still struggle with manual workflow handoffs.",
+        "summary": "The demand signal is worth monitoring, but current support stays narrow and contradiction pressure remains present.",
+        "confidence_label": "exploratory",
+        "confidence_summary": "Confidence remains exploratory because the current corroboration set stays single-source and contradiction-aware.",
+        "evidence_count": 2,
+        "source_link_count": 2,
+        "is_saved": false,
+        "is_watched": false,
+        "limitations": [
+          "limited source coverage",
+          "weak evidence",
+          "contradiction present"
+        ]
+      }
+    ],
+    "evidence_backed_takeaways": [
+      {
+        "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+        "headline": "Teams want clearer privacy controls across shared workflows.",
+        "takeaway_summary": "The signal is strong enough to justify the next bounded validation step because corroborated support spans more than one public source family.",
+        "confidence_label": "directional",
+        "supporting_evidence": [
+          {
+            "evidence_id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s1",
+            "label": "Public source 1",
+            "summary": "Public discussion thread included in the curated evidence set.",
+            "source_url": "https://example.com/reddit/privacy-workflow-thread"
+          },
+          {
+            "evidence_id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s2",
+            "label": "Public source 2",
+            "summary": "Public comments source included in the curated evidence set.",
+            "source_url": "https://example.com/youtube/privacy-workflow-comments"
+          },
+          {
+            "evidence_id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s3",
+            "label": "Public source 3",
+            "summary": "Public source included in the curated evidence set.",
+            "source_url": "https://example.com/community/privacy-workflow-roundup"
+          }
+        ]
+      },
+      {
+        "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
+        "headline": "Smaller teams still struggle with manual workflow handoffs.",
+        "takeaway_summary": "The demand signal is worth monitoring, but current support stays narrow and contradiction pressure remains present.",
+        "confidence_label": "exploratory",
+        "supporting_evidence": [
+          {
+            "evidence_id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r2__s1",
+            "label": "Public source 1",
+            "summary": "Public source included in the curated evidence set.",
+            "source_url": "https://example.com/forum/manual-handoff-pain"
+          },
+          {
+            "evidence_id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r2__s2",
+            "label": "Public source 2",
+            "summary": "Public source included in the curated evidence set.",
+            "source_url": "https://example.com/community/manual-handoff-followup"
+          }
+        ]
+      }
+    ],
+    "caveats_and_limitations": {
+      "workspace_limitations": [
+        "limited source coverage",
+        "weak evidence",
+        "contradiction present"
+      ],
+      "preliminary_caveat": null
+    },
+    "suggested_next_review_actions": [
+      "Reopen the strongest cluster evidence before sharing this brief more broadly or using it as a decision input.",
+      "Save the most decision-relevant clusters or evidence items before turning this brief into a follow-up workflow."
+    ]
+  }
+}

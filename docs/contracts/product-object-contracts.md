@@ -18,6 +18,7 @@ P1 object scope:
 - `SignalCluster`
 - `CuratedEvidenceRecord`
 - `EvidenceDrawerState`
+- `BaselineBrief`
 
 ## Shared Contract Rules
 
@@ -368,3 +369,82 @@ Prohibited decision-core fields:
 - `raw_trace_refs`
 - `opportunity_score`
 - `claim_candidate_id`
+
+## BaselineBrief
+
+Purpose:
+
+- Represent an optional, Topic-scoped, evidence-grounded product brief assembled from product-visible review state.
+- Summarize the current Initial Topic Map without replacing the Topic Workspace as the default review surface.
+
+Kind:
+
+- computed local-first product artifact / read model
+
+Required fields:
+
+- `brief_kind`
+- `topic_ref`
+- `eligibility`
+- `sections`
+
+Required sections:
+
+- `topic_context`
+- `review_snapshot`
+- `key_signal_clusters`
+- `evidence_backed_takeaways`
+- `caveats_and_limitations`
+- `suggested_next_review_actions`
+
+Optional fields:
+
+- `saved_item_influence`
+- `generated_at`
+- `export_metadata`
+
+Lifecycle state:
+
+- not persisted in P9B
+- computed on demand only when the current Topic review state is eligible
+
+Relation to `DecisionCoreBoundaryHandoff`:
+
+- not imported directly from handoff
+- computed from product-visible `Topic` / `TopicDraft` context, `SignalCluster`, `CuratedEvidenceRecord`, `EvidenceDrawerState`, `SavedItem`, and `UserAction` state that ultimately originated from the handoff
+
+Eligibility rules:
+
+- eligible for a standard brief when the current Topic review is ready and the workspace is reviewable
+- eligible only as a preliminary / limited-evidence brief when the workspace is sparse
+- not eligible when the workspace is empty
+- not eligible when the local prototype is in failed, stuck, malformed / data-unavailable, unknown-fixture, or unexpected-status fallback states
+- no-evidence clusters may remain visible in the brief context, but must not become evidence-backed takeaways
+
+Interpretation rules:
+
+- `BaselineBrief` is optional and user-triggered
+- it is not the default result page
+- it must not become a generic report generator
+- it must not invent conclusions beyond currently available product-visible evidence
+- it must not reinterpret sparse, empty, failed, or malformed prototype states as market conclusions such as `no demand`
+
+Provenance rules:
+
+- use only product-visible Topic, SignalCluster, CuratedEvidenceRecord, EvidenceDrawerState, SavedItem, and UserAction fields
+- preserve Topic / MonitoringRun linkage only through bounded product refs
+- do not expose decision-core internal ids or hidden scoring data as brief fields
+
+Prohibited decision-core fields:
+
+- `OpportunitySet`
+- `OpportunityCard`
+- `OpportunityScore`
+- `ClaimTrace`
+- `raw_refs`
+- `raw_trace_refs`
+- `opportunity_score`
+- `claim_candidate_id`
+- hidden score bands
+- prompt logs
+- crawler logs

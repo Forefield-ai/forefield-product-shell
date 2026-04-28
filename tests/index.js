@@ -3,6 +3,7 @@ require('./product-mapper/build-evidence-drawer-state.test');
 require('./product-mapper/no-decision-core-imports.test');
 require('./product-mapper/rich-handoff-mapping.test');
 require('./product-mapper/rich-golden-fixtures.test');
+require('./product-workspace/build-baseline-brief-state.test');
 require('./product-workspace/build-topic-workspace-view-state.test');
 require('./product-workspace/workspace-interaction-state.test');
 require('./product-actions/user-action-state.test');

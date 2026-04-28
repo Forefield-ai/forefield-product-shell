@@ -1,0 +1,81 @@
+{
+  "brief_kind": "baseline_brief",
+  "topic_ref": {
+    "topic_id": "local_topic__privacy-workflow-demand__20260428120000",
+    "topic_status": "ready",
+    "monitoring_run_id": "monitoring_run_ps__bundle-sparse-payroll-onboarding"
+  },
+  "eligibility": {
+    "is_eligible": true,
+    "brief_mode": "preliminary",
+    "unavailable_reason": null,
+    "summary": "Eligible for a preliminary Baseline Brief with limited-evidence caveats."
+  },
+  "sections": {
+    "topic_context": {
+      "topic_name": "Privacy workflow demand review",
+      "topic_summary": "Track whether recurring privacy-control complaints justify a follow-up validation pass.",
+      "target_audience": "Product and support leads",
+      "problem_space": "Shared-workflow privacy controls and complaint handling",
+      "monitoring_intent": "Monitor whether recurring public demand signals justify the next validation step."
+    },
+    "review_snapshot": {
+      "brief_mode": "preliminary",
+      "summary": "1 reviewable clusters are available, but the current evidence basis is limited enough that this brief should be treated as preliminary.",
+      "signal_cluster_count": 1,
+      "curated_evidence_record_count": 1,
+      "public_source_ref_count": 0,
+      "directional_count": 0,
+      "exploratory_count": 1,
+      "saved_cluster_count": 0,
+      "saved_evidence_count": 0,
+      "watched_cluster_count": 0,
+      "visible_cluster_count": 1,
+      "preliminary_caveat": "This brief is preliminary because at least one reviewable cluster has limited source-link coverage in the current snapshot."
+    },
+    "key_signal_clusters": [
+      {
+        "cluster_id": "signal_cluster_ps__bundle-sparse-payroll-onboarding__r1",
+        "headline": "Some teams may still need extra payroll onboarding support.",
+        "summary": "A possible need is visible, but the current evidence basis stays thin and incomplete.",
+        "confidence_label": "exploratory",
+        "confidence_summary": "Confidence remains exploratory because a curated record exists but public-source coverage is incomplete.",
+        "evidence_count": 1,
+        "source_link_count": 0,
+        "is_saved": false,
+        "is_watched": false,
+        "limitations": [
+          "public source coverage incomplete",
+          "thin evidence basis"
+        ]
+      }
+    ],
+    "evidence_backed_takeaways": [
+      {
+        "cluster_id": "signal_cluster_ps__bundle-sparse-payroll-onboarding__r1",
+        "headline": "Some teams may still need extra payroll onboarding support.",
+        "takeaway_summary": "A possible need is visible, but the current evidence basis stays thin and incomplete.",
+        "confidence_label": "exploratory",
+        "supporting_evidence": [
+          {
+            "evidence_id": "curated_evidence_record_ps__bundle-sparse-payroll-onboarding__r1__s1",
+            "label": "Public source 1",
+            "summary": "A curated evidence record exists, but no public source link is available in this local snapshot.",
+            "source_url": ""
+          }
+        ]
+      }
+    ],
+    "caveats_and_limitations": {
+      "workspace_limitations": [
+        "public source coverage incomplete",
+        "thin evidence basis"
+      ],
+      "preliminary_caveat": "This brief is preliminary because at least one reviewable cluster has limited source-link coverage in the current snapshot."
+    },
+    "suggested_next_review_actions": [
+      "Treat this brief as preliminary and verify the strongest cluster again before using it as a durable roadmap input.",
+      "Save the most decision-relevant clusters or evidence items before turning this brief into a follow-up workflow."
+    ]
+  }
+}
