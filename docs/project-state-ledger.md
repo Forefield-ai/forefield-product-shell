@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P8C-A sparse / empty fixture and read-model preparation plus prior P8A / P8B closeouts.
+This ledger records the accepted project state for `forefield-product-shell` through P8C-B sparse / empty / no-evidence UI state implementation plus prior P8A / P8B closeouts.
 
 ## Repository Split
 
@@ -520,18 +520,52 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - `npm run validate`, `npm test`, and `npm run build` passed
 - current tests: `114 / 114` passing
 - working tree was clean after implementation commit validation
+- P8C-B completed
+- P8C-B implementation commit: `6266911`
+- commit message: `fix(ui): support sparse and empty workspace states`
+- modified:
+  - `src/ui/App.jsx`
+  - `src/ui/components/DebugFixtureSelector.jsx`
+  - `src/ui/components/EmptySparseState.jsx`
+  - `src/ui/components/SignalClusterCard.jsx`
+- concise summary:
+  - exposed empty, sparse, and no-evidence local prototype fixtures through the development preview selector so the browser can exercise each state directly
+  - empty workspace snapshots now render the primary empty-state block without a normal cluster list and explain that Forefield is holding back because the current snapshot is too thin to review confidently
+  - sparse workspace snapshots keep reviewable clusters visible while surfacing a non-blocking limited-coverage notice
+  - no-evidence clusters remain selectable, but their Evidence Drawer CTA is disabled and clearly marked unavailable in the current snapshot
+- browser smoke covered:
+  - rich fixture normal path
+  - empty fixture state
+  - sparse fixture state
+  - no-evidence fixture state
+  - open / close Evidence Drawer
+  - save / unsave evidence
+  - open saved evidence from Saved Tab back into drawer context
+  - watch / save / hide / undo cluster actions
+- confirmed:
+  - no runtime contract or runtime payload shape change
+  - no action semantic change
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no `BaselineBrief`
+  - no `Copilot`
+  - no `src/runtime/*` changes
+  - no `src/product/actions/*` changes
+  - no fixture data changes were required beyond the P8C-A prep fixtures
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `114 / 114` passing
+- working tree was clean after implementation commit validation
 
 ## Technical Debt
 
 ### Sparse / Empty Fixture Selector Coverage Gap
 
-- observed / introduced phase: `P8C-A`
-- reason: empty, sparse, and no-evidence local prototype fixtures now exist for read-model and test coverage, but they are not yet surfaced through the current development preview selector in the running app
-- current impact: these states are genuinely exercised in fixture/read-model tests, but manual browser walkthrough still needs future fixture-selector wiring to reach them directly from the app shell
-- risk: `P8C-B` UI implementation could be harder to smoke-test manually if the selector gap remains
-- status: accepted temporary gap
-- revisit / trigger condition: revisit during `P8C-B` UI implementation
-- potential cleanup: expose the new sample fixtures through development preview controls without changing runtime contracts or product action semantics
+- observed / introduced phase: `P8C-A`, resolved in `P8C-B`
+- reason: empty, sparse, and no-evidence local prototype fixtures initially existed only for read-model and test coverage without browser selector access
+- current impact: resolved for the current local prototype; the development preview selector now exposes these sample snapshots for manual browser smoke
+- risk: future fixture additions could drift out of the selector again if the preview control is not kept in sync
+- status: resolved for current known sparse / empty / no-evidence fixtures
+- revisit / trigger condition: revisit when adding new sample workspace states or changing selector ownership
+- potential cleanup: keep preview selector options sourced from a single fixture registry if the set of local prototype states keeps growing
 
 ### Topic Draft Generation Double Source Mock
 
@@ -731,6 +765,10 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - hides raw `monitoring_run_id` from the primary Initial Topic Map display and clarifies review-vs-topic-definition status labels
 - presents Evidence Drawer items as trust-verification records with source host labels, evidence summaries, why-included copy, cluster-level review caveats, open source links, and save / unsave actions using existing data only
 - keeps evidence summaries clearly distinct from source URLs and does not fake source title, date, excerpt, or support-role fields
+- exposes empty, sparse, and no-evidence workspace fixtures through the development preview selector for direct browser smoke
+- renders empty workspace snapshots as a primary hold-back state instead of a normal cluster review surface
+- keeps sparse workspace snapshots reviewable while surfacing a non-blocking limited-coverage notice
+- keeps no-evidence clusters selectable while disabling misleading Evidence Drawer entry points when the current snapshot has no evidence to open
 - current test count: 114 / 114 passing
 
 ## Current Product-Shell Non-Capabilities
@@ -747,8 +785,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P8C-B` UI implementation
-- focus the next pass on wiring the new empty / sparse / no-evidence fixture states into product-facing workspace handling without moving into API / DB / auth / persistence or broader evidence-model expansion by default
+- recommended next step: `P8C` closeout / review
+- focus the next pass on confirming P8C browser verification, accepted sparse / empty / no-evidence limitations, and whether the prototype is ready to move into the next planning phase without API / DB / auth / persistence expansion
 - do not move into API / DB / auth / persistence, `BaselineBrief`, or `Copilot` by default
 
 ## Pre-Flight Checklist For Future Phases
