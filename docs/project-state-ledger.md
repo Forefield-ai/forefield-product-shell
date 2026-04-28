@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P9E-B` deterministic brief synthesis closeout, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B / `P9B` / `P9C` milestones.
+This ledger records the accepted project state for `forefield-product-shell` through `P9F-B` brief traceability handoff implementation, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B / `P9B` / `P9C` / `P9E-B` milestones.
 
 ## Repository Split
 
@@ -988,6 +988,39 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - runtime contract expansion remains deferred
   - Figma-level visual design remains deferred
   - broad module-format cleanup remains deferred
+- P9F-B completed
+- P9F-B implementation commit: `cfee31504d55c47a871a3fd80aeaf00eb07ab521`
+- commit message: `feat(ui): add brief traceability handoff`
+- modified:
+  - `fixtures/product/baseline-brief-state.sample.json`
+  - `fixtures/product/baseline-brief-sparse-state.sample.json`
+  - `src/product/read-models/build-baseline-brief-state.js`
+  - `src/product/read-models/build-baseline-brief-state.browser.mjs`
+  - `src/ui/components/BriefPreview.jsx`
+  - `src/ui/TopicWorkspacePage.jsx`
+  - `src/ui/styles.css`
+  - `tests/product-workspace/build-baseline-brief-state.test.js`
+  - `tests/smoke/browser-smoke.mjs`
+- concise summary:
+  - added minimal brief trace metadata so key signal clusters can distinguish normal cluster handoff from monitoring-gap handoff, and evidence-backed takeaways can point back to a supporting cluster and supporting evidence ids without exposing decision-core internals
+  - added bounded Brief Preview CTAs for `Open cluster`, `View supporting evidence`, and `View monitoring gap`, keeping traceability inside the current Workspace / Evidence Drawer model rather than turning Brief into a report or citation system
+  - kept Brief Preview and Evidence Drawer mutually exclusive while allowing rich trace handoff into the current drawer path and no-evidence handoff back into cluster context without faking support
+- confirmed:
+  - no LLM generation
+  - no `Copilot`
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no export / markdown / copy-to-clipboard
+  - no runtime contract or runtime payload shape change
+  - no action semantic change
+  - no `src/runtime/*` changes
+  - current Brief Preview shell remains read-only and Topic-scoped
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - `npm run smoke:browser` passed against the local dev server
+  - current tests: `131 / 131` passing
+  - working tree was clean after implementation commit validation
 
 ## Technical Debt
 
@@ -1073,10 +1106,10 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ### Browser ESM / CommonJS Compatibility Bridge
 
-- observed / introduced phase: `P8A` blocker white-screen fix, amplified in `P9C` / `P9E-B`
-- reason: browser-facing UI now uses `.browser.mjs` compatibility modules while Node / runtime / tests still use original CommonJS modules; the deterministic Brief builder now has matching logic on both sides
-- current impact: fixes Vite dev-server missing-export white-screens without changing product behavior, and parity tests now guard the browser-safe Brief builder against silent drift
-- risk: duplicated logic can still drift between CommonJS and browser-safe ESM versions as synthesis logic grows
+- observed / introduced phase: `P8A` blocker white-screen fix, amplified in `P9C` / `P9E-B`, still active in `P9F-B`
+- reason: browser-facing UI now uses `.browser.mjs` compatibility modules while Node / runtime / tests still use original CommonJS modules; the deterministic Brief builder now has matching logic on both sides and now also carries traceability metadata
+- current impact: fixes Vite dev-server missing-export white-screens without changing product behavior, and parity tests now guard the browser-safe Brief builder against silent drift across synthesis and trace metadata changes
+- risk: duplicated logic can still drift between CommonJS and browser-safe ESM versions as synthesis logic and brief trace metadata grow
 - status: accepted temporary fix with parity coverage
 - revisit / trigger condition: revisit before broader module-format cleanup, Vite / browser hardening, or any larger UI / runtime flow refactor that expands browser-side product read-model imports
 - potential cleanup: standardize UI-facing `src/ui/flow`, `src/product`, and small UI-imported runtime surfaces on a single primary ESM implementation, then provide explicit Node / test compatibility wrappers instead of maintaining parallel `.js` and `.browser.mjs` sources
@@ -1103,10 +1136,10 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ### Evidence ID URL Fallback
 
-- observed / introduced phase: introduced in `P6C` / `P6D`, still active in `P7G`
-- reason: current workspace UI still allows URL fallback when an evidence item does not expose a stable canonical evidence id
-- current impact: local save / unsave and open-in-context flows still work, but the fallback is weaker than a guaranteed product-owned evidence identity
-- risk: future persistence, open-in-context, and reconciliation work may misidentify saved evidence if URL shape changes or duplicates appear
+- observed / introduced phase: introduced in `P6C` / `P6D`, still active in `P7G`, more visible in `P9F-B`
+- reason: current workspace UI still allows URL fallback when an evidence item does not expose a stable canonical evidence id, and brief traceability now depends more directly on stable evidence identity for drawer handoff and future reference surfaces
+- current impact: local save / unsave and open-in-context flows still work, and current brief traceability can hand off into the drawer, but the fallback remains weaker than a guaranteed product-owned evidence identity
+- risk: future persistence, open-in-context, export/citation, and richer evidence-reference work may misidentify saved or traced evidence if URL shape changes or duplicates appear
 - status: accepted temporary fallback
 - revisit / trigger condition: revisit before API / persistence work and before any runtime workspace payload is treated as production-facing
 - potential cleanup: require canonical `curated_evidence_record_id` throughout drawer, saved evidence, unsave, and open-in-context paths, and remove URL as the primary runtime identity fallback
@@ -1173,13 +1206,33 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ### Brief Traceability Gap
 
-- observed / introduced phase: identified during `P9E-B` review and closeout
-- reason: takeaways are now more synthesized than raw cluster summaries, but the current Brief Preview still does not give the user a stronger interaction path back from each takeaway to its supporting cluster and evidence context
-- current impact: synthesis quality is stronger, but users still rely on the surrounding Workspace and Evidence Drawer context rather than in-brief trace references when they want to verify a takeaway
-- risk: stronger synthesis without clearer traceability can reduce trust or make the Brief feel more report-like than evidence-grounded
-- status: deferred
-- revisit / trigger condition: revisit during `P9F` Brief Traceability / Evidence Reference Planning or before any export/share surface that could separate the Brief from the active Workspace context
-- potential cleanup: add bounded takeaway-to-cluster / evidence references or interactions without expanding runtime contracts or turning Brief into a generic report system
+- observed / introduced phase: identified during `P9E-B` review and closeout, reduced in `P9F-B`
+- reason: takeaways are now more synthesized than raw cluster summaries, and the product now includes a first trace handoff path back into cluster and evidence context, but it still does not provide richer in-brief trace explanation, caveat-source trace items, or share-safe evidence references
+- current impact: users can now move from key clusters and takeaways back into Workspace cluster context or the Evidence Drawer, which improves verification, but traceability still depends on staying inside the current local preview/workspace shell
+- risk: future sharing, export, or richer narrative work could still outrun the current bounded trace model and make stronger brief content feel under-referenced
+- status: reduced, partially unresolved
+- revisit / trigger condition: revisit before any export/share surface, richer caveat trace work, or LLM-assisted narrative that could separate the Brief from the active Workspace context
+- potential cleanup: add bounded trace hints for caveats and next-review actions, plus clearer evidence-reference affordances, without expanding runtime contracts or turning Brief into a generic report system
+
+### Brief State Shape Complexity
+
+- observed / introduced phase: increased in `P9F-B`
+- reason: brief traceability now adds minimal trace metadata to key clusters and evidence-backed takeaways so the preview can hand off into cluster and drawer context
+- current impact: the `BaselineBrief` state stays bounded, but it now carries more presentation-specific fields that future work could keep expanding if traceability, export, or narrative needs are layered on too casually
+- risk: the brief object can drift toward an early report/citation system or become harder to reason about if every new surface adds more embedded trace semantics
+- status: identified, keep minimal in current MVP-shell scope
+- revisit / trigger condition: revisit before export/copy work, LLM-assisted narrative, or persistence-backed Brief generation
+- potential cleanup: keep trace metadata narrowly scoped to current UI handoff needs and move any richer citation/export concerns into a separate layer instead of continually expanding the core brief state
+
+### Fixture-Driven Traceability Quality
+
+- observed / introduced phase: identified in `P9F-B`
+- reason: current traceability is exercised entirely against local fixtures and the current deterministic drawer/read-model outputs rather than noisier real evidence diversity
+- current impact: the local prototype can now demonstrate trustworthy handoff from Brief Preview back to clusters and evidence, but the trace model is still only proven against curated demo inputs
+- risk: traceability may look stronger or cleaner in prototype data than it will under real ingestion, partial evidence, or noisier source-link availability
+- status: accepted MVP-shell limitation
+- revisit / trigger condition: revisit before real ingestion/API/persistence, export/citation support, or any production-backed Brief generation path
+- potential cleanup: re-evaluate trace metadata and handoff wording once real evidence variability is available, while preserving the current product-visible boundary
 
 ### Unsupported Conclusion Risk
 
@@ -1296,6 +1349,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - treats current Brief UI as Layer 1 preview shell only; synthesis-quality improvements and LLM-assisted narrative remain deferred
 - improves deterministic Brief synthesis so key clusters are prioritized as current review priorities, evidence-backed takeaways are separated from monitoring candidates, and visible caveats remain explicit in sparse and no-evidence states
 - keeps saved / watched / hidden actions as review-emphasis signals only, without inflating evidence strength or promoting hidden clusters into negative market evidence
+- adds minimal brief trace metadata and in-preview handoff CTAs so synthesized takeaways and key clusters can return users to cluster context or the Evidence Drawer without turning Brief into a citation/report system
+- keeps no-evidence traceability bounded to monitoring-gap context rather than faking supporting evidence references
 - current test count: 131 / 131 passing
 
 ## Current Product-Shell Non-Capabilities
@@ -1314,8 +1369,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P9F` Brief Traceability / Evidence Reference Planning
-- focus the next pass on how synthesized takeaways should point back to supporting clusters and curated evidence so the Brief becomes easier to trust without turning it into export, narrative, or generic-report work
+- recommended next step: `P9F-B` closeout review and trust / traceability verification
+- focus the next pass on validating that the current trace handoff is still bounded, evidence-grounded, and does not reintroduce hidden clusters or fake support before moving into any richer Brief reference, export, or narrative work
 - do not move into LLM-assisted narrative, `Copilot`, API / DB / auth / persistence, or visual redesign by default
 
 ## Pre-Flight Checklist For Future Phases
