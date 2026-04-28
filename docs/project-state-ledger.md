@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through the P8D-B local failed / stuck UI fallback implementation and the no-evidence fixture selector follow-up, plus prior P8A / P8B / P8C closeouts.
+This ledger records the accepted project state for `forefield-product-shell` through the final P8D closeout for local baseline failed / stuck prototype fallback work, plus prior P8A / P8B / P8C closeouts.
 
 ## Repository Split
 
@@ -661,6 +661,39 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - no API / DB / auth / persistence / browser storage / `fetch`
   - no `BaselineBrief`
   - no `Copilot`
+- P8D final closeout accepted
+- P8D final state:
+  - P8D-A implementation commit: `ed1e65e213da19e716934dcab89dea48cf9061fa`
+  - P8D-A ledger commit: `c243856d6eb11049fd076c9f3de85b7403c5997a`
+  - P8D-B implementation commit: `ddd77ec3e97a95eda062b50ad8e0b2adfb2da00b`
+  - P8D-B ledger commit: `c45ba7dddd9b5e48fa7a9708f131fd5e13b958ba`
+  - P8D-B selector label clarity fix: `75c0d8458ff94d02c8e677323cb2b882afa312ab`
+  - P8D-B selector label ledger: `f342896c6398276db9a1db5edbd32824ae1c4faf`
+- manual browser verification:
+  - rich + standard baseline: PASS
+  - empty + standard baseline: PASS
+  - sparse + standard baseline: PASS
+  - no_evidence + standard baseline: PASS
+  - rich + baseline_failed: PASS
+  - rich + baseline_stuck: PASS
+  - console error check: clean
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - current tests: `118 / 118` passing
+  - working tree was clean after previous commits
+- current decision:
+  - `P8D` is accepted and closed for local baseline failed / stuck prototype fallback scope
+- explicit deferred items:
+  - malformed / missing runtime payload user-facing fallback remains deferred
+  - unknown fixture key explicit user-facing fallback remains deferred
+  - unexpected topic status fallback remains deferred
+  - production error boundary / production error tracking remains deferred
+  - API / DB / auth / persistence remains deferred
+  - `BaselineBrief` and `Copilot` remain deferred
+  - full Monitoring Health engine remains deferred
+  - Figma-level visual design remains deferred
 
 ## Technical Debt
 
@@ -906,8 +939,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P8D` closeout / acceptance review
-- focus the next pass on closing out the completed failed / stuck local fallback work and deciding whether malformed-prototype fallback planning should be the next bounded error-state iteration before any API / DB / auth / persistence or monitoring-health work
+- recommended next step: planning for malformed / unavailable prototype fallback handling before any deeper runtime, API, or monitoring-health work
+- focus the next pass on explicitly separating prototype data unavailable / malformed payload / unknown local error states from review conclusions without expanding runtime contracts
 - do not move into API / DB / auth / persistence, `BaselineBrief`, or `Copilot` by default
 
 ## Pre-Flight Checklist For Future Phases
