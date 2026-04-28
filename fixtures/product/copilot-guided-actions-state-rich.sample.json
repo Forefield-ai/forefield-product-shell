@@ -1,0 +1,328 @@
+{
+  "kind": "copilot_guided_actions",
+  "topic_ref": {
+    "topic_id": "local_topic__privacy-workflow-demand__20260428120000",
+    "topic_status": "ready",
+    "monitoring_run_id": "monitoring_run_ps__bundle-cross-source-demand-opportunities"
+  },
+  "workspace_state": "rich",
+  "summary": "Copilot guided actions are available for the current review-ready workspace.",
+  "actions": [
+    {
+      "action_id": "explain_cluster",
+      "display_name": "Explain this cluster",
+      "input_type": "signal_cluster",
+      "required_input_fields": [
+        "cluster_id"
+      ],
+      "allowed_data_sources": [
+        "topic",
+        "signal_cluster",
+        "curated_evidence",
+        "evidence_drawer_visible_fields",
+        "user_action_state",
+        "caveats"
+      ],
+      "output_shape": {
+        "kind": "guided_action_response",
+        "required_fields": [
+          "status",
+          "preliminary",
+          "what_this_currently_supports",
+          "what_remains_limited",
+          "what_to_validate_next"
+        ],
+        "optional_fields": [
+          "trace_refs",
+          "unavailable_reason",
+          "unavailable_message"
+        ]
+      },
+      "availability_rules": {
+        "allowed_workspace_states": [
+          "rich",
+          "sparse",
+          "no_evidence"
+        ],
+        "requires_visible_cluster": true
+      },
+      "state_specific_constraints": {
+        "sparse": "Use preliminary language and keep evidence limits visible.",
+        "no_evidence": "Explain the monitoring gap and do not convert it into an evidence-backed claim."
+      },
+      "forbidden_claims": [
+        "market sizing",
+        "demand certainty",
+        "purchase intent",
+        "opportunity ranking",
+        "competitor strategy claims",
+        "trend acceleration without time metadata",
+        "source metadata invention",
+        "hallucinated citations",
+        "unsupported gtm / pricing / roadmap recommendations",
+        "rewriting brief into stronger claims"
+      ],
+      "trace_behavior": {
+        "mode": "cluster_context",
+        "supports_evidence_handoff": true,
+        "supports_monitoring_gap_handoff": true
+      },
+      "availability": {
+        "is_available": true,
+        "unavailable_reason": null,
+        "summary": "Explain this cluster is available for the current review-ready workspace."
+      }
+    },
+    {
+      "action_id": "explain_brief_takeaway_support",
+      "display_name": "Explain why this Brief takeaway is supported",
+      "input_type": "baseline_brief_takeaway",
+      "required_input_fields": [
+        "cluster_id"
+      ],
+      "allowed_data_sources": [
+        "topic",
+        "baseline_brief",
+        "brief_trace_metadata",
+        "curated_evidence",
+        "evidence_drawer_visible_fields",
+        "caveats"
+      ],
+      "output_shape": {
+        "kind": "guided_action_response",
+        "required_fields": [
+          "status",
+          "preliminary",
+          "what_this_currently_supports",
+          "what_remains_limited",
+          "what_to_validate_next"
+        ],
+        "optional_fields": [
+          "trace_refs",
+          "unavailable_reason",
+          "unavailable_message"
+        ]
+      },
+      "availability_rules": {
+        "allowed_workspace_states": [
+          "rich",
+          "sparse"
+        ],
+        "requires_traceable_takeaway": true
+      },
+      "state_specific_constraints": {
+        "sparse": "Retain preliminary / limited-evidence wording and do not imply complete support."
+      },
+      "forbidden_claims": [
+        "market sizing",
+        "demand certainty",
+        "purchase intent",
+        "opportunity ranking",
+        "competitor strategy claims",
+        "trend acceleration without time metadata",
+        "source metadata invention",
+        "hallucinated citations",
+        "unsupported gtm / pricing / roadmap recommendations",
+        "rewriting brief into stronger claims"
+      ],
+      "trace_behavior": {
+        "mode": "brief_takeaway_support",
+        "requires_trace_metadata": true,
+        "supports_evidence_handoff": true
+      },
+      "availability": {
+        "is_available": true,
+        "unavailable_reason": null,
+        "summary": "Explain why this Brief takeaway is supported is available for the current review-ready workspace."
+      }
+    },
+    {
+      "action_id": "summarize_caveats",
+      "display_name": "Summarize caveats / limitations",
+      "input_type": "workspace_context",
+      "required_input_fields": [],
+      "allowed_data_sources": [
+        "topic",
+        "baseline_brief",
+        "review_summary",
+        "source_coverage",
+        "caveats",
+        "brief_trace_metadata"
+      ],
+      "output_shape": {
+        "kind": "guided_action_response",
+        "required_fields": [
+          "status",
+          "preliminary",
+          "what_this_currently_supports",
+          "what_remains_limited",
+          "what_to_validate_next"
+        ],
+        "optional_fields": [
+          "trace_refs",
+          "unavailable_reason",
+          "unavailable_message"
+        ]
+      },
+      "availability_rules": {
+        "allowed_workspace_states": [
+          "rich",
+          "sparse",
+          "no_evidence"
+        ]
+      },
+      "state_specific_constraints": {
+        "sparse": "Keep limited-evidence language visible instead of collapsing it into a weak-demand interpretation.",
+        "no_evidence": "Frame missing support as an evidence gap, not a negative demand signal."
+      },
+      "forbidden_claims": [
+        "market sizing",
+        "demand certainty",
+        "purchase intent",
+        "opportunity ranking",
+        "competitor strategy claims",
+        "trend acceleration without time metadata",
+        "source metadata invention",
+        "hallucinated citations",
+        "unsupported gtm / pricing / roadmap recommendations",
+        "rewriting brief into stronger claims"
+      ],
+      "trace_behavior": {
+        "mode": "aggregate_caveat_summary",
+        "requires_trace_metadata": false
+      },
+      "availability": {
+        "is_available": true,
+        "unavailable_reason": null,
+        "summary": "Summarize caveats / limitations is available for the current review-ready workspace."
+      }
+    },
+    {
+      "action_id": "generate_validation_questions",
+      "display_name": "Generate validation questions",
+      "input_type": "signal_cluster",
+      "required_input_fields": [
+        "cluster_id"
+      ],
+      "allowed_data_sources": [
+        "topic",
+        "signal_cluster",
+        "curated_evidence",
+        "evidence_drawer_visible_fields",
+        "user_action_state",
+        "caveats"
+      ],
+      "output_shape": {
+        "kind": "guided_action_response",
+        "required_fields": [
+          "status",
+          "preliminary",
+          "what_this_currently_supports",
+          "what_remains_limited",
+          "what_to_validate_next"
+        ],
+        "optional_fields": [
+          "trace_refs",
+          "unavailable_reason",
+          "unavailable_message"
+        ]
+      },
+      "availability_rules": {
+        "allowed_workspace_states": [
+          "rich",
+          "sparse",
+          "no_evidence"
+        ],
+        "requires_visible_cluster": true
+      },
+      "state_specific_constraints": {
+        "sparse": "Keep questions validation-oriented and preliminary.",
+        "no_evidence": "Focus on questions that would surface support, not on questions that assume support already exists."
+      },
+      "forbidden_claims": [
+        "market sizing",
+        "demand certainty",
+        "purchase intent",
+        "opportunity ranking",
+        "competitor strategy claims",
+        "trend acceleration without time metadata",
+        "source metadata invention",
+        "hallucinated citations",
+        "unsupported gtm / pricing / roadmap recommendations",
+        "rewriting brief into stronger claims"
+      ],
+      "trace_behavior": {
+        "mode": "cluster_context",
+        "supports_evidence_handoff": true,
+        "supports_monitoring_gap_handoff": true
+      },
+      "availability": {
+        "is_available": true,
+        "unavailable_reason": null,
+        "summary": "Generate validation questions is available for the current review-ready workspace."
+      }
+    },
+    {
+      "action_id": "suggest_what_to_watch_next",
+      "display_name": "Suggest what to watch next",
+      "input_type": "workspace_context",
+      "required_input_fields": [],
+      "allowed_data_sources": [
+        "topic",
+        "baseline_brief",
+        "user_action_state",
+        "review_summary",
+        "source_coverage",
+        "caveats"
+      ],
+      "output_shape": {
+        "kind": "guided_action_response",
+        "required_fields": [
+          "status",
+          "preliminary",
+          "what_this_currently_supports",
+          "what_remains_limited",
+          "what_to_validate_next"
+        ],
+        "optional_fields": [
+          "trace_refs",
+          "unavailable_reason",
+          "unavailable_message"
+        ]
+      },
+      "availability_rules": {
+        "allowed_workspace_states": [
+          "rich",
+          "sparse",
+          "no_evidence"
+        ]
+      },
+      "state_specific_constraints": {
+        "sparse": "Treat this as a watchlist for further validation, not as a ranked market view.",
+        "no_evidence": "Keep monitoring-gap language and focus on what evidence would be needed next."
+      },
+      "forbidden_claims": [
+        "market sizing",
+        "demand certainty",
+        "purchase intent",
+        "opportunity ranking",
+        "competitor strategy claims",
+        "trend acceleration without time metadata",
+        "source metadata invention",
+        "hallucinated citations",
+        "unsupported gtm / pricing / roadmap recommendations",
+        "rewriting brief into stronger claims"
+      ],
+      "trace_behavior": {
+        "mode": "workspace_monitoring",
+        "supports_evidence_handoff": false,
+        "supports_monitoring_gap_handoff": true
+      },
+      "availability": {
+        "is_available": true,
+        "unavailable_reason": null,
+        "summary": "Suggest what to watch next is available for the current review-ready workspace."
+      }
+    }
+  ]
+}
