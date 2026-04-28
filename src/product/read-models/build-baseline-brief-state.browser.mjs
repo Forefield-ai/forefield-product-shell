@@ -137,6 +137,37 @@ function buildLimitationFlags(limitations) {
   };
 }
 
+function toUserFacingLimitation(limitation) {
+  const normalized = normalizeString(limitation);
+  const lowerCased = normalized.toLowerCase();
+
+  if (!normalized) {
+    return '';
+  }
+
+  if (includesAny([lowerCased], ['limited source coverage'])) {
+    return 'Public source coverage is still limited in the current snapshot.';
+  }
+
+  if (includesAny([lowerCased], ['public source coverage incomplete', 'source coverage incomplete'])) {
+    return 'Public source coverage is incomplete for part of the current snapshot.';
+  }
+
+  if (includesAny([lowerCased], ['weak evidence', 'thin evidence basis'])) {
+    return 'Some visible support is still thin, so the current brief should be treated cautiously.';
+  }
+
+  if (includesAny([lowerCased], ['contradiction present', 'contradiction-aware'])) {
+    return 'Some visible signals still pull in different directions, so the current review is not yet settled.';
+  }
+
+  if (includesAny([lowerCased], ['no curated evidence is available for this cluster yet', 'no curated evidence available', 'evidence unavailable'])) {
+    return 'At least one visible cluster still has no curated evidence available in the current snapshot.';
+  }
+
+  return normalized;
+}
+
 function resolveTopicScope(topicScope = {}, productMainline = {}) {
   const safeTopicScope = topicScope && typeof topicScope === 'object' && !Array.isArray(topicScope)
     ? topicScope
@@ -330,9 +361,7 @@ function buildTakeawaySummary(assessment, preliminaryCaveat) {
     cautionSentences.push('Treat this as an early pattern rather than a settled conclusion.');
   }
 
-  if (assessment.limitationFlags.hasContradiction) {
-    cautionSentences.push('Visible contradiction risk is still present in the current review.');
-  } else if (assessment.limitationFlags.hasThinEvidence && !preliminaryCaveat) {
+  if (assessment.limitationFlags.hasThinEvidence && !preliminaryCaveat) {
     cautionSentences.push('Visible limitations still keep this takeaway bounded.');
   }
 
@@ -422,7 +451,7 @@ function compareSupportingEvidence(actionState) {
   return (left, right) => (
     Number(isEvidenceSaved(actionState, right.curated_evidence_record_id))
     - Number(isEvidenceSaved(actionState, left.curated_evidence_record_id))
-    || Number(Boolean(right.url)) - Number(Boolean(left.url))
+    || Number(Boolean(right.source_url)) - Number(Boolean(left.source_url))
     || left.label.localeCompare(right.label)
   );
 }
@@ -465,9 +494,11 @@ function buildEvidenceBackedTakeaways({
             source_url: normalizeString(item.url),
           }))
           .sort(compareSupportingEvidence(actionState))
-          .map(({ evidence_id, label, summary, source_url }) => ({
+          .map(({ evidence_id, label, summary, source_url }, index) => ({
             evidence_id,
-            label,
+            label: !source_url && /^public source/i.test(label)
+              ? `Evidence record ${index + 1}`
+              : label,
             summary,
             source_url,
           })),
@@ -516,12 +547,10 @@ function buildReviewSnapshot({
 function buildCaveatsAndLimitations(workspaceViewState, keySignalClusters, evidenceBackedTakeaways, preliminaryCaveat) {
   const workspaceLimitations = Array.isArray(workspaceViewState?.limitations_and_caveats?.workspace_limitations)
     ? normalizeLimitations(workspaceViewState.limitations_and_caveats.workspace_limitations)
+      .map(toUserFacingLimitation)
+      .filter(Boolean)
     : [];
   const synthesizedLimitations = [];
-
-  if (preliminaryCaveat) {
-    synthesizedLimitations.push(preliminaryCaveat);
-  }
 
   if (keySignalClusters.some((cluster) => cluster.evidence_count === 0)) {
     synthesizedLimitations.push('At least one visible cluster remains a monitoring candidate because product-visible evidence is not available in the current snapshot.');
@@ -554,6 +583,28 @@ function buildSuggestedNextReviewActions({
 }) {
   const actions = [];
   const evidenceGapClusterCount = keySignalClusters.filter((cluster) => cluster.evidence_count === 0).length;
+  const hasOnlyEvidenceGapClusters = evidenceGapClusterCount > 0 && evidenceBackedTakeaways.length === 0;
+
+  if (hasOnlyEvidenceGapClusters) {
+    const clusterNoun = evidenceGapClusterCount === 1 ? 'this cluster' : 'these clusters';
+    const takeawayNoun = evidenceGapClusterCount === 1
+      ? 'an evidence-backed takeaway'
+      : 'evidence-backed takeaways';
+
+    actions.push(`Keep ${clusterNoun} as a monitoring gap until product-visible evidence becomes available.`);
+    actions.push(`Collect or attach supporting evidence before promoting ${clusterNoun} into ${takeawayNoun}.`);
+    actions.push(`Revisit ${clusterNoun} after curated evidence becomes available.`);
+
+    if (savedClusters.length > 0) {
+      actions.push('Use saved clusters to keep the next evidence-collection pass focused without treating them as validated market priorities.');
+    }
+
+    if (watchedClusterCount > 0) {
+      actions.push('Keep watched clusters in follow-up monitoring so the next review can separate evidence gaps from better-supported findings.');
+    }
+
+    return uniqueStrings(actions);
+  }
 
   if (evidenceBackedTakeaways.length > 0) {
     actions.push('Reopen the strongest evidence-backed cluster before sharing this brief as a decision input.');

@@ -143,6 +143,24 @@ test('sparse workspace builds a preliminary baseline brief fixture', () => {
     briefState.sections.evidence_backed_takeaways[0].takeaway_summary,
     /preliminary reading/i
   );
+  assert.equal(
+    briefState.sections.evidence_backed_takeaways[0].supporting_evidence[0].label,
+    'Evidence record 1'
+  );
+  assert.doesNotMatch(
+    briefState.sections.evidence_backed_takeaways[0].supporting_evidence[0].label,
+    /public source/i
+  );
+  assert.equal(
+    briefState.sections.caveats_and_limitations.workspace_limitations.includes(
+      briefState.sections.caveats_and_limitations.preliminary_caveat
+    ),
+    false
+  );
+  assert.equal(
+    new Set(briefState.sections.caveats_and_limitations.workspace_limitations).size,
+    briefState.sections.caveats_and_limitations.workspace_limitations.length
+  );
 });
 
 test('no-evidence workspace remains eligible but excludes evidence-backed takeaways', () => {
@@ -163,6 +181,20 @@ test('no-evidence workspace remains eligible but excludes evidence-backed takeaw
   assert.match(
     briefState.sections.caveats_and_limitations.workspace_limitations.join(' '),
     /monitoring candidate|evidence-backed takeaway/i
+  );
+  assert.doesNotMatch(
+    briefState.sections.suggested_next_review_actions.join(' '),
+    /supported cluster|supported evidence item|strongest evidence-backed cluster/i
+  );
+  assert.equal(
+    briefState.sections.caveats_and_limitations.workspace_limitations.includes(
+      briefState.sections.caveats_and_limitations.preliminary_caveat
+    ),
+    false
+  );
+  assert.equal(
+    new Set(briefState.sections.caveats_and_limitations.workspace_limitations).size,
+    briefState.sections.caveats_and_limitations.workspace_limitations.length
   );
 });
 
@@ -382,6 +414,21 @@ test('baseline brief output does not synthesize forbidden unsupported claims', (
         );
       });
     });
+  });
+});
+
+test('contradiction caveats stay readable without repeating contradiction risk in every takeaway', () => {
+  const briefState = buildBaselineBriefState({
+    topicScope: SAMPLE_TOPIC_SCOPE,
+    productMainline: richProductMainlineFixture,
+  });
+
+  assert.match(
+    briefState.sections.caveats_and_limitations.workspace_limitations.join(' '),
+    /pull in different directions/i
+  );
+  briefState.sections.evidence_backed_takeaways.forEach((takeaway) => {
+    assert.doesNotMatch(takeaway.takeaway_summary, /contradiction risk/i);
   });
 });
 

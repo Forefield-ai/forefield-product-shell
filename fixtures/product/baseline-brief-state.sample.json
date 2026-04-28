@@ -71,7 +71,7 @@
       {
         "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
         "headline": "Teams want clearer privacy controls across shared workflows.",
-        "takeaway_summary": "Current review suggests that teams want clearer privacy controls across shared workflows. This takeaway is supported by 3 evidence records across 3 public source links. Visible contradiction risk is still present in the current review.",
+        "takeaway_summary": "Current review suggests that teams want clearer privacy controls across shared workflows. This takeaway is supported by 3 evidence records across 3 public source links. Visible limitations still keep this takeaway bounded.",
         "confidence_label": "directional",
         "supporting_evidence": [
           {
@@ -97,7 +97,7 @@
       {
         "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
         "headline": "Smaller teams still struggle with manual workflow handoffs.",
-        "takeaway_summary": "Current review hints that smaller teams still struggle with manual workflow handoffs. This takeaway is supported by 2 evidence records across 2 public source links. Treat this as an early pattern rather than a settled conclusion. Visible contradiction risk is still present in the current review.",
+        "takeaway_summary": "Current review hints that smaller teams still struggle with manual workflow handoffs. This takeaway is supported by 2 evidence records across 2 public source links. Treat this as an early pattern rather than a settled conclusion. Visible limitations still keep this takeaway bounded.",
         "confidence_label": "exploratory",
         "supporting_evidence": [
           {
@@ -117,9 +117,9 @@
     ],
     "caveats_and_limitations": {
       "workspace_limitations": [
-        "limited source coverage",
-        "weak evidence",
-        "contradiction present"
+        "Public source coverage is still limited in the current snapshot.",
+        "Some visible support is still thin, so the current brief should be treated cautiously.",
+        "Some visible signals still pull in different directions, so the current review is not yet settled."
       ],
       "preliminary_caveat": null
     },

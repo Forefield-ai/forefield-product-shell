@@ -59,7 +59,7 @@
         "supporting_evidence": [
           {
             "evidence_id": "curated_evidence_record_ps__bundle-sparse-payroll-onboarding__r1__s1",
-            "label": "Public source 1",
+            "label": "Evidence record 1",
             "summary": "A curated evidence record exists, but no public source link is available in this local snapshot.",
             "source_url": ""
           }
@@ -68,10 +68,9 @@
     ],
     "caveats_and_limitations": {
       "workspace_limitations": [
-        "This brief is preliminary because public source coverage is incomplete for part of the current snapshot.",
         "Public source coverage remains incomplete for part of the current snapshot, so some takeaways are evidence-backed but still thin.",
-        "public source coverage incomplete",
-        "thin evidence basis"
+        "Public source coverage is incomplete for part of the current snapshot.",
+        "Some visible support is still thin, so the current brief should be treated cautiously."
       ],
       "preliminary_caveat": "This brief is preliminary because public source coverage is incomplete for part of the current snapshot."
     },
