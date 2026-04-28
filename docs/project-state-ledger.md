@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P8B final closeout plus prior P8A browser stability and product-surface hygiene follow-ups.
+This ledger records the accepted project state for `forefield-product-shell` through P8C-A sparse / empty fixture and read-model preparation plus prior P8A / P8B closeouts.
 
 ## Repository Split
 
@@ -495,8 +495,43 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - runtime contracts, fixtures, actions, API / DB / auth / persistence, `BaselineBrief`, and `Copilot` remain deferred
 - no functional blocker remains for `P8B`
 - P8B is accepted and closed
+- P8C-A completed
+- P8C-A implementation commit: `fa016ea169d6d00d09539a88f397f477ca025060`
+- commit message: `test(fixtures): add sparse and empty workspace coverage`
+- modified:
+  - `fixtures/product/empty-product-mainline.sample.json`
+  - `fixtures/product/sparse-product-mainline.sample.json`
+  - `fixtures/product/no-evidence-product-mainline.sample.json`
+  - `tests/product-workspace/build-topic-workspace-view-state.test.js`
+- concise summary:
+  - added local prototype fixture coverage for empty workspace, sparse workspace, and no-evidence cluster states
+  - confirmed the existing workspace read-model already distinguishes `is_empty`, `is_sparse`, and `drawer_available` outputs for these fixtures without runtime contract changes
+  - added a malformed payload guard test so missing expected fields still throw clearly instead of collapsing into a false no-demand state
+- confirmed:
+  - no runtime contract or runtime payload shape change
+  - no action semantic change
+  - no UI component change
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no `BaselineBrief`
+  - no `Copilot`
+  - no `src/runtime/*` changes
+  - no `src/product/actions/*` changes
+  - no `build-topic-workspace-view-state` / browser equivalent changes were required
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `114 / 114` passing
+- working tree was clean after implementation commit validation
 
 ## Technical Debt
+
+### Sparse / Empty Fixture Selector Coverage Gap
+
+- observed / introduced phase: `P8C-A`
+- reason: empty, sparse, and no-evidence local prototype fixtures now exist for read-model and test coverage, but they are not yet surfaced through the current development preview selector in the running app
+- current impact: these states are genuinely exercised in fixture/read-model tests, but manual browser walkthrough still needs future fixture-selector wiring to reach them directly from the app shell
+- risk: `P8C-B` UI implementation could be harder to smoke-test manually if the selector gap remains
+- status: accepted temporary gap
+- revisit / trigger condition: revisit during `P8C-B` UI implementation
+- potential cleanup: expose the new sample fixtures through development preview controls without changing runtime contracts or product action semantics
 
 ### Topic Draft Generation Double Source Mock
 
@@ -696,7 +731,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - hides raw `monitoring_run_id` from the primary Initial Topic Map display and clarifies review-vs-topic-definition status labels
 - presents Evidence Drawer items as trust-verification records with source host labels, evidence summaries, why-included copy, cluster-level review caveats, open source links, and save / unsave actions using existing data only
 - keeps evidence summaries clearly distinct from source URLs and does not fake source title, date, excerpt, or support-role fields
-- current test count: 109 / 109 passing
+- current test count: 114 / 114 passing
 
 ## Current Product-Shell Non-Capabilities
 
@@ -712,8 +747,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P8C` planning
-- focus the next pass on deciding which remaining trust / interpretation gaps should be addressed next without moving into API / DB / auth / persistence or broader evidence-model expansion by default
+- recommended next step: `P8C-B` UI implementation
+- focus the next pass on wiring the new empty / sparse / no-evidence fixture states into product-facing workspace handling without moving into API / DB / auth / persistence or broader evidence-model expansion by default
 - do not move into API / DB / auth / persistence, `BaselineBrief`, or `Copilot` by default
 
 ## Pre-Flight Checklist For Future Phases
