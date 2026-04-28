@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P8E-A` prototype error / data-unavailable fallback implementation, plus prior P8A / P8B / P8C / P8D closeouts.
+This ledger records the accepted project state for `forefield-product-shell` through `P8E-B` lightweight local browser smoke harness implementation, plus prior P8A / P8B / P8C / P8D / P8E-A closeouts.
 
 ## Repository Split
 
@@ -740,8 +740,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - `npm run validate` passed
   - `npm test` passed
   - `npm run build` passed
-  - current tests: `118 / 118` passing
-  - working tree was clean after previous commits
+- current tests: `118 / 118` passing
+- working tree was clean after previous commits
 - current decision:
   - `P8E-A` is accepted and closed
 - explicit deferred items:
@@ -755,6 +755,33 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - `BaselineBrief` remains deferred
   - `Copilot` remains deferred
   - Figma-level visual design remains deferred
+- P8E-B completed
+- P8E-B implementation commit: `6a9cfe5`
+- commit message: `test(smoke): add local browser smoke harness`
+- modified:
+  - `package.json`
+  - `package-lock.json`
+  - `tests/smoke/browser-smoke.mjs`
+- concise summary:
+  - added a standalone `npm run smoke:browser` command for local-only browser smoke against a separately running Vite dev server
+  - used Playwright to cover the current high-value prototype paths without introducing screenshot testing, CI gating, or a heavy end-to-end framework
+  - verified rich / empty / sparse / no_evidence / baseline_failed / baseline_stuck prototype paths plus normal Evidence Drawer open / close behavior
+  - failed the smoke run on `console.error` or `pageerror`, while routing `favicon.ico` to an empty local response to avoid false-negative noise from the known favicon 404
+- confirmed:
+  - no runtime contract or runtime payload shape change
+  - no action semantic change
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no `BaselineBrief`
+  - no `Copilot`
+  - no `src/runtime/*` changes
+  - no `src/product/actions/*` changes
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - `npm run smoke:browser` passed against the local dev server
+  - current tests remain `118 / 118` passing because the browser smoke harness is intentionally kept separate from `npm test`
+  - working tree was clean after implementation commit validation
 
 ## Technical Debt
 
@@ -790,13 +817,13 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ### Manual Browser Smoke Burden
 
-- observed / introduced phase: identified during `P8A`-`P8D` manual verification, carried into `P8E-A`
-- reason: selector visibility, route integrity, disabled CTA semantics, and fallback-surface correctness still rely heavily on manual browser smoke because the current automated test suite is primarily fixture/read-model/runtime oriented
-- current impact: the local prototype is stable, but regression confidence for cross-screen UI wiring still depends on manual checking and operator discipline
-- risk: future narrow UI or shell changes may pass unit/build validation while still regressing selector visibility, routing, or fallback semantics
-- status: deferred
-- revisit / trigger condition: after `P8E-A` fallback surfaces stabilize; consider `P8E-B` lightweight browser smoke harness planning
-- potential cleanup: add a very small automated smoke layer for key local prototype paths without introducing a heavy new end-to-end framework
+- observed / introduced phase: identified during `P8A`-`P8D` manual verification, carried into `P8E-A`, reduced in `P8E-B`
+- reason: selector visibility, route integrity, disabled CTA semantics, and fallback-surface correctness originally relied almost entirely on manual browser smoke because the core automated test suite is fixture/read-model/runtime oriented
+- current impact: the new local-only Playwright smoke harness now covers the highest-value prototype routes and fallback states, but broader interaction flows still require selective manual verification
+- risk: future narrow UI or shell changes can still slip past unit/build validation if they affect flows outside the lightweight smoke scope
+- status: reduced, partially unresolved
+- revisit / trigger condition: revisit before adding more fallback surfaces, expanding Saved Tab / action-flow browser coverage, or deciding whether to keep the harness local-only versus making it repeatable in a wider developer workflow
+- potential cleanup: extend the lightweight harness carefully around the highest-value remaining manual checks without turning it into a heavy CI-gated end-to-end suite
 
 ### Sparse / Empty Fixture Selector Coverage Gap
 
@@ -1015,6 +1042,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - renders dedicated baseline failed and delayed fallback surfaces that keep unsuccessful local runs out of Workspace while preserving safe navigation to Home and Recent Topics
 - keeps malformed workspace payloads as explicit engineering errors instead of silently converting them into review conclusions
 - surfaces explicit local prototype data-unavailable fallbacks for unavailable fixture keys, unsupported topic statuses, missing topic routes, and malformed workspace compatibility/render paths
+- provides a local-only `npm run smoke:browser` harness for the most important prototype routes and fallback surfaces without making browser smoke part of `npm run validate`
 - current test count: 118 / 118 passing
 
 ## Current Product-Shell Non-Capabilities
@@ -1031,8 +1059,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P8E-B` lightweight browser smoke harness planning
-- focus the next pass on reducing manual browser smoke burden for selector visibility, route integrity, and fallback semantics without introducing a heavy new end-to-end test stack
+- recommended next step: engineering debt / stabilization review before the next product capability phase
+- focus the next pass on deciding whether to extend the lightweight smoke harness further, review remaining bridge / drift debts, and choose the next product capability from a cleaner stabilization baseline
 - do not move into API / DB / auth / persistence, `BaselineBrief`, or `Copilot` by default
 
 ## Pre-Flight Checklist For Future Phases
