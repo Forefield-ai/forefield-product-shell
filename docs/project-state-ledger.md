@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P8C-B sparse / empty / no-evidence UI state implementation plus prior P8A / P8B closeouts.
+This ledger records the accepted project state for `forefield-product-shell` through P8C sparse / empty / no-evidence closeout plus prior P8A / P8B closeouts.
 
 ## Repository Split
 
@@ -554,6 +554,32 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - `npm run validate`, `npm test`, and `npm run build` passed
 - current tests: `114 / 114` passing
 - working tree was clean after implementation commit validation
+- P8C final closeout accepted
+- P8C final state:
+  - P8C-A implementation commit: `fa016ea169d6d00d09539a88f397f477ca025060`
+  - P8C-A ledger commit: `6ca49d373616200c19e6cd68b5a14ff139ec064a`
+  - P8C-B implementation commit: `626691110ee0c5585b04925128b2ee1ec5fea593`
+  - P8C-B ledger commit: `1f53c5023ae16bdb8eacc532e1571d49b63704f0`
+- manual browser verification:
+  - rich fixture passed
+  - empty fixture passed
+  - sparse fixture passed
+  - no-evidence fixture passed
+  - Evidence Drawer open / close still works in the normal path
+  - Save / Unsave Evidence still works
+  - Saved Tab still works
+  - browser console warn / error check was clean
+- accepted current limitations:
+  - baseline-building failed state remains deferred
+  - malformed / missing runtime payload user-facing fallback remains deferred
+  - no API / DB / auth / persistence
+  - no live source collection
+  - no `BaselineBrief`
+  - no `Copilot`
+  - no full Monitoring Health engine
+  - no Figma-level visual redesign
+- no functional blocker remains for `P8C`
+- P8C is accepted and closed for the current local prototype sparse / empty / no-evidence state scope
 
 ## Technical Debt
 
@@ -785,8 +811,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P8C` closeout / review
-- focus the next pass on confirming P8C browser verification, accepted sparse / empty / no-evidence limitations, and whether the prototype is ready to move into the next planning phase without API / DB / auth / persistence expansion
+- recommended next step: `P8D` planning
+- focus the next pass on baseline-building failed state and malformed / missing payload user-facing fallback planning without moving into API / DB / auth / persistence, live source collection, or a full monitoring-health engine
 - do not move into API / DB / auth / persistence, `BaselineBrief`, or `Copilot` by default
 
 ## Pre-Flight Checklist For Future Phases
