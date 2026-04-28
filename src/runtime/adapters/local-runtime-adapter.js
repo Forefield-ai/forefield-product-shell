@@ -17,6 +17,9 @@ const {
   RUNTIME_MODES,
   assertCanonicalRuntimePayload,
 } = require('../contracts/runtime-adapter-contract');
+const {
+  buildLocalTopicWorkspaceData,
+} = require('../workspace/local-workspace-payload');
 
 function cloneValue(value) {
   if (value === undefined) {
@@ -181,21 +184,6 @@ function buildMonitoringRun(topic, options = {}) {
   };
 }
 
-function buildPlaceholderWorkspace(topic) {
-  return {
-    topic_id: topic.id,
-    workspace_id: topic.workspace_id,
-    topic_name: topic.topic_name,
-    topic_summary: topic.topic_summary,
-    status: topic.status,
-    review_summary: null,
-    source_coverage_summary: null,
-    signal_clusters: [],
-    curated_evidence_records: [],
-    empty_or_sparse_state: null,
-  };
-}
-
 function createLocalRuntimeAdapter(options = {}) {
   const context = ensureUserContext(options.userContext || createDemoUserContext());
   const actionStateFactory = ensureActionStateFactory(options.actionStateFactory);
@@ -340,9 +328,15 @@ function createLocalRuntimeAdapter(options = {}) {
       },
     },
     workspace: {
-      getTopicWorkspace(topicId) {
+      getTopicWorkspace(topicId, workspaceOptions = {}) {
         const topic = ensureExistingTopic(topicId);
-        const workspaceData = buildPlaceholderWorkspace(topic);
+        const activeRunId = state.activeRunIdByTopicId[topic.id];
+        const monitoringRun = activeRunId ? state.runsById[activeRunId] || null : null;
+        const workspaceData = buildLocalTopicWorkspaceData({
+          topic,
+          monitoringRun,
+          productMainline: workspaceOptions.productMainline,
+        });
 
         return assertCanonicalRuntimePayload(cloneValue(workspaceData));
       },

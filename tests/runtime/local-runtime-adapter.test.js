@@ -7,6 +7,7 @@ const {
   DEFAULT_DEMO_WORKSPACE_ID,
 } = require('../../src/runtime/session/current-user-context');
 const { PROHIBITED_RUNTIME_FIELDS } = require('../../src/runtime/contracts/runtime-adapter-contract');
+const richProductMainline = require('../../fixtures/product/rich-product-mainline.sample.json');
 
 const FIXED_NOW = '2026-04-27T20:15:00.000Z';
 
@@ -111,6 +112,52 @@ test('getRunStatus returns coarse status only', () => {
     'updated_at',
     'workspace_id',
   ]);
+});
+
+test('getTopicWorkspace returns non-placeholder workspace data for known topics', () => {
+  const adapter = createLocalRuntimeAdapter();
+  const { topic } = createConfirmedTopic(adapter);
+  const run = adapter.runs.startInitialReview(topic.id, { now: FIXED_NOW });
+  const workspaceData = adapter.workspace.getTopicWorkspace(topic.id);
+
+  assert.equal(workspaceData.workspace_id, DEFAULT_DEMO_WORKSPACE_ID);
+  assert.equal(workspaceData.topic_id, topic.id);
+  assert.equal(workspaceData.monitoring_run_id, run.id);
+  assert.deepEqual(Object.keys(workspaceData).sort(), [
+    'curated_evidence_records',
+    'initial_topic_map',
+    'monitoring_run',
+    'monitoring_run_id',
+    'signal_clusters',
+    'topic',
+    'topic_id',
+    'workspace_id',
+  ]);
+  assert.equal(Array.isArray(workspaceData.signal_clusters), true);
+  assert.equal(Array.isArray(workspaceData.curated_evidence_records), true);
+  assert.equal(workspaceData.signal_clusters.length > 0, true);
+  assert.equal(workspaceData.curated_evidence_records.length > 0, true);
+  assert.equal('action_summary' in workspaceData, false);
+  assert.equal('saved_cluster_ids' in workspaceData, false);
+  assert.equal('hidden_cluster_ids' in workspaceData, false);
+  assert.equal('watched_cluster_ids' in workspaceData, false);
+  assert.equal('saved_evidence_ids' in workspaceData, false);
+  assert.equal(workspaceData.signal_clusters[0].monitoring_run_id, run.id);
+  assert.equal(workspaceData.curated_evidence_records[0].monitoring_run_id, run.id);
+  assert.equal(
+    workspaceData.curated_evidence_records[0].id,
+    richProductMainline.curated_evidence_records[0].id
+  );
+  assertNoProhibitedFields(workspaceData);
+});
+
+test('getTopicWorkspace throws clearly for unknown topic ids', () => {
+  const adapter = createLocalRuntimeAdapter();
+
+  assert.throws(
+    () => adapter.workspace.getTopicWorkspace('missing_topic_rt__404'),
+    /Unknown topicId/i
+  );
 });
 
 test('watchCluster marks watched and does not create SavedItem', () => {

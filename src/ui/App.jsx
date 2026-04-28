@@ -9,6 +9,7 @@ import TopicWorkspaceShellPage from './pages/TopicWorkspaceShellPage';
 import minimalProductMainline from '../../fixtures/product/product-mainline.sample.json';
 import richProductMainline from '../../fixtures/product/rich-product-mainline.sample.json';
 import { createLocalRuntimeAdapter } from '../runtime/adapters/local-runtime-adapter';
+import { buildProductMainlineCompatibilityPayload } from '../runtime/workspace/local-workspace-payload';
 import { initialActionState } from '../product/actions/user-action-state';
 import {
   createLocalTopicRecord,
@@ -346,11 +347,23 @@ export default function App() {
           />
         );
       case SCREEN_IDS.TOPIC_WORKSPACE:
+        {
+          const activeRuntimeWorkspaceData = activeTopicId
+            ? runtimeAdapter.workspace.getTopicWorkspace(activeTopicId, {
+              productMainline: activeProductMainline,
+            })
+            : null;
+          const activeWorkspaceProductMainline = activeRuntimeWorkspaceData
+            ? buildProductMainlineCompatibilityPayload(activeRuntimeWorkspaceData, {
+              productMainline: activeProductMainline,
+            })
+            : activeProductMainline;
+
         return (
           <TopicWorkspaceShellPage
             topic={activeTopic}
             topicActionState={activeTopicActionState}
-            productMainline={activeProductMainline}
+            productMainline={activeWorkspaceProductMainline}
             onWatchCluster={({ clusterId, metadata }) => {
               if (!activeTopicId) {
                 return;
@@ -456,6 +469,7 @@ export default function App() {
             onCreateNewTopic={startNewTopic}
           />
         );
+        }
       case SCREEN_IDS.TOPIC_LIST:
         return (
           <TopicListPage
