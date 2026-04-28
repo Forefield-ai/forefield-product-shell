@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P8A.
+This ledger records the accepted project state for `forefield-product-shell` through P8A plus the post-smoke browser white-screen blocker fix.
 
 ## Repository Split
 
@@ -363,6 +363,29 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - `npm run validate`, `npm test`, and `npm run build` passed
 - current tests: `109 / 109` passing
 - working tree was clean after implementation commit validation
+- P8A post-smoke browser white-screen blocker fix completed
+- P8A blocker fix commit: `b2271bfcd0632c3b94cad50078cdf21e8210d474`
+- commit message: `fix(ui): add browser-safe ESM compatibility modules`
+- root cause:
+  - browser-facing React modules imported local CommonJS modules from `src/ui/flow`, `src/product`, and `src/runtime`
+  - Vite dev server served UI modules as browser ESM and failed with missing named / default export errors
+- fix summary:
+  - added browser-safe `.browser.mjs` compatibility modules
+  - switched browser-facing UI imports to those browser-safe modules
+- user manual verification:
+  - user confirmed `localhost:5173` renders pages again instead of white-screening
+- confirmed:
+  - no product behavior change
+  - no runtime payload shape change
+  - no read-model semantic change
+  - no fixture change
+  - no action semantic change
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no `BaselineBrief`
+  - no `Copilot`
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `109 / 109` passing
+- working tree was clean after bugfix commit
 
 ## Technical Debt
 
@@ -395,6 +418,16 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - status: accepted transitional compatibility
 - revisit / trigger condition: revisit before implementing `api-runtime-adapter`, a real API / `fetch` client layer, or production build hardening
 - potential cleanup: standardize UI-facing runtime / product helper modules to ESM, or introduce explicit ESM adapter wrappers, or centralize / document the compatibility boundary
+
+### Browser ESM / CommonJS Compatibility Bridge
+
+- observed / introduced phase: `P8A` blocker white-screen fix
+- reason: browser-facing UI now uses `.browser.mjs` compatibility modules while Node / runtime / tests still use original CommonJS modules
+- current impact: fixes Vite dev-server missing-export white-screens without changing product behavior
+- risk: duplicated logic can drift between CommonJS and browser-safe ESM versions
+- status: accepted temporary fix
+- revisit / trigger condition: revisit before broader module-format cleanup, Vite / browser hardening, or any larger UI / runtime flow refactor
+- potential cleanup: standardize UI-facing `src/ui/flow`, `src/product`, and small UI-imported runtime surfaces on a single primary ESM implementation, then provide explicit Node / test compatibility wrappers instead of maintaining parallel `.js` and `.browser.mjs` sources
 
 ### README Current Phase Documentation Drift
 
@@ -455,6 +488,16 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - status: accepted transitional compatibility layer
 - revisit / trigger condition: revisit before treating runtime workspace payloads as the primary long-term UI input
 - potential cleanup: add a dedicated presenter path from canonical `TopicWorkspaceData`, or refactor the existing presenter to accept canonical workspace payloads without a `productMainline` compatibility bridge
+
+### Raw Signal Focus Enum Exposure / Topic Draft Confirmation Product Surface Gap
+
+- observed / introduced phase: identified after `P8A` browser smoke
+- reason: Topic Draft Confirmation can still expose raw `signal_focus` enum-like values in the user-facing product surface
+- current impact: the flow works, but some Topic Draft confirmation text can feel implementation-shaped rather than product-authored
+- risk: users may read draft scope fields as internal taxonomy instead of clear review intent, weakening confidence before entering the Initial Review
+- status: identified, unresolved product-surface debt
+- revisit / trigger condition: revisit during a future Topic Draft UX polish phase, not during the browser white-screen blocker fix
+- potential cleanup: map signal-focus values to user-readable labels at the UI/presenter edge without changing draft generation semantics or runtime payload shape
 
 ## Current Product-Shell Capabilities
 
@@ -528,6 +571,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - frames the Topic Workspace more clearly as an Initial Topic Map / Initial Review surface rather than a fixture/import surface
 - reframes review summary, source coverage, cluster list guidance, cluster card guidance, and sparse messaging using existing data only
 - preserves current Topic Workspace behavior while making the local review surface more credible for Initial Review validation
+- uses browser-safe `.browser.mjs` compatibility modules for UI-imported local flow, product, and runtime helpers so Vite dev-server pages render without CommonJS missing-export white-screens
 - current test count: 109 / 109 passing
 
 ## Current Product-Shell Non-Capabilities
