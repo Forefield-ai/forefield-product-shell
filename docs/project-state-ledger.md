@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P8D-A local failed / stuck scenario preparation plus prior P8A / P8B / P8C closeouts.
+This ledger records the accepted project state for `forefield-product-shell` through P8D-B local failed / stuck UI fallback implementation plus prior P8A / P8B / P8C closeouts.
 
 ## Repository Split
 
@@ -606,18 +606,48 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - `npm run validate`, `npm test`, and `npm run build` passed
 - current tests: `118 / 118` passing
 - working tree was clean after implementation commit validation
+- P8D-B completed
+- P8D-B implementation commit: `ddd77ec3e97a95eda062b50ad8e0b2adfb2da00b`
+- commit message: `fix(ui): add local baseline failed and stuck fallbacks`
+- modified:
+  - `src/ui/App.jsx`
+  - `src/ui/components/DebugFixtureSelector.jsx`
+  - `src/ui/pages/BaselineBuildingPage.jsx`
+  - `src/ui/styles.css`
+- concise summary:
+  - added local-only browser-accessible baseline scenario controls so the prototype can manually exercise standard, failed, and stuck baseline runs without changing runtime or API contracts
+  - added dedicated Baseline Building fallback surfaces for failed and stuck scenarios, keeping them semantically separate from sparse, empty, and no-evidence review states
+  - preserved the success path so standard rich / minimal / empty / sparse / no-evidence fixture flows still complete into Workspace normally
+  - kept failed / stuck runs out of Workspace and provided safe navigation back to Home or Recent Topics without introducing retry persistence or production runtime semantics
+- headless browser smoke:
+  - standard local baseline scenario reached Topic Workspace successfully
+  - `baseline_failed` stopped on the failed fallback and did not enter Workspace
+  - `baseline_stuck` stopped on the delayed fallback and did not enter Workspace
+  - failed / stuck copy did not reuse sparse / empty / limited-signal semantics
+- confirmed:
+  - no runtime contract or runtime payload shape change
+  - no action semantic change
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no `BaselineBrief`
+  - no `Copilot`
+  - no `src/runtime/*` changes
+  - no `src/product/actions/*` changes
+  - no changes to `EvidenceDrawer.jsx` or `SavedTab.jsx`
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `118 / 118` passing
+- working tree was clean after implementation commit validation
 
 ## Technical Debt
 
-### Prototype Failed / Stuck UI Fallback Gap
+### Prototype Malformed Payload / Unknown Error Fallback Gap
 
-- observed / introduced phase: `P8D-A`
-- reason: local failed and stuck scenario sources now exist, but the prototype still lacks dedicated user-facing fallback states that clearly distinguish build failure, build timeout / stall, and malformed prototype payloads
-- current impact: engineering and test layers can now represent these scenarios without misclassifying them as sparse or empty review states, but the browser UI still needs explicit fallback handling
-- risk: if these scenarios are exposed before `P8D-B`, users could see an indefinite or ambiguous local building screen instead of a clearly scoped prototype failure state
-- status: accepted transitional gap
-- revisit / trigger condition: revisit during `P8D-B` failed / prototype error-state UI fallback work
-- potential cleanup: add explicit local prototype fallback surfaces for failed, stuck, malformed payload, and unknown system error states without expanding runtime / API contracts
+- observed / introduced phase: identified in `P8D-A`, reduced in `P8D-B`
+- reason: failed and stuck baseline scenarios now have dedicated local UI fallback, but malformed workspace payloads, unavailable local fixtures, and unknown prototype rendering errors still resolve as engineering failures rather than user-facing prototype fallback states
+- current impact: failed / stuck states are now clearly separated from sparse / empty review states in the browser, while malformed or unavailable prototype data still lacks a safe user-facing fallback surface
+- risk: uncaught prototype data or rendering failures could still surface as abrupt errors or blank-state regressions if they are not explicitly handled in a later phase
+- status: reduced, partially unresolved
+- revisit / trigger condition: revisit before any next-phase work that addresses malformed payload, prototype data unavailable, or unknown local error fallback handling
+- potential cleanup: add explicit local prototype fallback surfaces for malformed payload, unavailable fixture data, and unknown system error states without expanding runtime / API contracts
 
 ### Sparse / Empty Fixture Selector Coverage Gap
 
@@ -832,6 +862,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - keeps sparse workspace snapshots reviewable while surfacing a non-blocking limited-coverage notice
 - keeps no-evidence clusters selectable while disabling misleading Evidence Drawer entry points when the current snapshot has no evidence to open
 - can represent local-only baseline failed and baseline stuck scenarios at the flow layer without reclassifying them as sparse, empty, or no-evidence review states
+- exposes local-only baseline scenario controls for standard, failed, and stuck prototype runs through the development preview selector
+- renders dedicated baseline failed and delayed fallback surfaces that keep unsuccessful local runs out of Workspace while preserving safe navigation to Home and Recent Topics
 - keeps malformed workspace payloads as explicit engineering errors instead of silently converting them into review conclusions
 - current test count: 118 / 118 passing
 
@@ -849,8 +881,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P8D-B` UI fallback implementation
-- focus the next pass on user-facing baseline failed / stuck / malformed-prototype fallback states without moving into API / DB / auth / persistence, live source collection, or a full monitoring-health engine
+- recommended next step: `P8D` closeout / acceptance review
+- focus the next pass on closing out the completed failed / stuck local fallback work and deciding whether malformed-prototype fallback planning should be the next bounded error-state iteration before any API / DB / auth / persistence or monitoring-health work
 - do not move into API / DB / auth / persistence, `BaselineBrief`, or `Copilot` by default
 
 ## Pre-Flight Checklist For Future Phases
