@@ -1,0 +1,24 @@
+{
+  "monitoring_run": {
+    "id": "monitoring_run_ps__bundle-empty-payroll-onboarding",
+    "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+    "source_bundle_id": "bundle:empty-payroll-onboarding",
+    "source_bundle_status": "degraded",
+    "ingest_status": "imported",
+    "imported_at": "2026-01-03T00:00:00.000Z"
+  },
+  "topic_draft": {
+    "id": "topic_draft_ps__bundle-empty-payroll-onboarding",
+    "monitoring_run_id": "monitoring_run_ps__bundle-empty-payroll-onboarding",
+    "lifecycle_state": "draft",
+    "title": "Teams want clearer payroll onboarding guidance.",
+    "summary": "This local snapshot does not surface review-ready signal clusters yet.",
+    "limitations_summary": "Signal coverage is currently too thin to surface a reviewable cluster.",
+    "provenance": {
+      "source_bundle_id": "bundle:empty-payroll-onboarding",
+      "source_ranked_entry_ranks": []
+    }
+  },
+  "signal_clusters": [],
+  "curated_evidence_records": []
+}

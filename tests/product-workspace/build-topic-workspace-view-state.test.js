@@ -3,6 +3,9 @@ const assert = require('node:assert/strict');
 
 const minimalProductMainlineFixture = require('../../fixtures/product/product-mainline.sample.json');
 const richProductMainlineFixture = require('../../fixtures/product/rich-product-mainline.sample.json');
+const emptyProductMainlineFixture = require('../../fixtures/product/empty-product-mainline.sample.json');
+const sparseProductMainlineFixture = require('../../fixtures/product/sparse-product-mainline.sample.json');
+const noEvidenceProductMainlineFixture = require('../../fixtures/product/no-evidence-product-mainline.sample.json');
 const minimalWorkspaceViewFixture = require('../../fixtures/product/topic-workspace-view-state.sample.json');
 const richWorkspaceViewFixture = require('../../fixtures/product/rich-topic-workspace-view-state.sample.json');
 const {
@@ -57,6 +60,20 @@ test('rich product mainline fixture loads', () => {
   assert.ok(richProductMainlineFixture);
   assert.ok(Array.isArray(richProductMainlineFixture.signal_clusters));
   assert.ok(richProductMainlineFixture.signal_clusters.length > 1);
+});
+
+test('empty, sparse, and no-evidence product fixtures load', () => {
+  assert.ok(emptyProductMainlineFixture);
+  assert.ok(Array.isArray(emptyProductMainlineFixture.signal_clusters));
+  assert.equal(emptyProductMainlineFixture.signal_clusters.length, 0);
+
+  assert.ok(sparseProductMainlineFixture);
+  assert.ok(Array.isArray(sparseProductMainlineFixture.signal_clusters));
+  assert.equal(sparseProductMainlineFixture.signal_clusters.length, 1);
+
+  assert.ok(noEvidenceProductMainlineFixture);
+  assert.ok(Array.isArray(noEvidenceProductMainlineFixture.signal_clusters));
+  assert.equal(noEvidenceProductMainlineFixture.signal_clusters.length, 1);
 });
 
 test('minimal workspace view matches topic-workspace-view-state fixture', () => {
@@ -154,6 +171,77 @@ test('throws a clear error when selectedClusterId does not match any cluster', (
       selectedClusterId: 'missing_cluster',
     }),
     /Selected signal cluster not found/i
+  );
+});
+
+test('empty workspace fixture triggers an empty workspace state', () => {
+  const viewState = buildTopicWorkspaceViewState(emptyProductMainlineFixture);
+
+  assert.deepEqual(viewState.empty_or_sparse_state, {
+    is_empty: true,
+    is_sparse: true,
+    reasons: [
+      'no_signal_clusters',
+      'no_curated_evidence_records',
+      'no_public_source_refs',
+    ],
+  });
+  assert.equal(viewState.signal_cluster_sections.length, 0);
+  assert.equal(viewState.review_summary.signal_cluster_count, 0);
+  assert.equal(viewState.review_summary.curated_evidence_record_count, 0);
+  assert.equal(viewState.selected_evidence_drawer, null);
+});
+
+test('sparse workspace fixture remains reviewable but marks sparse coverage', () => {
+  const viewState = buildTopicWorkspaceViewState(sparseProductMainlineFixture);
+  const selectedClusterId = sparseProductMainlineFixture.signal_clusters[0].id;
+  const selectedDrawerViewState = buildTopicWorkspaceViewState(sparseProductMainlineFixture, {
+    selectedClusterId,
+  });
+
+  assert.deepEqual(viewState.empty_or_sparse_state, {
+    is_empty: false,
+    is_sparse: true,
+    reasons: ['no_public_source_refs'],
+  });
+  assert.equal(viewState.signal_cluster_sections.length, 1);
+  assert.equal(viewState.signal_cluster_sections[0].drawer_available, true);
+  assert.equal(viewState.signal_cluster_sections[0].evidence_count, 1);
+  assert.deepEqual(viewState.signal_cluster_sections[0].source_links, []);
+  assert.ok(selectedDrawerViewState.selected_evidence_drawer);
+  assert.equal(selectedDrawerViewState.selected_evidence_drawer.evidence_items.length, 1);
+  assert.deepEqual(selectedDrawerViewState.selected_evidence_drawer.source_links, []);
+});
+
+test('no-evidence fixture keeps the cluster visible but disables drawer availability', () => {
+  const viewState = buildTopicWorkspaceViewState(noEvidenceProductMainlineFixture);
+  const selectedClusterId = noEvidenceProductMainlineFixture.signal_clusters[0].id;
+  const selectedDrawerViewState = buildTopicWorkspaceViewState(noEvidenceProductMainlineFixture, {
+    selectedClusterId,
+  });
+
+  assert.deepEqual(viewState.empty_or_sparse_state, {
+    is_empty: false,
+    is_sparse: true,
+    reasons: ['no_curated_evidence_records', 'no_public_source_refs'],
+  });
+  assert.equal(viewState.signal_cluster_sections.length, 1);
+  assert.equal(viewState.signal_cluster_sections[0].drawer_available, false);
+  assert.equal(viewState.signal_cluster_sections[0].evidence_count, 0);
+  assert.deepEqual(viewState.signal_cluster_sections[0].source_links, []);
+  assert.ok(selectedDrawerViewState.selected_evidence_drawer);
+  assert.equal(selectedDrawerViewState.selected_evidence_drawer.evidence_items.length, 0);
+  assert.deepEqual(selectedDrawerViewState.selected_evidence_drawer.source_links, []);
+});
+
+test('malformed product mainline throws instead of collapsing into a no-demand state', () => {
+  assert.throws(
+    () => buildTopicWorkspaceViewState({
+      monitoring_run: {},
+      topic_draft: {},
+      signal_clusters: [],
+    }),
+    /productMainline\.curated_evidence_records must be an array/i
   );
 });
 

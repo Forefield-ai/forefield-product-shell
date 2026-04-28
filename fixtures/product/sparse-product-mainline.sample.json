@@ -1,0 +1,77 @@
+{
+  "monitoring_run": {
+    "id": "monitoring_run_ps__bundle-sparse-payroll-onboarding",
+    "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+    "source_bundle_id": "bundle:sparse-payroll-onboarding",
+    "source_bundle_status": "degraded",
+    "ingest_status": "imported",
+    "imported_at": "2026-01-04T00:00:00.000Z"
+  },
+  "topic_draft": {
+    "id": "topic_draft_ps__bundle-sparse-payroll-onboarding",
+    "monitoring_run_id": "monitoring_run_ps__bundle-sparse-payroll-onboarding",
+    "lifecycle_state": "draft",
+    "title": "Teams want clearer payroll onboarding guidance.",
+    "summary": "A possible signal is visible, but supporting source coverage is still incomplete.",
+    "limitations_summary": "Public source coverage is incomplete in this local prototype snapshot.",
+    "provenance": {
+      "source_bundle_id": "bundle:sparse-payroll-onboarding",
+      "source_ranked_entry_ranks": [
+        1
+      ]
+    }
+  },
+  "signal_clusters": [
+    {
+      "id": "signal_cluster_ps__bundle-sparse-payroll-onboarding__r1",
+      "parent_topic_ref": {
+        "topic_draft_id": "topic_draft_ps__bundle-sparse-payroll-onboarding"
+      },
+      "monitoring_run_id": "monitoring_run_ps__bundle-sparse-payroll-onboarding",
+      "source_ranked_entry_ref": {
+        "rank": 1
+      },
+      "headline": "Some teams may still need extra payroll onboarding support.",
+      "summary": "A possible need is visible, but the current evidence basis stays thin and incomplete.",
+      "confidence_display": {
+        "label": "exploratory",
+        "summary": "Confidence remains exploratory because a curated record exists but public-source coverage is incomplete."
+      },
+      "limitations": [
+        "public source coverage incomplete",
+        "thin evidence basis"
+      ],
+      "curated_evidence_ids": [
+        "curated_evidence_record_ps__bundle-sparse-payroll-onboarding__r1__s1"
+      ],
+      "provenance": {
+        "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+        "source_bundle_id": "bundle:sparse-payroll-onboarding"
+      }
+    }
+  ],
+  "curated_evidence_records": [
+    {
+      "id": "curated_evidence_record_ps__bundle-sparse-payroll-onboarding__r1__s1",
+      "signal_cluster_id": "signal_cluster_ps__bundle-sparse-payroll-onboarding__r1",
+      "monitoring_run_id": "monitoring_run_ps__bundle-sparse-payroll-onboarding",
+      "summary": "A curated evidence record exists, but no public source link is available in this local snapshot.",
+      "public_source_refs": [],
+      "confidence_display": {
+        "label": "exploratory",
+        "summary": "Confidence remains exploratory because a curated record exists but public-source coverage is incomplete."
+      },
+      "limitations": [
+        "public source coverage incomplete",
+        "thin evidence basis"
+      ],
+      "source_ranked_entry_ref": {
+        "rank": 1
+      },
+      "provenance": {
+        "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+        "source_bundle_id": "bundle:sparse-payroll-onboarding"
+      }
+    }
+  ]
+}

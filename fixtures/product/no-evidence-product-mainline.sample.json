@@ -1,0 +1,51 @@
+{
+  "monitoring_run": {
+    "id": "monitoring_run_ps__bundle-no-evidence-payroll-onboarding",
+    "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+    "source_bundle_id": "bundle:no-evidence-payroll-onboarding",
+    "source_bundle_status": "degraded",
+    "ingest_status": "imported",
+    "imported_at": "2026-01-05T00:00:00.000Z"
+  },
+  "topic_draft": {
+    "id": "topic_draft_ps__bundle-no-evidence-payroll-onboarding",
+    "monitoring_run_id": "monitoring_run_ps__bundle-no-evidence-payroll-onboarding",
+    "lifecycle_state": "draft",
+    "title": "Teams want clearer payroll onboarding guidance.",
+    "summary": "A cluster is visible, but no curated evidence is ready to verify yet.",
+    "limitations_summary": "This local snapshot has not surfaced curated evidence for the visible cluster yet.",
+    "provenance": {
+      "source_bundle_id": "bundle:no-evidence-payroll-onboarding",
+      "source_ranked_entry_ranks": [
+        1
+      ]
+    }
+  },
+  "signal_clusters": [
+    {
+      "id": "signal_cluster_ps__bundle-no-evidence-payroll-onboarding__r1",
+      "parent_topic_ref": {
+        "topic_draft_id": "topic_draft_ps__bundle-no-evidence-payroll-onboarding"
+      },
+      "monitoring_run_id": "monitoring_run_ps__bundle-no-evidence-payroll-onboarding",
+      "source_ranked_entry_ref": {
+        "rank": 1
+      },
+      "headline": "Teams still mention payroll onboarding friction, but supporting evidence is unavailable.",
+      "summary": "The topic is still visible for review, but no curated evidence is available to open in the drawer yet.",
+      "confidence_display": {
+        "label": "exploratory",
+        "summary": "Confidence remains exploratory because the current local snapshot has not surfaced curated evidence records yet."
+      },
+      "limitations": [
+        "no curated evidence is available for this cluster yet"
+      ],
+      "curated_evidence_ids": [],
+      "provenance": {
+        "handoff_version": "0.1.0-decision-core-boundary-handoff-v1",
+        "source_bundle_id": "bundle:no-evidence-payroll-onboarding"
+      }
+    }
+  ],
+  "curated_evidence_records": []
+}
