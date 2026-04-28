@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P8C sparse / empty / no-evidence closeout plus prior P8A / P8B closeouts.
+This ledger records the accepted project state for `forefield-product-shell` through P8D-A local failed / stuck scenario preparation plus prior P8A / P8B / P8C closeouts.
 
 ## Repository Split
 
@@ -580,8 +580,44 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - no Figma-level visual redesign
 - no functional blocker remains for `P8C`
 - P8C is accepted and closed for the current local prototype sparse / empty / no-evidence state scope
+- P8D-A completed
+- P8D-A implementation commit: `ed1e65e`
+- commit message: `test(flow): add local failed and stuck state coverage`
+- modified:
+  - `src/ui/flow/local-topic-flow.js`
+  - `src/ui/flow/local-topic-flow.browser.mjs`
+  - `src/ui/pages/BaselineBuildingPage.jsx`
+  - `tests/ui-flow/local-topic-flow.test.js`
+  - `tests/product-workspace/build-topic-workspace-view-state.test.js`
+- concise summary:
+  - added local-only baseline scenario helpers so the prototype can genuinely represent `baseline_failed` and `baseline_stuck` outcomes without changing runtime or API contracts
+  - updated `BaselineBuildingPage` to respect local scenario outcome rules, so success still auto-completes while failed / stuck scenarios stop without silently completing
+  - expanded tests to prove failed / stuck remain semantically separate from sparse / empty / no-evidence review states
+  - expanded malformed payload coverage so missing `monitoring_run` still throws instead of collapsing into a sparse or no-demand review state
+- confirmed:
+  - no runtime contract or runtime payload shape change
+  - no action semantic change
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no `BaselineBrief`
+  - no `Copilot`
+  - no `src/runtime/*` changes
+  - no `src/product/actions/*` changes
+  - no workspace review-state semantics changed for rich / empty / sparse / no-evidence fixtures
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `118 / 118` passing
+- working tree was clean after implementation commit validation
 
 ## Technical Debt
+
+### Prototype Failed / Stuck UI Fallback Gap
+
+- observed / introduced phase: `P8D-A`
+- reason: local failed and stuck scenario sources now exist, but the prototype still lacks dedicated user-facing fallback states that clearly distinguish build failure, build timeout / stall, and malformed prototype payloads
+- current impact: engineering and test layers can now represent these scenarios without misclassifying them as sparse or empty review states, but the browser UI still needs explicit fallback handling
+- risk: if these scenarios are exposed before `P8D-B`, users could see an indefinite or ambiguous local building screen instead of a clearly scoped prototype failure state
+- status: accepted transitional gap
+- revisit / trigger condition: revisit during `P8D-B` failed / prototype error-state UI fallback work
+- potential cleanup: add explicit local prototype fallback surfaces for failed, stuck, malformed payload, and unknown system error states without expanding runtime / API contracts
 
 ### Sparse / Empty Fixture Selector Coverage Gap
 
@@ -795,7 +831,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - renders empty workspace snapshots as a primary hold-back state instead of a normal cluster review surface
 - keeps sparse workspace snapshots reviewable while surfacing a non-blocking limited-coverage notice
 - keeps no-evidence clusters selectable while disabling misleading Evidence Drawer entry points when the current snapshot has no evidence to open
-- current test count: 114 / 114 passing
+- can represent local-only baseline failed and baseline stuck scenarios at the flow layer without reclassifying them as sparse, empty, or no-evidence review states
+- keeps malformed workspace payloads as explicit engineering errors instead of silently converting them into review conclusions
+- current test count: 118 / 118 passing
 
 ## Current Product-Shell Non-Capabilities
 
@@ -811,8 +849,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P8D` planning
-- focus the next pass on baseline-building failed state and malformed / missing payload user-facing fallback planning without moving into API / DB / auth / persistence, live source collection, or a full monitoring-health engine
+- recommended next step: `P8D-B` UI fallback implementation
+- focus the next pass on user-facing baseline failed / stuck / malformed-prototype fallback states without moving into API / DB / auth / persistence, live source collection, or a full monitoring-health engine
 - do not move into API / DB / auth / persistence, `BaselineBrief`, or `Copilot` by default
 
 ## Pre-Flight Checklist For Future Phases
