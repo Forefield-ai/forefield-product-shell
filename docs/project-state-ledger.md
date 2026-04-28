@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P9F-B` brief traceability handoff closeout, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B / `P9B` / `P9C` / `P9E-B` milestones.
+This ledger records the accepted project state for `forefield-product-shell` through `P10B` Copilot guided action contract implementation, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B / `P9B` / `P9C` / `P9E-B` / `P9F-B` milestones.
 
 ## Repository Split
 
@@ -1052,6 +1052,37 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - Figma-level visual design remains deferred
   - broad module-format cleanup remains deferred
   - full citation / report system remains deferred
+- P10B completed
+- P10B implementation commit: `36e6522dfd3c7d07596b3c560eb6f9751677165f`
+- commit message: `feat(product): add copilot guided action contracts`
+- modified:
+  - `docs/contracts/copilot-guided-actions.md`
+  - `src/product/copilot/build-copilot-guided-actions-state.js`
+  - `fixtures/product/copilot-guided-actions-state-rich.sample.json`
+  - `fixtures/product/copilot-guided-actions-state-sparse.sample.json`
+  - `tests/product-workspace/build-copilot-guided-actions-state.test.js`
+  - `tests/index.js`
+- concise summary:
+  - added a bounded product-layer Copilot guided-action contract model for Topic-scoped, evidence-grounded actions without introducing Copilot UI, LLM integration, or runtime expansion
+  - defined the MVP action set as `explain_cluster`, `explain_brief_takeaway_support`, `summarize_caveats`, `generate_validation_questions`, and `suggest_what_to_watch_next`, with explicit input types, allowed data sources, output shape, availability rules, and guardrails
+  - added deterministic mock outputs that preserve preliminary / no-evidence / unavailable behavior and keep saved / watched / hidden state as user emphasis rather than market validation
+- confirmed:
+  - no Copilot UI
+  - no floating assistant
+  - no open-ended chat
+  - no LLM integration
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no Brief export / markdown / copy-to-clipboard
+  - no runtime contract or runtime payload shape change
+  - no `src/runtime/*` changes
+  - no `src/ui/*` changes
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - `npm run smoke:browser` passed against the local dev server
+  - current tests: `142 / 142` passing
+  - working tree was clean after implementation commit validation
 
 ## Technical Debt
 
@@ -1265,6 +1296,26 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - revisit / trigger condition: revisit before real ingestion/API/persistence, export/citation support, or any production-backed Brief generation path
 - potential cleanup: re-evaluate trace metadata and handoff wording once real evidence variability is available, while preserving the current product-visible boundary
 
+### Copilot Scope Creep Risk
+
+- observed / introduced phase: identified in `P10A`, actively constrained in `P10B`
+- reason: once Copilot action contracts exist, future UI or LLM work may push the product from guided, Topic-scoped actions toward open-ended assistant behavior
+- current impact: the current implementation keeps the action set explicitly bounded and deterministic, which helps preserve Forefield as a monitoring workspace instead of a generic research chatbot
+- risk: future action additions or UI shells may bypass the guided-actions-only boundary and reintroduce unsupported analysis or broad assistant expectations
+- status: actively constrained in the current contract layer
+- revisit / trigger condition: revisit before any Copilot UI shell, LLM integration planning, or expansion beyond the current MVP action set
+- potential cleanup: require every new Copilot action to declare input type, allowed data sources, forbidden claims, state constraints, and availability rules before it can be added
+
+### Fixture-Driven Copilot Output Quality
+
+- observed / introduced phase: identified in `P10B`
+- reason: current Copilot outputs are deterministic mocks evaluated entirely against local fixtures, existing brief state, and product-visible demo evidence
+- current impact: the product now has a safe way to validate Copilot action boundaries and tone without introducing LLMs, but the output quality is still tuned to curated sample data
+- risk: future readers may overread these deterministic outputs as proof that Copilot is already ready for noisier real evidence, real user history, or production-backed guidance
+- status: accepted current MVP-shell limitation
+- revisit / trigger condition: revisit before Copilot UI implementation, real ingestion/API/persistence, or any LLM-assisted Copilot path
+- potential cleanup: add more diverse product-visible fixtures and state scenarios before expanding Copilot outputs beyond the current bounded mock layer
+
 ### Unsupported Conclusion Risk
 
 - observed / introduced phase: identified in `P9D`, reduced in `P9E-B`
@@ -1274,6 +1325,16 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - status: reduced, actively guarded by tests
 - revisit / trigger condition: revisit before any brief export/copy work, LLM-assisted narrative planning, or broader Brief surface expansion
 - potential cleanup: keep a small forbidden-claims regression suite and trace every stronger takeaway phrasing rule back to product-visible evidence support conditions
+
+### Unsupported LLM Narrative Risk
+
+- observed / introduced phase: identified in `P10A`, explicitly deferred in `P10B`
+- reason: Copilot now has a bounded action contract layer, which creates a tempting path to add LLM-generated narrative before the deterministic action boundary and real-evidence grounding are mature enough
+- current impact: the current phase avoids that risk by keeping outputs deterministic and contract-driven
+- risk: introducing LLM rewriting too early could turn guided actions into stronger-seeming narrative that outruns sparse evidence, monitoring gaps, or current traceability limits
+- status: deferred, monitor closely
+- revisit / trigger condition: revisit before any Copilot LLM integration planning or implementation
+- potential cleanup: require an evidence-grounded prompt boundary, stronger traceability references, and more mature real-evidence validation before introducing any LLM-generated Copilot output
 
 ### Generic Report Creep
 
@@ -1382,7 +1443,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - keeps saved / watched / hidden actions as review-emphasis signals only, without inflating evidence strength or promoting hidden clusters into negative market evidence
 - adds minimal brief trace metadata and in-preview handoff CTAs so synthesized takeaways and key clusters can return users to cluster context or the Evidence Drawer without turning Brief into a citation/report system
 - keeps no-evidence traceability bounded to monitoring-gap context rather than faking supporting evidence references
-- current test count: 131 / 131 passing
+- adds a bounded product-layer Copilot guided-action contract model with deterministic mock outputs, explicit state availability rules, and forbidden-claim guardrails without introducing any Copilot UI
+- current test count: 142 / 142 passing
 
 ## Current Product-Shell Non-Capabilities
 
@@ -1395,14 +1457,14 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - no confirmed `Topic` promotion
 - no `BaselineBrief` export / copy / persistence behavior
 - no final `BaselineBrief` synthesis-quality layer
-- no `Copilot` behavior
+- no `Copilot` UI or open-ended assistant behavior
 - no live decision-core integration
 
 ## Recommended Next Step
 
-- recommended next step: `P9G` Brief Export / Copy Readiness Planning, or a broader `P10` planning checkpoint before choosing between export/copy, `Copilot`, API / persistence, or UX polish
-- focus the next pass on whether the current brief object and traceability layer are ready to support lightweight sharing/copy behavior without drifting into a report system or outrunning evidence-grounded boundaries
-- do not move directly into LLM-assisted narrative, `Copilot`, API / DB / auth / persistence, or visual redesign by default
+- recommended next step: `P10B` closeout review and Copilot contract-boundary verification
+- focus the next pass on confirming that the current Copilot action set stays guided, Topic-scoped, evidence-grounded, and clearly separated from Brief export, open-ended chat, and LLM narrative
+- do not move directly into Copilot UI, LLM-assisted narrative, API / DB / auth / persistence, or visual redesign by default
 
 ## Pre-Flight Checklist For Future Phases
 
