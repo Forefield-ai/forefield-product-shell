@@ -135,6 +135,20 @@ export default function TopicWorkspacePage({
 
     setInteractionState((currentState) => openEvidenceDrawer(currentState, clusterId));
   };
+  const handleOpenBriefCluster = (clusterId) => {
+    if (isBriefPreviewOpen) {
+      onCloseBriefPreview?.();
+    }
+
+    setInteractionState((currentState) => selectCluster(currentState, clusterId));
+  };
+  const handleOpenBriefMonitoringGap = (clusterId) => {
+    if (isBriefPreviewOpen) {
+      onCloseBriefPreview?.();
+    }
+
+    setInteractionState((currentState) => selectCluster(currentState, clusterId));
+  };
   const handleCloseEvidenceDrawer = () => {
     setInteractionState((currentState) => closeEvidenceDrawer(currentState));
   };
@@ -316,6 +330,9 @@ export default function TopicWorkspacePage({
             <BriefPreview
               briefState={briefState}
               onClose={onCloseBriefPreview}
+              onOpenCluster={handleOpenBriefCluster}
+              onViewSupportingEvidence={handleOpenEvidenceDrawer}
+              onViewMonitoringGap={handleOpenBriefMonitoringGap}
             />
           ) : null}
         </div>

@@ -15,6 +15,9 @@ function renderMetaRows(rows) {
 export default function BriefPreview({
   briefState,
   onClose,
+  onOpenCluster,
+  onViewSupportingEvidence,
+  onViewMonitoringGap,
 }) {
   const topicContext = briefState?.sections?.topic_context || null;
   const reviewSnapshot = briefState?.sections?.review_snapshot || null;
@@ -35,6 +38,81 @@ export default function BriefPreview({
     { label: 'Monitoring intent', value: topicContext?.monitoring_intent || '' },
   ]);
   const workspaceLimitations = renderList(caveatsAndLimitations?.workspace_limitations);
+
+  function renderClusterTrace(cluster) {
+    if (!cluster?.trace_available) {
+      return null;
+    }
+
+    if (cluster.trace_kind === 'monitoring_gap') {
+      return (
+        <div className="brief-preview__trace-actions">
+          <p className="brief-preview__trace-hint">
+            This cluster remains a monitoring gap because product-visible evidence is not available in the
+            current snapshot.
+          </p>
+          <button
+            className="brief-preview__trace-button"
+            type="button"
+            onClick={() => onViewMonitoringGap?.(cluster.cluster_id)}
+          >
+            View monitoring gap
+          </button>
+        </div>
+      );
+    }
+
+    const traceHint = cluster.source_link_count > 0
+      ? `${cluster.evidence_count} evidence record${cluster.evidence_count === 1 ? '' : 's'} across ${cluster.source_link_count} public source link${cluster.source_link_count === 1 ? '' : 's'}.`
+      : `${cluster.evidence_count} evidence record${cluster.evidence_count === 1 ? '' : 's'}; public source links are unavailable in the current snapshot.`;
+
+    return (
+      <div className="brief-preview__trace-actions">
+        <p className="brief-preview__trace-hint">{traceHint}</p>
+        <div className="brief-preview__trace-buttons">
+          <button
+            className="brief-preview__trace-button brief-preview__trace-button--secondary"
+            type="button"
+            onClick={() => onOpenCluster?.(cluster.cluster_id)}
+          >
+            Open cluster
+          </button>
+          {cluster.evidence_count > 0 ? (
+            <button
+              className="brief-preview__trace-button"
+              type="button"
+              onClick={() => onViewSupportingEvidence?.(cluster.cluster_id)}
+            >
+              View supporting evidence
+            </button>
+          ) : null}
+        </div>
+      </div>
+    );
+  }
+
+  function renderTakeawayTrace(takeaway) {
+    if (!takeaway?.trace_available || !takeaway?.supporting_cluster_id) {
+      return null;
+    }
+
+    const traceHint = takeaway.source_link_count > 0
+      ? `Trace to ${takeaway.evidence_count} evidence record${takeaway.evidence_count === 1 ? '' : 's'} across ${takeaway.source_link_count} public source link${takeaway.source_link_count === 1 ? '' : 's'}.`
+      : `Trace to ${takeaway.evidence_count} evidence record${takeaway.evidence_count === 1 ? '' : 's'}; public source links are unavailable in the current snapshot.`;
+
+    return (
+      <div className="brief-preview__trace-actions">
+        <p className="brief-preview__trace-hint">{traceHint}</p>
+        <button
+          className="brief-preview__trace-button"
+          type="button"
+          onClick={() => onViewSupportingEvidence?.(takeaway.supporting_cluster_id)}
+        >
+          View supporting evidence
+        </button>
+      </div>
+    );
+  }
 
   return (
     <aside className="brief-preview" aria-label="Baseline brief preview">
@@ -122,6 +200,7 @@ export default function BriefPreview({
                   {cluster.is_watched ? <span className="brief-preview__badge">Watched</span> : null}
                 </div>
               ) : null}
+              {renderClusterTrace(cluster)}
             </article>
           ))}
         </div>
@@ -142,6 +221,7 @@ export default function BriefPreview({
                 {takeaway.takeaway_summary ? (
                   <p className="brief-preview__copy">{takeaway.takeaway_summary}</p>
                 ) : null}
+                {renderTakeawayTrace(takeaway)}
                 {Array.isArray(takeaway.supporting_evidence) && takeaway.supporting_evidence.length ? (
                   <ul className="brief-preview__supporting-evidence">
                     {takeaway.supporting_evidence.map((evidence) => (

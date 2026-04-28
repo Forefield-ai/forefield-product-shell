@@ -1673,6 +1673,42 @@ select {
   font-weight: 600;
 }
 
+.brief-preview__trace-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.brief-preview__trace-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.brief-preview__trace-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.brief-preview__trace-button {
+  padding: 9px 12px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-deep));
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(29, 95, 83, 0.18);
+}
+
+.brief-preview__trace-button--secondary {
+  border: 1px solid rgba(212, 198, 178, 0.92);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text);
+  box-shadow: none;
+}
+
 .empty-state--primary {
   padding: 28px;
   border-style: dashed;

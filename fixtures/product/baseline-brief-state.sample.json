@@ -48,7 +48,9 @@
           "limited source coverage",
           "weak evidence",
           "contradiction present"
-        ]
+        ],
+        "trace_available": true,
+        "trace_kind": "cluster"
       },
       {
         "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
@@ -64,15 +66,27 @@
           "limited source coverage",
           "weak evidence",
           "contradiction present"
-        ]
+        ],
+        "trace_available": true,
+        "trace_kind": "cluster"
       }
     ],
     "evidence_backed_takeaways": [
       {
         "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+        "supporting_cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r1",
+        "supporting_cluster_headline": "Teams want clearer privacy controls across shared workflows.",
         "headline": "Teams want clearer privacy controls across shared workflows.",
         "takeaway_summary": "Current review suggests that teams want clearer privacy controls across shared workflows. This takeaway is supported by 3 evidence records across 3 public source links. Visible limitations still keep this takeaway bounded.",
         "confidence_label": "directional",
+        "supporting_evidence_ids": [
+          "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s1",
+          "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s2",
+          "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s3"
+        ],
+        "evidence_count": 3,
+        "source_link_count": 3,
+        "trace_available": true,
         "supporting_evidence": [
           {
             "evidence_id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r1__s1",
@@ -96,9 +110,18 @@
       },
       {
         "cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
+        "supporting_cluster_id": "signal_cluster_ps__bundle-cross-source-demand-opportunities__r2",
+        "supporting_cluster_headline": "Smaller teams still struggle with manual workflow handoffs.",
         "headline": "Smaller teams still struggle with manual workflow handoffs.",
         "takeaway_summary": "Current review hints that smaller teams still struggle with manual workflow handoffs. This takeaway is supported by 2 evidence records across 2 public source links. Treat this as an early pattern rather than a settled conclusion. Visible limitations still keep this takeaway bounded.",
         "confidence_label": "exploratory",
+        "supporting_evidence_ids": [
+          "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r2__s1",
+          "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r2__s2"
+        ],
+        "evidence_count": 2,
+        "source_link_count": 2,
+        "trace_available": true,
         "supporting_evidence": [
           {
             "evidence_id": "curated_evidence_record_ps__bundle-cross-source-demand-opportunities__r2__s1",

@@ -47,15 +47,25 @@
         "limitations": [
           "public source coverage incomplete",
           "thin evidence basis"
-        ]
+        ],
+        "trace_available": true,
+        "trace_kind": "cluster"
       }
     ],
     "evidence_backed_takeaways": [
       {
         "cluster_id": "signal_cluster_ps__bundle-sparse-payroll-onboarding__r1",
+        "supporting_cluster_id": "signal_cluster_ps__bundle-sparse-payroll-onboarding__r1",
+        "supporting_cluster_headline": "Some teams may still need extra payroll onboarding support.",
         "headline": "Some teams may still need extra payroll onboarding support.",
         "takeaway_summary": "Current review hints that some teams may still need extra payroll onboarding support. This takeaway is currently supported by 1 evidence record, but public source coverage is incomplete in the current snapshot. Treat this as a preliminary reading rather than a settled conclusion.",
         "confidence_label": "exploratory",
+        "supporting_evidence_ids": [
+          "curated_evidence_record_ps__bundle-sparse-payroll-onboarding__r1__s1"
+        ],
+        "evidence_count": 1,
+        "source_link_count": 0,
+        "trace_available": true,
         "supporting_evidence": [
           {
             "evidence_id": "curated_evidence_record_ps__bundle-sparse-payroll-onboarding__r1__s1",

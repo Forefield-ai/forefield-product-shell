@@ -128,6 +128,17 @@ test('rich workspace builds the standard baseline brief fixture', () => {
     briefState.sections.review_snapshot.summary,
     /evidence-backed takeaways/i
   );
+  assert.equal(briefState.sections.key_signal_clusters[0].trace_available, true);
+  assert.equal(briefState.sections.key_signal_clusters[0].trace_kind, 'cluster');
+  assert.equal(
+    briefState.sections.evidence_backed_takeaways[0].supporting_cluster_id,
+    briefState.sections.evidence_backed_takeaways[0].cluster_id
+  );
+  assert.deepEqual(
+    briefState.sections.evidence_backed_takeaways[0].supporting_evidence_ids,
+    briefState.sections.evidence_backed_takeaways[0].supporting_evidence.map((item) => item.evidence_id)
+  );
+  assert.equal(briefState.sections.evidence_backed_takeaways[0].trace_available, true);
 });
 
 test('sparse workspace builds a preliminary baseline brief fixture', () => {
@@ -157,6 +168,9 @@ test('sparse workspace builds a preliminary baseline brief fixture', () => {
     ),
     false
   );
+  assert.equal(briefState.sections.key_signal_clusters[0].trace_kind, 'cluster');
+  assert.equal(briefState.sections.evidence_backed_takeaways[0].source_link_count, 0);
+  assert.equal(briefState.sections.evidence_backed_takeaways[0].trace_available, true);
   assert.equal(
     new Set(briefState.sections.caveats_and_limitations.workspace_limitations).size,
     briefState.sections.caveats_and_limitations.workspace_limitations.length
@@ -182,6 +196,9 @@ test('no-evidence workspace remains eligible but excludes evidence-backed takeaw
     briefState.sections.caveats_and_limitations.workspace_limitations.join(' '),
     /monitoring candidate|evidence-backed takeaway/i
   );
+  assert.equal(briefState.sections.key_signal_clusters[0].trace_available, true);
+  assert.equal(briefState.sections.key_signal_clusters[0].trace_kind, 'monitoring_gap');
+  assert.equal(briefState.sections.key_signal_clusters[0].source_link_count, 0);
   assert.doesNotMatch(
     briefState.sections.suggested_next_review_actions.join(' '),
     /supported cluster|supported evidence item|strongest evidence-backed cluster/i
@@ -301,6 +318,8 @@ test('saved, watched, and hidden state influences the brief without changing eli
   assert.equal(briefState.sections.evidence_backed_takeaways.length, 1);
   assert.equal(briefState.sections.key_signal_clusters[0].cluster_id, richProductMainlineFixture.signal_clusters[1].id);
   assert.equal(briefState.sections.key_signal_clusters[0].is_saved, true);
+  assert.equal(briefState.sections.key_signal_clusters[0].trace_available, true);
+  assert.equal(briefState.sections.key_signal_clusters[0].trace_kind, 'cluster');
   assert.equal(
     briefState.sections.evidence_backed_takeaways[0].cluster_id,
     richProductMainlineFixture.signal_clusters[1].id
@@ -333,6 +352,10 @@ test('saved evidence influences supporting-evidence order without inflating evid
   assert.equal(
     briefState.sections.evidence_backed_takeaways[0].confidence_label,
     'directional'
+  );
+  assert.equal(
+    briefState.sections.evidence_backed_takeaways[0].supporting_evidence_ids[0],
+    richProductMainlineFixture.curated_evidence_records[1].id
   );
   assert.doesNotMatch(
     briefState.sections.evidence_backed_takeaways[0].takeaway_summary,

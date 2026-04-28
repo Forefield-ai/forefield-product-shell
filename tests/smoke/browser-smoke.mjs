@@ -173,6 +173,11 @@ async function main() {
       await assertClusterVisible(page);
       const unavailableButton = page.locator('.cluster-card__button', { hasText: 'Evidence unavailable' }).first();
       await expect(unavailableButton).toBeDisabled();
+      await page.getByRole('button', { name: 'Preview Brief' }).click();
+      await expect(page.getByLabel('Baseline brief preview')).toBeVisible({ timeout: STEP_TIMEOUT_MS });
+      await page.getByRole('button', { name: 'View monitoring gap' }).click();
+      await expect(page.getByLabel('Baseline brief preview')).toHaveCount(0);
+      await expect(page.locator('.cluster-card--selected')).toHaveCount(1);
       await page.locator('.cluster-card').first().click();
       await expect(page.getByLabel('Evidence drawer')).toHaveCount(0);
     });
@@ -209,7 +214,7 @@ async function main() {
       await expect(page.locator('.evidence-drawer')).toHaveCount(0);
     });
 
-    await runScenario(browser, 'rich + standard baseline -> Brief Preview open/close', async (page) => {
+    await runScenario(browser, 'rich + standard baseline -> Brief Preview trace handoff', async (page) => {
       await selectLocalScenario(page, 'rich', 'default');
       await startTopicFlow(page);
       await expectWorkspace(page);
@@ -218,8 +223,24 @@ async function main() {
       await expect(page.getByRole('heading', { name: 'Baseline Brief' })).toBeVisible({
         timeout: STEP_TIMEOUT_MS,
       });
-      await page.getByRole('button', { name: 'Close' }).last().click();
+      await page.getByRole('button', { name: 'Open cluster' }).first().click();
       await expect(page.getByLabel('Baseline brief preview')).toHaveCount(0);
+      await expect(
+        page.locator('.cluster-card--selected').filter({
+          hasText: 'Teams want clearer privacy controls across shared workflows.',
+        })
+      ).toHaveCount(1);
+      await expect(page.getByLabel('Evidence drawer')).toHaveCount(0);
+      await page.getByRole('button', { name: 'Preview Brief' }).click();
+      await expect(page.getByLabel('Baseline brief preview')).toBeVisible({ timeout: STEP_TIMEOUT_MS });
+      await page.getByRole('button', { name: 'View supporting evidence' }).first().click();
+      await expect(page.getByLabel('Baseline brief preview')).toHaveCount(0);
+      await expect(page.locator('.evidence-drawer')).toBeVisible({ timeout: STEP_TIMEOUT_MS });
+      await expect(
+        page.getByLabel('Evidence drawer').getByRole('heading', {
+          name: 'Teams want clearer privacy controls across shared workflows.',
+        })
+      ).toBeVisible({ timeout: STEP_TIMEOUT_MS });
     });
   } finally {
     await browser.close();

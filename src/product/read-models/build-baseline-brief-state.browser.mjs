@@ -346,6 +346,20 @@ function buildKeyClusterSummary(assessment) {
   return `Keep this cluster high in the current review because current review hints that ${assessment.subject}, with product-visible support strong enough to track but still too narrow to treat as a settled conclusion.`;
 }
 
+function buildKeyClusterTrace(assessment) {
+  if (assessment.supportState === SUPPORT_STATES.EVIDENCE_GAP) {
+    return {
+      trace_available: true,
+      trace_kind: 'monitoring_gap',
+    };
+  }
+
+  return {
+    trace_available: true,
+    trace_kind: 'cluster',
+  };
+}
+
 function buildTakeawaySummary(assessment, preliminaryCaveat) {
   const opening = assessment.confidenceLabel === 'directional'
     ? `Current review suggests that ${assessment.subject}.`
@@ -442,6 +456,7 @@ function buildKeySignalClusters({
         is_saved: assessment.isSaved,
         is_watched: assessment.isWatched,
         limitations: assessment.limitations,
+        ...buildKeyClusterTrace(assessment),
       };
     })
     .sort(compareAssessmentScores);
@@ -479,29 +494,36 @@ function buildEvidenceBackedTakeaways({
         curatedEvidenceRecords,
       });
       const assessment = buildAssessment(cluster, signalCluster, actionState);
+      const supportingEvidence = evidenceDrawer.evidence_items
+        .map((item) => ({
+          evidence_id: normalizeString(item.curated_evidence_record_id),
+          curated_evidence_record_id: normalizeString(item.curated_evidence_record_id),
+          label: normalizeString(item.label),
+          summary: normalizeString(item.summary),
+          source_url: normalizeString(item.url),
+        }))
+        .sort(compareSupportingEvidence(actionState))
+        .map(({ evidence_id, label, summary, source_url }, index) => ({
+          evidence_id,
+          label: !source_url && /^public source/i.test(label)
+            ? `Evidence record ${index + 1}`
+            : label,
+          summary,
+          source_url,
+        }));
 
       return {
         cluster_id: cluster.cluster_id,
+        supporting_cluster_id: cluster.cluster_id,
+        supporting_cluster_headline: cluster.headline,
         headline: cluster.headline,
         takeaway_summary: buildTakeawaySummary(assessment, preliminaryCaveat),
         confidence_label: cluster.confidence_label,
-        supporting_evidence: evidenceDrawer.evidence_items
-          .map((item) => ({
-            evidence_id: normalizeString(item.curated_evidence_record_id),
-            curated_evidence_record_id: normalizeString(item.curated_evidence_record_id),
-            label: normalizeString(item.label),
-            summary: normalizeString(item.summary),
-            source_url: normalizeString(item.url),
-          }))
-          .sort(compareSupportingEvidence(actionState))
-          .map(({ evidence_id, label, summary, source_url }, index) => ({
-            evidence_id,
-            label: !source_url && /^public source/i.test(label)
-              ? `Evidence record ${index + 1}`
-              : label,
-            summary,
-            source_url,
-          })),
+        supporting_evidence_ids: supportingEvidence.map((item) => item.evidence_id),
+        evidence_count: cluster.evidence_count,
+        source_link_count: cluster.source_link_count,
+        trace_available: true,
+        supporting_evidence: supportingEvidence,
       };
     });
 }
