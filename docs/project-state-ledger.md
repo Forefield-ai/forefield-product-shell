@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P8E-B` lightweight local browser smoke harness implementation, plus prior P8A / P8B / P8C / P8D / P8E-A closeouts.
+This ledger records the accepted project state for `forefield-product-shell` through `P9B` baseline brief contract / fixture / read-model implementation, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B closeouts.
 
 ## Repository Split
 
@@ -814,6 +814,38 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - `BaselineBrief` remains deferred
   - `Copilot` remains deferred
   - Figma-level visual design remains deferred
+- P9B completed
+- P9B implementation commit: `3e194eb`
+- commit message: `feat(product): add baseline brief contract and read-model`
+- modified:
+  - `docs/contracts/product-object-contracts.md`
+  - `fixtures/product/baseline-brief-state.sample.json`
+  - `fixtures/product/baseline-brief-sparse-state.sample.json`
+  - `src/product/read-models/build-baseline-brief-state.js`
+  - `tests/product-workspace/build-baseline-brief-state.test.js`
+  - `tests/index.js`
+- concise summary:
+  - added a local-first `BaselineBrief` contract definition and deterministic read-model builder using only product-visible Topic scope, workspace review state, curated evidence, and saved / watched user state
+  - added standard and preliminary sample brief fixtures plus eligibility coverage for rich, sparse, empty, no-evidence, failed, stuck, malformed, unknown-fixture, and unexpected-status cases
+  - kept no-evidence clusters out of evidence-backed takeaways while allowing a preliminary brief when the workspace is still reviewable
+- confirmed:
+  - no Brief UI
+  - no markdown export
+  - no copy-to-clipboard flow
+  - no LLM generation
+  - no `Copilot`
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no runtime contract or runtime payload shape change
+  - no action semantic change
+  - no `src/runtime/*` changes
+  - no `src/ui/*` changes
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - `npm run smoke:browser` passed against the local dev server
+  - current tests: `127 / 127` passing
+  - working tree was clean after implementation commit validation
 
 ## Technical Debt
 
@@ -1075,7 +1107,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - keeps malformed workspace payloads as explicit engineering errors instead of silently converting them into review conclusions
 - surfaces explicit local prototype data-unavailable fallbacks for unavailable fixture keys, unsupported topic statuses, missing topic routes, and malformed workspace compatibility/render paths
 - provides a local-only `npm run smoke:browser` harness for the most important prototype routes and fallback surfaces without making browser smoke part of `npm run validate`
-- current test count: 118 / 118 passing
+- provides a local-first `BaselineBrief` contract and deterministic read-model using only product-visible Topic scope, workspace review state, curated evidence, and saved / watched user state
+- keeps `BaselineBrief` optional, Topic-scoped, evidence-grounded, and unavailable for empty / failed / stuck / malformed prototype states
+- current test count: 127 / 127 passing
 
 ## Current Product-Shell Non-Capabilities
 
@@ -1091,9 +1125,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: engineering debt / stabilization review before the next product capability phase
-- focus the next pass on deciding whether to extend the lightweight smoke harness further, review remaining bridge / drift debts, and choose the next product capability from a cleaner stabilization baseline
-- do not move into API / DB / auth / persistence, `BaselineBrief`, or `Copilot` by default
+- recommended next step: `P9C` local Brief preview UI planning
+- focus the next pass on defining how the new `BaselineBrief` read-model becomes a user-triggered preview surface without turning it into a default result page, generic report system, or export workflow
+- do not move into API / DB / auth / persistence, `Copilot`, or visual redesign by default
 
 ## Pre-Flight Checklist For Future Phases
 
