@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through P7E.
+This ledger records the accepted project state for `forefield-product-shell` through P7G.
 
 ## Repository Split
 
@@ -309,18 +309,102 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - runtime adapter is now used by App / Shell for topic / run / action flows
 - workspace payload migration remains deferred
 - API / DB / auth / persistence remains deferred
+- P7G completed
+- P7G implementation commit: `47671f74ca1a0268bbef1b556a2a17c854e42345`
+- local runtime workspace payload wrapper / adapter path added
+- modified:
+  - `src/runtime/workspace/local-workspace-payload.js`
+  - `src/runtime/adapters/local-runtime-adapter.js`
+  - `src/ui/App.jsx`
+  - `tests/runtime/local-runtime-adapter.test.js`
+  - `tests/runtime/local-workspace-payload.test.js`
+  - `package.json`
+- confirmed:
+  - `local-runtime-adapter.workspace.getTopicWorkspace(topicId)` now returns non-placeholder local runtime workspace payload for known topics
+  - `TopicWorkspaceData` remains canonical / stable workspace data, not `TopicWorkspaceViewState`
+  - `buildTopicWorkspaceViewState` remains the presenter / read-model builder
+  - current UI behavior remains intact for minimal / rich fixture rendering, Evidence Drawer interaction, Saved Tab, and local actions
+  - no API / DB / auth / persistence / browser storage / `fetch` added
+  - no live decision-core integration added
+  - no `BaselineBrief` added
+  - no `Copilot` added
+- `npm run validate`, `npm test`, and `npm run build` passed
+- current tests: `109 / 109` passing
+- working tree was clean after implementation commit validation
+- workspace payloads remain local / session-only and fixture-backed in this phase
+- `buildTopicWorkspaceViewState` compatibility is currently maintained through a narrow App-layer runtime workspace conversion path
 
 ## Technical Debt
 
 ### Vite CommonJS Compatibility Allowlist
 
-- `vite.config.js` was updated for CommonJS compatibility when `App.jsx` started importing `src/runtime`
-- this is accepted as build compatibility, not product behavior change
-- similar compatibility handling already exists for other UI-imported helper areas
+- observed / introduced phase: `P7E`
+- reason: `vite.config.js` was updated for CommonJS compatibility when `App.jsx` started importing `src/runtime`
+- current impact: accepted as build compatibility, not product behavior change
 - risk: the CommonJS allowlist may keep expanding as `src/runtime` grows
-- do not fix during P7E
-- revisit before implementing `api-runtime-adapter`, a real API / `fetch` client layer, or production build hardening
+- status: accepted transitional compatibility
+- revisit / trigger condition: revisit before implementing `api-runtime-adapter`, a real API / `fetch` client layer, or production build hardening
 - potential cleanup: standardize UI-facing runtime / product helper modules to ESM, or introduce explicit ESM adapter wrappers, or centralize / document the compatibility boundary
+
+### README Current Phase Documentation Drift
+
+- observed / introduced phase: pre-existing, still present in `P7G`
+- reason: `README.md` still describes the repository as `Product Shell P2 local mapper implementation`
+- current impact: new readers can misread the repo as mapper-only and miss the local MVP flow, Saved Tab, runtime docs, and runtime adapter boundary work
+- risk: onboarding, review, and planning decisions may start from the wrong project maturity baseline
+- status: identified, unresolved
+- revisit / trigger condition: revisit during the next docs housekeeping pass or before any wider handoff / demo / external sharing
+- potential cleanup: update `README.md` current phase and capabilities, and link directly to `docs/project-state-ledger.md` as the accepted source of truth
+
+### Ledger Current Test Count Drift
+
+- observed / introduced phase: pre-existing, still present in `P7G`
+- reason: the ledger currently contains historical phase-level test counts and also multiple `current test count` statements in the current-state area
+- current impact: readers can confuse historical milestone counts with the actual current suite total
+- risk: closeout notes and validation summaries may cite stale totals
+- status: identified, unresolved
+- revisit / trigger condition: revisit during the next ledger maintenance update
+- potential cleanup: keep historical test counts only inside milestone history bullets, and keep exactly one canonical current total in the current capabilities section
+
+### Evidence ID URL Fallback
+
+- observed / introduced phase: introduced in `P6C` / `P6D`, still active in `P7G`
+- reason: current workspace UI still allows URL fallback when an evidence item does not expose a stable canonical evidence id
+- current impact: local save / unsave and open-in-context flows still work, but the fallback is weaker than a guaranteed product-owned evidence identity
+- risk: future persistence, open-in-context, and reconciliation work may misidentify saved evidence if URL shape changes or duplicates appear
+- status: accepted temporary fallback
+- revisit / trigger condition: revisit before API / persistence work and before any runtime workspace payload is treated as production-facing
+- potential cleanup: require canonical `curated_evidence_record_id` throughout drawer, saved evidence, unsave, and open-in-context paths, and remove URL as the primary runtime identity fallback
+
+### Local Topic Snapshot / Runtime Topic Dual Source Transition
+
+- observed / introduced phase: introduced in `P5B`, amplified in `P7E` / `P7G`
+- reason: App / Shell local topic snapshots and runtime-backed workspace compatibility data still come from different layers during the migration
+- current impact: the product can preserve UI behavior while moving toward runtime boundaries, but topic metadata and workspace-facing display metadata still cross a transitional seam
+- risk: title, summary, status, or timing semantics can drift if both sides evolve independently
+- status: identified, unresolved transitional debt
+- revisit / trigger condition: revisit when the workspace payload path becomes the default source for Topic Workspace rendering
+- potential cleanup: consolidate Topic Workspace header / summary display around product-owned `Topic` and `InitialTopicMap` runtime objects and retire fixture-only draft semantics from the active UI path
+
+### Workspace Header / ViewState Provenance Leakage Risk
+
+- observed / introduced phase: identified in `P7G`
+- reason: `buildTopicWorkspaceViewState` currently includes `source_bundle_id`, `source_bundle_status`, `handoff_version`, and `imported_at` inside `workspace_header`. Whether every field is rendered depends on `WorkspaceHeader.jsx`, but these fields are already present in the UI-facing read model.
+- current impact: acceptable for local fixture/demo visibility, but these fields are intake / bundle / handoff provenance rather than durable customer-facing product semantics.
+- risk: future runtime/API payload work may accidentally promote ingestion provenance into customer-facing runtime contracts or confuse product-owned workspace metadata with decision-core/source-bundle metadata.
+- status: identified, unresolved.
+- revisit / trigger condition: revisit during `P7G` workspace payload wrapper implementation and before any API/runtime workspace payload is treated as production-facing.
+- potential cleanup: keep `source_bundle_id`, `source_bundle_status`, `handoff_version`, and `imported_at` out of canonical `TopicWorkspaceData` unless explicitly marked as dev/debug/intake metadata. Prefer product-owned workspace snapshot metadata such as `topic_id`, `monitoring_run_id`, `initial_topic_map_id`, `created_at`, `updated_at`, signal availability, and source coverage summary.
+
+### Runtime Workspace Compatibility Bridge
+
+- observed / introduced phase: introduced in `P7G`
+- reason: App now converts canonical local runtime workspace payloads back into a `productMainline`-compatible shape so the existing presenter and UI can remain unchanged
+- current impact: this keeps the migration low-risk and preserves current UI behavior while the runtime boundary matures
+- risk: canonical runtime payloads and compatibility payloads can drift if one side changes without the bridge being updated
+- status: accepted transitional compatibility layer
+- revisit / trigger condition: revisit before treating runtime workspace payloads as the primary long-term UI input
+- potential cleanup: add a dedicated presenter path from canonical `TopicWorkspaceData`, or refactor the existing presenter to accept canonical workspace payloads without a `productMainline` compatibility bridge
 
 ## Current Product-Shell Capabilities
 
@@ -385,9 +469,13 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - includes a local in-memory runtime adapter that wraps existing P6B action semantics
 - keeps runtime boundary validation separate from UI wiring
 - uses the local runtime adapter from App / Shell for topic draft, topic creation, topic list, baseline run, and action flows
+- returns non-placeholder local runtime workspace payloads from `local-runtime-adapter.workspace.getTopicWorkspace(topicId)` for known topics
+- wraps existing `productMainline` fixtures into canonical local workspace payloads with `topic`, `monitoring_run`, `initial_topic_map`, `signal_clusters`, and `curated_evidence_records`
+- keeps `buildTopicWorkspaceViewState` as the presenter / read-model builder rather than promoting it into a runtime contract
+- preserves current Topic Workspace rendering through a narrow App-layer compatibility conversion from runtime workspace payloads back into the existing presenter input shape
 - keeps workspace fixture / `productMainline` data flow unchanged while runtime wiring is migrated incrementally
 - keeps `selectedFixtureKey` and per-topic `fixtureKey` behavior unchanged during runtime wiring migration
-- current test count: 107 / 107 passing
+- current test count: 109 / 109 passing
 
 ## Current Product-Shell Non-Capabilities
 
@@ -403,8 +491,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next planning step: `P7F`
-- decide whether `P7F` should focus on dev fixture adapter cleanup, workspace payload migration planning, or API / persistence readiness
+- recommended next planning step: `P7H`
+- decide whether `P7H` should focus on dev fixture adapter cleanup, runtime workspace contract hardening, or API / persistence readiness
 - do not implement API / DB / auth / persistence by default
 
 ## Pre-Flight Checklist For Future Phases
