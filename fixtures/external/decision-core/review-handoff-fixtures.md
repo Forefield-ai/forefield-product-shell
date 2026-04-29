@@ -41,5 +41,28 @@ These samples are assembler-generated artifacts, not hand-authored golden fixtur
 by commit so product-shell can verify mapper compatibility with real decision-core assembler output
 without importing decision-core source code.
 
+## Cached-Source-Pipeline-Generated Samples
+
+Source repo:
+
+- `forefield-decision-core`
+
+Source commit:
+
+- `8d779f4d605863688652c5e3d4ec9aef18626c87`
+
+Source path:
+
+- `fixtures/forefield-boundary/generated/cached-source/`
+
+Copied product-shell path:
+
+- `fixtures/external/decision-core/generated/cached-source/`
+
+These samples are generated through `buildReviewHandoffFromCachedSourceArtifacts(...)`, not
+hand-authored and not assembler-only generated artifacts. They are copied by commit so
+product-shell can verify mapper compatibility with the local cached-source pipeline output while
+preserving repository independence.
+
 The samples are bounded external handoff inputs. They are not product-shell contracts and they
 must not be used to import decision-core source code or validation internals.

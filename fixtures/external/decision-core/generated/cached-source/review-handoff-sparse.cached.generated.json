@@ -1,0 +1,130 @@
+{
+  "handoff_version": "0.2.0-decision-core-review-handoff",
+  "run": {
+    "run_id": "review-run:cached-generated-sparse",
+    "session_id": "review-session:cached-generated-artifacts",
+    "run_type": "initial_review",
+    "status": "degraded",
+    "started_at": "2026-04-29T16:00:00.000Z",
+    "completed_at": "2026-04-29T16:02:00.000Z"
+  },
+  "decision_context": {
+    "topic_seed": "privacy controls for family finance apps",
+    "audience": "US parents managing shared family budgets",
+    "problem_space": "permission clarity and auditability",
+    "monitoring_intent": "cached-source-generated review handoff sample"
+  },
+  "review_state": {
+    "state": "sparse",
+    "reasons": [
+      "limited_cached_source_coverage",
+      "limited_public_source_coverage"
+    ]
+  },
+  "source_coverage": {
+    "source_family_count": 2,
+    "public_source_ref_count": 5,
+    "coverage_boundary": "Limited public evidence coverage; review remains preliminary.",
+    "source_families": [
+      "reddit_posts_and_comments",
+      "youtube_comments"
+    ]
+  },
+  "review_entries": [
+    {
+      "review_entry_id": "review-entry:review-run-cached-generated-sparse:entry-1",
+      "review_priority_order": 1,
+      "cluster_seed": {
+        "headline": "Users want clearer privacy and permission controls.",
+        "summary": "Users want a clearer and lower-friction product behavior."
+      },
+      "confidence": {
+        "label": "directional",
+        "boundary": "Claim candidate is directional because support spans 2 bounded source families while contradiction remains bounded."
+      },
+      "evidence_summary": {
+        "supporting_count": 5,
+        "contradicting_count": 0,
+        "weak_context_count": 0
+      },
+      "evidence_item_ids": [
+        "evidence-item:review-run-cached-generated-sparse:evidence-1",
+        "evidence-item:review-run-cached-generated-sparse:evidence-2",
+        "evidence-item:review-run-cached-generated-sparse:evidence-3",
+        "evidence-item:review-run-cached-generated-sparse:evidence-4",
+        "evidence-item:review-run-cached-generated-sparse:evidence-5"
+      ],
+      "caveats": [
+        "Public Reddit thread JSON can break without notice or return partial comment trees.",
+        "This fallback path is less stable than authenticated thread capture.",
+        "Public thread JSON should remain below authenticated comments-level confidence claims.",
+        "Public Reddit thread JSON fallback may break without notice or return incomplete comment trees.",
+        "This path should stay below authenticated comments-level confidence claims.",
+        "Official search.list is quota-expensive, so this capture intentionally stays bounded.",
+        "Top-level comment ordering uses an engineering mapping of Top to relevance rather than a platform-semantic equivalent.",
+        "Comments reflect selected videos and active commenters, not silent viewers."
+      ],
+      "next_validation_hint": "Prioritize this candidate for stronger review candidate validation and solution framing."
+    }
+  ],
+  "evidence_items": [
+    {
+      "evidence_item_id": "evidence-item:review-run-cached-generated-sparse:evidence-1",
+      "source_url": "https://www.reddit.com/r/productivity/comments/post_1/thread/comment_1/",
+      "source_platform": "reddit_posts_and_comments",
+      "title": "AI note taker privacy still feels unclear",
+      "summary": "I need clearer privacy controls before I can trust this with client calls.",
+      "quote_excerpt": "Users want a clearer and lower-friction product behavior.",
+      "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
+    },
+    {
+      "evidence_item_id": "evidence-item:review-run-cached-generated-sparse:evidence-2",
+      "source_url": "https://www.reddit.com/r/productivity/comments/post_1/thread/comment_2/",
+      "source_platform": "reddit_posts_and_comments",
+      "title": "AI note taker privacy still feels unclear",
+      "summary": "The workflow still makes me copy things manually when accuracy drops, and it is hard to trust the notes without double-checking.",
+      "quote_excerpt": "Users want more explicit privacy controls and trust-preserving defaults.",
+      "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
+    },
+    {
+      "evidence_item_id": "evidence-item:review-run-cached-generated-sparse:evidence-3",
+      "source_url": "https://www.youtube.com/watch?v=video_privacy_1&lc=comment_1",
+      "source_platform": "youtube_comments",
+      "title": "AI Note Taker Privacy and Accuracy Review",
+      "summary": "I need clearer privacy controls before I can trust an AI note taker with client meetings.",
+      "quote_excerpt": "Users want a clearer and lower-friction product behavior.",
+      "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
+    },
+    {
+      "evidence_item_id": "evidence-item:review-run-cached-generated-sparse:evidence-4",
+      "source_url": "https://www.youtube.com/watch?v=video_privacy_1&lc=comment_2",
+      "source_platform": "youtube_comments",
+      "title": "AI Note Taker Privacy and Accuracy Review",
+      "summary": "Accuracy still drops when the meeting switches languages, so I end up fixing the notes manually.",
+      "quote_excerpt": "Users want a clearer and lower-friction product behavior.",
+      "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
+    },
+    {
+      "evidence_item_id": "evidence-item:review-run-cached-generated-sparse:evidence-5",
+      "source_url": "https://www.youtube.com/watch?v=video_privacy_1&lc=comment_3",
+      "source_platform": "youtube_comments",
+      "title": "AI Note Taker Privacy and Accuracy Review",
+      "summary": "The workflow is better, but I still want clearer permission settings before sharing team calls.",
+      "quote_excerpt": "Users want a clearer and lower-friction product behavior.",
+      "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
+    }
+  ],
+  "limitations": [
+    "Public Reddit thread JSON can break without notice or return partial comment trees.",
+    "This fallback path is less stable than authenticated thread capture.",
+    "Public thread JSON should remain below authenticated comments-level confidence claims.",
+    "Public Reddit thread JSON fallback may break without notice or return incomplete comment trees.",
+    "This path should stay below authenticated comments-level confidence claims.",
+    "Official search.list is quota-expensive, so this capture intentionally stays bounded.",
+    "Top-level comment ordering uses an engineering mapping of Top to relevance rather than a platform-semantic equivalent.",
+    "Comments reflect selected videos and active commenters, not silent viewers.",
+    "Comment-level evidence reflects selected videos and active commenters, not silent viewers.",
+    "Review order is deterministic boundary triage order, not a score.",
+    "Sparse state means public evidence coverage remains limited."
+  ]
+}

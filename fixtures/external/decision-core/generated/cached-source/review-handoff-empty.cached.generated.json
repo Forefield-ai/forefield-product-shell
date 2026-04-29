@@ -1,0 +1,38 @@
+{
+  "handoff_version": "0.2.0-decision-core-review-handoff",
+  "run": {
+    "run_id": "review-run:cached-generated-empty",
+    "session_id": "review-session:cached-generated-artifacts",
+    "run_type": "initial_review",
+    "status": "degraded",
+    "started_at": "2026-04-29T16:00:00.000Z",
+    "completed_at": "2026-04-29T16:02:00.000Z"
+  },
+  "decision_context": {
+    "topic_seed": "privacy controls for family finance apps",
+    "audience": "US parents managing shared family budgets",
+    "problem_space": "permission clarity and auditability",
+    "monitoring_intent": "cached-source-generated review handoff sample"
+  },
+  "review_state": {
+    "state": "empty",
+    "reasons": [
+      "no_review_entries_emitted",
+      "insufficient_input_after_filtering"
+    ]
+  },
+  "source_coverage": {
+    "source_family_count": 0,
+    "public_source_ref_count": 0,
+    "coverage_boundary": "No review entries or evidence items were emitted.",
+    "source_families": []
+  },
+  "review_entries": [],
+  "evidence_items": [],
+  "limitations": [
+    "Local cached empty fixture includes captured content that should be dropped before review entry assembly.",
+    "Review order is deterministic boundary triage order, not a score.",
+    "Empty means decision-core emitted no reviewable entries in this snapshot.",
+    "Empty is not a demand conclusion."
+  ]
+}

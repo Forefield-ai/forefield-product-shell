@@ -1,0 +1,38 @@
+{
+  "handoff_version": "0.2.0-decision-core-review-handoff",
+  "run": {
+    "run_id": "review-run:cached-generated-blocked",
+    "session_id": "review-session:cached-generated-artifacts",
+    "run_type": "initial_review",
+    "status": "blocked",
+    "started_at": "2026-04-29T16:00:00.000Z",
+    "completed_at": "2026-04-29T16:02:00.000Z"
+  },
+  "decision_context": {
+    "topic_seed": "privacy controls for family finance apps",
+    "audience": "US parents managing shared family budgets",
+    "problem_space": "permission clarity and auditability",
+    "monitoring_intent": "cached-source-generated review handoff sample"
+  },
+  "review_state": {
+    "state": "blocked",
+    "reasons": [
+      "source_execution_blocked",
+      "blocked_evidence_bundle"
+    ]
+  },
+  "source_coverage": {
+    "source_family_count": 0,
+    "public_source_ref_count": 0,
+    "coverage_boundary": "Review did not reach safe evidence collection because source execution was blocked.",
+    "source_families": []
+  },
+  "review_entries": [],
+  "evidence_items": [],
+  "limitations": [
+    "Local cached blocked fixture represents operational unavailability, not a demand conclusion.",
+    "Review order is deterministic boundary triage order, not a score.",
+    "Blocked state carries operational reasons only.",
+    "No review conclusion is available from this handoff."
+  ]
+}

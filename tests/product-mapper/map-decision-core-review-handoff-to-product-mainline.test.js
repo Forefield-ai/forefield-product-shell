@@ -11,6 +11,11 @@ const generatedSparseReviewHandoff = require('../../fixtures/external/decision-c
 const generatedNoEvidenceReviewHandoff = require('../../fixtures/external/decision-core/generated/review-handoff-no-evidence.generated.json');
 const generatedEmptyReviewHandoff = require('../../fixtures/external/decision-core/generated/review-handoff-empty.generated.json');
 const generatedBlockedReviewHandoff = require('../../fixtures/external/decision-core/generated/review-handoff-blocked.generated.json');
+const cachedGeneratedReadyReviewHandoff = require('../../fixtures/external/decision-core/generated/cached-source/review-handoff-ready.cached.generated.json');
+const cachedGeneratedSparseReviewHandoff = require('../../fixtures/external/decision-core/generated/cached-source/review-handoff-sparse.cached.generated.json');
+const cachedGeneratedNoEvidenceReviewHandoff = require('../../fixtures/external/decision-core/generated/cached-source/review-handoff-no-evidence.cached.generated.json');
+const cachedGeneratedEmptyReviewHandoff = require('../../fixtures/external/decision-core/generated/cached-source/review-handoff-empty.cached.generated.json');
+const cachedGeneratedBlockedReviewHandoff = require('../../fixtures/external/decision-core/generated/cached-source/review-handoff-blocked.cached.generated.json');
 const {
   buildCopilotGuidedActionMockOutput,
   buildCopilotGuidedActionsState,
@@ -77,6 +82,13 @@ const GENERATED_REVIEW_HANDOFFS = [
   generatedNoEvidenceReviewHandoff,
   generatedEmptyReviewHandoff,
   generatedBlockedReviewHandoff,
+];
+const CACHED_SOURCE_GENERATED_REVIEW_HANDOFFS = [
+  cachedGeneratedReadyReviewHandoff,
+  cachedGeneratedSparseReviewHandoff,
+  cachedGeneratedNoEvidenceReviewHandoff,
+  cachedGeneratedEmptyReviewHandoff,
+  cachedGeneratedBlockedReviewHandoff,
 ];
 
 function clone(value) {
@@ -496,6 +508,165 @@ test('generated review_priority_order remains review order only', () => {
   assert.equal(
     productMainline.signal_clusters[0].source_review_entry_ref.review_entry_id,
     generatedReadyReviewHandoff.review_entries[0].review_entry_id
+  );
+  assert.equal(productMainline.signal_clusters[0].source_ranked_entry_ref, undefined);
+});
+
+test('cached-source generated ready review handoff maps to normal product mainline and read models', () => {
+  const productMainline = mapReviewHandoff(cachedGeneratedReadyReviewHandoff);
+  const workspaceState = buildTopicWorkspaceViewState(productMainline);
+  const briefState = buildBaselineBriefState({ productMainline });
+  const copilotState = buildCopilotGuidedActionsState({ productMainline });
+
+  assert.equal(productMainline.monitoring_run.handoff_version, DECISION_CORE_REVIEW_HANDOFF_VERSION);
+  assert.equal(productMainline.review_state.state, 'ready');
+  assert.equal(productMainline.signal_clusters.length, cachedGeneratedReadyReviewHandoff.review_entries.length);
+  assert.equal(productMainline.curated_evidence_records.length, cachedGeneratedReadyReviewHandoff.evidence_items.length);
+  assert.equal(workspaceState.review_state.state, 'ready');
+  assert.equal(workspaceState.empty_or_sparse_state.is_empty, false);
+  assert.equal(workspaceState.empty_or_sparse_state.is_sparse, false);
+  assert.equal(briefState.eligibility.is_eligible, true);
+  assert.equal(briefState.eligibility.brief_mode, BASELINE_BRIEF_MODES.STANDARD);
+  assert.equal(copilotState.workspace_state, COPILOT_WORKSPACE_STATES.RICH);
+  assertClusterEvidenceRefsResolved(productMainline);
+});
+
+test('cached-source generated sparse review handoff preserves preliminary state', () => {
+  const productMainline = mapReviewHandoff(cachedGeneratedSparseReviewHandoff);
+  const workspaceState = buildTopicWorkspaceViewState(productMainline);
+  const briefState = buildBaselineBriefState({ productMainline });
+  const copilotState = buildCopilotGuidedActionsState({ productMainline });
+
+  assert.equal(productMainline.review_state.state, 'sparse');
+  assert.equal(productMainline.curated_evidence_records.length, cachedGeneratedSparseReviewHandoff.evidence_items.length);
+  assert.equal(workspaceState.empty_or_sparse_state.state, 'sparse');
+  assert.equal(workspaceState.empty_or_sparse_state.is_sparse, true);
+  assert.ok(
+    workspaceState.empty_or_sparse_state.explicit_reasons.includes('limited_cached_source_coverage')
+  );
+  assert.equal(briefState.eligibility.is_eligible, true);
+  assert.equal(briefState.eligibility.brief_mode, BASELINE_BRIEF_MODES.PRELIMINARY);
+  assert.equal(copilotState.workspace_state, COPILOT_WORKSPACE_STATES.SPARSE);
+  assertClusterEvidenceRefsResolved(productMainline);
+});
+
+test('cached-source generated no_evidence creates visible review state without fake evidence-backed takeaways', () => {
+  const productMainline = mapReviewHandoff(cachedGeneratedNoEvidenceReviewHandoff);
+  const workspaceState = buildTopicWorkspaceViewState(productMainline);
+  const briefState = buildBaselineBriefState({ productMainline });
+  const copilotState = buildCopilotGuidedActionsState({ productMainline });
+  const explainClusterOutput = buildCopilotGuidedActionMockOutput({
+    productMainline,
+    actionId: COPILOT_ACTION_IDS.EXPLAIN_CLUSTER,
+    input: { cluster_id: productMainline.signal_clusters[0].id },
+  });
+  const explainTakeawayOutput = buildCopilotGuidedActionMockOutput({
+    productMainline,
+    actionId: COPILOT_ACTION_IDS.EXPLAIN_BRIEF_TAKEAWAY_SUPPORT,
+    input: { cluster_id: productMainline.signal_clusters[0].id },
+  });
+
+  assert.equal(productMainline.review_state.state, 'no_evidence');
+  assert.equal(productMainline.signal_clusters.length, cachedGeneratedNoEvidenceReviewHandoff.review_entries.length);
+  assert.equal(productMainline.curated_evidence_records.length, 0);
+  assert.equal(workspaceState.signal_cluster_sections[0].drawer_available, false);
+  assert.equal(workspaceState.signal_cluster_sections[0].evidence_count, 0);
+  assert.equal(briefState.eligibility.is_eligible, true);
+  assert.equal(briefState.eligibility.brief_mode, BASELINE_BRIEF_MODES.PRELIMINARY);
+  assert.equal(briefState.sections.evidence_backed_takeaways.length, 0);
+  assert.equal(copilotState.workspace_state, COPILOT_WORKSPACE_STATES.NO_EVIDENCE);
+  assert.equal(explainClusterOutput.status, COPILOT_OUTPUT_STATUS.AVAILABLE);
+  assert.equal(explainClusterOutput.trace_refs[0].trace_kind, 'monitoring_gap');
+  assert.equal(explainTakeawayOutput.status, COPILOT_OUTPUT_STATUS.UNAVAILABLE);
+});
+
+test('cached-source generated empty review handoff keeps safe empty behavior without demand conclusions', () => {
+  const productMainline = mapReviewHandoff(cachedGeneratedEmptyReviewHandoff);
+  const workspaceState = buildTopicWorkspaceViewState(productMainline);
+  const briefState = buildBaselineBriefState({ productMainline });
+  const copilotState = buildCopilotGuidedActionsState({ productMainline });
+
+  assert.equal(productMainline.review_state.state, 'empty');
+  assert.equal(productMainline.signal_clusters.length, 0);
+  assert.equal(productMainline.curated_evidence_records.length, 0);
+  assert.equal(workspaceState.empty_or_sparse_state.is_empty, true);
+  assert.equal(briefState.eligibility.is_eligible, false);
+  assert.equal(
+    briefState.eligibility.unavailable_reason,
+    BASELINE_BRIEF_UNAVAILABLE_REASONS.EMPTY_WORKSPACE
+  );
+  assert.equal(copilotState.workspace_state, COPILOT_WORKSPACE_STATES.EMPTY);
+  assertNoForbiddenPhrases({
+    productMainline,
+    workspaceState,
+    briefState,
+  });
+});
+
+test('cached-source generated blocked review handoff maps to safe unavailable state without market analysis', () => {
+  const productMainline = mapReviewHandoff(cachedGeneratedBlockedReviewHandoff);
+  const workspaceState = buildTopicWorkspaceViewState(productMainline);
+  const briefState = buildBaselineBriefState({ productMainline });
+  const copilotState = buildCopilotGuidedActionsState({ productMainline });
+  const summarizeOutput = buildCopilotGuidedActionMockOutput({
+    productMainline,
+    actionId: COPILOT_ACTION_IDS.SUMMARIZE_CAVEATS,
+  });
+
+  assert.equal(productMainline.review_state.state, 'blocked');
+  assert.equal(productMainline.monitoring_run.ingest_status, 'blocked');
+  assert.equal(productMainline.signal_clusters.length, 0);
+  assert.equal(productMainline.curated_evidence_records.length, 0);
+  assert.equal(workspaceState.empty_or_sparse_state.is_blocked, true);
+  assert.equal(workspaceState.empty_or_sparse_state.is_empty, false);
+  assert.equal(briefState.eligibility.is_eligible, false);
+  assert.equal(
+    briefState.eligibility.unavailable_reason,
+    BASELINE_BRIEF_UNAVAILABLE_REASONS.REVIEW_BLOCKED
+  );
+  assert.equal(copilotState.workspace_state, COPILOT_WORKSPACE_STATES.REVIEW_BLOCKED);
+  assert.equal(summarizeOutput.status, COPILOT_OUTPUT_STATUS.UNAVAILABLE);
+  assertNoForbiddenPhrases({
+    productMainline,
+    workspaceState,
+    briefState,
+    summarizeOutput,
+  });
+});
+
+test('cached-source generated evidence ids become product-owned ids without dangling refs', () => {
+  const productMainline = mapReviewHandoff(cachedGeneratedReadyReviewHandoff);
+  const coreEvidenceIds = new Set(cachedGeneratedReadyReviewHandoff.evidence_items.map((item) => item.evidence_item_id));
+
+  productMainline.curated_evidence_records.forEach((record) => {
+    assert.match(record.id, /^curated_evidence_record_ps__/);
+    assert.equal(coreEvidenceIds.has(record.id), false);
+    assert.equal(
+      coreEvidenceIds.has(record.source_review_evidence_ref.evidence_item_id),
+      true
+    );
+  });
+  assertClusterEvidenceRefsResolved(productMainline);
+});
+
+test('cached-source generated review handoff outputs exclude prohibited internals', () => {
+  CACHED_SOURCE_GENERATED_REVIEW_HANDOFFS.forEach((handoff) => {
+    assertNoProhibitedKeys(mapReviewHandoff(handoff));
+  });
+});
+
+test('cached-source generated review_priority_order remains review order only', () => {
+  const productMainline = mapReviewHandoff(cachedGeneratedReadyReviewHandoff);
+  const keys = collectKeys(productMainline);
+
+  assert.equal(keys.includes('review_priority_order'), true);
+  assert.equal(keys.includes('opportunity_score'), false);
+  assert.equal(keys.includes('market_opportunity_score'), false);
+  assert.equal(keys.includes('business_value_score'), false);
+  assert.equal(productMainline.signal_clusters[0].source_review_entry_ref.review_priority_order, 1);
+  assert.equal(
+    productMainline.signal_clusters[0].source_review_entry_ref.review_entry_id,
+    cachedGeneratedReadyReviewHandoff.review_entries[0].review_entry_id
   );
   assert.equal(productMainline.signal_clusters[0].source_ranked_entry_ref, undefined);
 });
