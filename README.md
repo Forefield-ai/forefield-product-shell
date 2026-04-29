@@ -2,7 +2,7 @@
 
 `forefield-product-shell` is the Forefield customer-facing product shell.
 
-Its purpose is to consume external `DecisionCoreBoundaryHandoff` inputs and turn them into product-facing Topic workspaces, evidence review flows, saved items, briefs, and Copilot-assisted workflows over time.
+Its purpose is to consume external `DecisionCoreBoundaryHandoff` and `DecisionCoreReviewHandoff` inputs and turn them into product-facing Topic workspaces, evidence review flows, saved items, briefs, and Copilot-assisted workflows over time.
 
 ## Repository Position
 
@@ -40,27 +40,29 @@ This repository is intentionally separate from `forefield-decision-core`.
 
 ## External Dependency
 
-This repository depends on `DecisionCoreBoundaryHandoff` as an external, versioned, bounded input from `forefield-decision-core`.
+This repository depends on external, versioned, bounded handoff artifacts from `forefield-decision-core`, including `DecisionCoreBoundaryHandoff` v0.1 and `DecisionCoreReviewHandoff` v0.2.
 
-Product-shell must consume that handoff without copying decision-core pipeline code or recreating decision-core internal models as product-shell domain objects.
+Product-shell must consume those handoffs without copying decision-core pipeline code or recreating decision-core internal models as product-shell domain objects.
 
 ## Current Phase
 
-Product Shell P2 local mapper implementation.
+Product Shell P11D review handoff mapper implementation.
 
-P2 is limited to:
+P11D is limited to:
 
-- repository boundary and contract documentation
-- a local static-fixture-driven handoff-to-product mapper
-- a computed Evidence Drawer read-model builder
-- zero-dependency validation and tests
+- a dedicated `DecisionCoreReviewHandoff` v0.2 mapper
+- copied external review handoff samples for ready / sparse / no_evidence / empty / blocked states
+- minimal read-model compatibility for explicit review states
+- mapper and read-model tests
 
-## Non-Goals For P2
+## Non-Goals For P11D
 
-- no UI implementation
+- no UI changes
 - no API implementation
 - no DB implementation
-- no non-Node third-party dependencies
+- no persistence
+- no live ingestion
+- no LLM integration
 - no copied decision-core source logic
 - no recreation of `OpportunitySet`, `OpportunityCard`, `OpportunityScore`, or `ClaimTrace`
 
@@ -71,3 +73,4 @@ P2 is limited to:
 - P2: handoff-to-product mapper and local read-model builder
 - P3: mock Topic Workspace state
 - P4: UI/API/DB after contracts stabilize
+- P11D: review handoff mapper and explicit review-state compatibility

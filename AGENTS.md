@@ -4,7 +4,7 @@
 
 This repository is the customer-facing product shell for Forefield.
 
-It exists to turn external `DecisionCoreBoundaryHandoff` inputs into user-facing Topic workspaces, evidence review flows, saved items, briefs, and Copilot-assisted product workflows.
+It exists to turn external `DecisionCoreBoundaryHandoff` and `DecisionCoreReviewHandoff` inputs into user-facing Topic workspaces, evidence review flows, saved items, briefs, and Copilot-assisted product workflows.
 
 This repository is not the decision-core pipeline host.
 
@@ -40,8 +40,8 @@ This repository is not the decision-core pipeline host.
 
 ## External Boundary Rule
 
-- `DecisionCoreBoundaryHandoff` is the only accepted decision-core input for now.
-- Treat it as external, versioned input.
+- `DecisionCoreBoundaryHandoff` v0.1 and `DecisionCoreReviewHandoff` v0.2 are the accepted decision-core inputs for now.
+- Treat them as external, versioned inputs.
 - Do not import or recreate decision-core internals.
 - Do not use `OpportunitySet`, `OpportunityCard`, `OpportunityScore`, or `ClaimTrace` as product-shell domain models.
 - Preserve provenance back to the handoff, but do not expose internal decision-core IDs as user-facing product IDs.
@@ -50,7 +50,7 @@ This repository is not the decision-core pipeline host.
 
 The intended product-layer mainline is:
 
-`DecisionCoreBoundaryHandoff -> MonitoringRun -> Topic / TopicDraft -> SignalCluster -> CuratedEvidenceRecord -> EvidenceDrawerState -> SavedItem / UserAction / BaselineBrief -> Copilot-guided actions`
+`DecisionCoreBoundaryHandoff | DecisionCoreReviewHandoff -> MonitoringRun -> Topic / TopicDraft -> SignalCluster -> CuratedEvidenceRecord -> EvidenceDrawerState -> SavedItem / UserAction / BaselineBrief -> Copilot-guided actions`
 
 This is a product-layer mainline, not a decision-core pipeline.
 
@@ -89,8 +89,8 @@ Hard guardrails:
 
 ## Runtime Boundary Rule
 
-- Product-shell runtime should first consume static `DecisionCoreBoundaryHandoff` fixtures.
-- Then add a local mapper.
+- Product-shell runtime should first consume static decision-core handoff fixtures.
+- Then add local mappers.
 - Then add API integration.
 - Then add live decision-core handoff ingestion.
 - Do not jump directly to live runtime integration.
@@ -120,7 +120,7 @@ For future code / contract / mapper changes:
 
 - run syntax checks
 - run product-shell tests once test tooling exists
-- verify `DecisionCoreBoundaryHandoff` fixture intake still works
+- verify `DecisionCoreBoundaryHandoff` and `DecisionCoreReviewHandoff` fixture intake still works
 - verify no decision-core internals were copied
 
 ## Strict Review Before Closeout
@@ -174,5 +174,6 @@ For a new engineer or agent:
 4. `docs/contracts/product-object-contracts.md`
 5. `docs/contracts/handoff-to-product-mapping.md`
 6. `fixtures/external/decision-core/decision-core-boundary-handoff.sample.json`
-7. `fixtures/product/product-mainline.sample.json`
-8. `fixtures/product/evidence-drawer-state.sample.json`
+7. `fixtures/external/decision-core/review-handoff-ready.sample.json`
+8. `fixtures/product/product-mainline.sample.json`
+9. `fixtures/product/evidence-drawer-state.sample.json`
