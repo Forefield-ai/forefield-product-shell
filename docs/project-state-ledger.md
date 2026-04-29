@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P11D` Product-Shell Review Handoff Mapper Implementation, plus prior local shell milestones.
+This ledger records the accepted project state for `forefield-product-shell` through `P11I` Product-Shell Fixture Refresh from Generated Review Handoff Artifacts, plus prior local shell milestones.
 
 ## Repository Split
 
@@ -1212,6 +1212,36 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - `npm run build` passed
   - `npm run smoke:browser` passed against temporary `http://127.0.0.1:5174`
   - current tests: `154 / 154` passing
+- P11I completed
+- P11I implementation commit: `e1284ec`
+- closeout summary:
+  - copied assembler-generated `DecisionCoreReviewHandoff` v0.2 artifacts from decision-core source commit `45bcadf3f197665a78c09c6ba17639540a1bff40`
+  - copied source path: `forefield-decision-core/fixtures/forefield-boundary/generated/`
+  - copied product-shell path: `fixtures/external/decision-core/generated/`
+  - generated fixture states: ready, sparse, no_evidence, empty, blocked
+  - kept P11B hand-authored semantic fixtures as existing coverage
+  - expanded review handoff mapper tests to cover assembler-generated artifacts
+  - verified generated ready, sparse, no_evidence, empty, and blocked artifacts through product mainline and read-model builders
+  - verified generated evidence ids become product-owned ids without dangling refs
+  - verified generated `review_priority_order` remains review order metadata and does not become an opportunity score
+  - verified generated mapped output excludes prohibited decision-core internals
+- confirmed:
+  - no product-shell UI changes
+  - no decision-core changes
+  - no live ingestion
+  - no DB / persistence
+  - no API / auth
+  - no LLM integration
+  - no Copilot polish
+  - no Brief export / copy
+  - no cross-repo imports
+  - no decision-core source imports
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed
+  - `npm run build` passed
+  - `npm run smoke:browser` passed against temporary local dev server at default `http://localhost:5173`
+  - current tests: `162 / 162` passing
 
 ## Technical Debt
 
@@ -1499,6 +1529,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 - consumes minimal and rich `DecisionCoreBoundaryHandoff` fixtures
 - consumes copied external `DecisionCoreReviewHandoff` v0.2 fixtures for ready, sparse, no_evidence, empty, and blocked review states
+- consumes copied external assembler-generated `DecisionCoreReviewHandoff` v0.2 artifacts from decision-core P11H for ready, sparse, no_evidence, empty, and blocked review states
 - maps handoff into `MonitoringRun`, `TopicDraft`, `SignalCluster[]`, and `CuratedEvidenceRecord[]`
 - maps review handoff into product mainline objects through `mapDecisionCoreReviewHandoffToProductMainline`
 - builds `EvidenceDrawerState` per `SignalCluster`
@@ -1508,7 +1539,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - keeps `decision_band` and `review_priority` out of product output
 - prevents prohibited decision-core fields from entering product output
 - uses zero dependencies and Node built-in tests
-- current test count: 154 / 154 passing
+- current test count: 162 / 162 passing
 - selected_evidence_drawer defaults to `null`
 - selectedClusterId builds drawer only when explicitly provided
 - selectedClusterId not found throws a clear error
@@ -1597,7 +1628,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - adds a bounded product-layer Copilot guided-action contract model with deterministic mock outputs, explicit state availability rules, and forbidden-claim guardrails without introducing any Copilot UI
 - adds a local-only Copilot guided-action UI shell with controlled Workspace-level and contextual action entry points, a read-only `CopilotPanel`, and browser-safe builder parity without introducing open-ended chat
 - keeps `CopilotPanel`, `EvidenceDrawer`, and `BriefPreview` mutually exclusive while allowing deterministic trace-ref handoff back into cluster and evidence context
-- current test count: 154 / 154 passing
+- current test count: 162 / 162 passing
 
 ## Current Product-Shell Non-Capabilities
 
@@ -1615,7 +1646,7 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P11E` Shell Runtime Sample Selection / Adapter Planning, or `P12A` Core-to-shell runtime integration planning if the next work should leave copied fixtures behind
+- recommended next step: `P12A` local cached source pipeline planning, or a narrowly scoped generated-artifact refresh automation plan if copied fixture sync becomes painful
 - focus the next pass on deciding how product-shell should select, receive, and version real review handoff snapshots without importing decision-core source or adding live ingestion prematurely
 - do not move directly into additional Copilot polish, Brief export / copy, open-ended chat, API / DB / auth / persistence, or visual redesign by default
 
