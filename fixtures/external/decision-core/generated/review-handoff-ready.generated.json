@@ -1,0 +1,84 @@
+{
+  "handoff_version": "0.2.0-decision-core-review-handoff",
+  "run": {
+    "run_id": "review-run:generated-ready",
+    "session_id": "review-session:generated-artifacts",
+    "run_type": "initial_review",
+    "status": "completed",
+    "started_at": "2026-04-29T13:00:00.000Z",
+    "completed_at": "2026-04-29T13:02:00.000Z"
+  },
+  "decision_context": {
+    "topic_seed": "privacy controls for family finance apps",
+    "audience": "US parents managing shared family budgets",
+    "problem_space": "permission clarity and auditability",
+    "monitoring_intent": "assembler-generated review handoff sample"
+  },
+  "review_state": {
+    "state": "ready",
+    "reasons": [
+      "review_ready"
+    ]
+  },
+  "source_coverage": {
+    "source_family_count": 2,
+    "public_source_ref_count": 2,
+    "coverage_boundary": "Public evidence coverage spans multiple source families inside this bounded review snapshot.",
+    "source_families": [
+      "reddit_posts_and_comments",
+      "youtube_comments"
+    ]
+  },
+  "review_entries": [
+    {
+      "review_entry_id": "review-entry:review-run-generated-ready:entry-1",
+      "review_priority_order": 1,
+      "cluster_seed": {
+        "headline": "Users want clearer privacy and permission controls.",
+        "summary": "Users want more explicit privacy controls and trust-preserving defaults."
+      },
+      "confidence": {
+        "label": "directional",
+        "boundary": "Claim candidate is directional because support spans 2 bounded source families while contradiction remains bounded."
+      },
+      "evidence_summary": {
+        "supporting_count": 2,
+        "contradicting_count": 0,
+        "weak_context_count": 1
+      },
+      "evidence_item_ids": [
+        "evidence-item:review-run-generated-ready:evidence-1",
+        "evidence-item:review-run-generated-ready:evidence-2"
+      ],
+      "caveats": [
+        "This multi-source fixture is still bounded and not market-wide.",
+        "Weak context is present in the bounded evidence set."
+      ],
+      "next_validation_hint": "Prioritize this candidate for stronger review candidate validation and solution framing."
+    }
+  ],
+  "evidence_items": [
+    {
+      "evidence_item_id": "evidence-item:review-run-generated-ready:evidence-1",
+      "source_url": "https://example.com/item-1",
+      "source_platform": "reddit_posts_and_comments",
+      "title": "Users complain about privacy settings",
+      "summary": "People keep asking for clearer privacy controls.",
+      "quote_excerpt": "Users want more explicit privacy controls and trust-preserving defaults.",
+      "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
+    },
+    {
+      "evidence_item_id": "evidence-item:review-run-generated-ready:evidence-2",
+      "source_url": "https://example.com/item-3",
+      "source_platform": "youtube_comments",
+      "title": "Video commenters mention privacy confusion",
+      "summary": "Commenters also ask for more explicit privacy settings.",
+      "quote_excerpt": "Users want more explicit privacy controls and trust-preserving defaults.",
+      "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
+    }
+  ],
+  "limitations": [
+    "This multi-source fixture is still bounded and not market-wide.",
+    "Review order is deterministic boundary triage order, not a score."
+  ]
+}

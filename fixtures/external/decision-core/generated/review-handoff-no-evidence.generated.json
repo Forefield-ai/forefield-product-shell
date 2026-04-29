@@ -1,0 +1,65 @@
+{
+  "handoff_version": "0.2.0-decision-core-review-handoff",
+  "run": {
+    "run_id": "review-run:generated-no-evidence",
+    "session_id": "review-session:generated-artifacts",
+    "run_type": "initial_review",
+    "status": "degraded",
+    "started_at": "2026-04-29T13:00:00.000Z",
+    "completed_at": "2026-04-29T13:02:00.000Z"
+  },
+  "decision_context": {
+    "topic_seed": "privacy controls for family finance apps",
+    "audience": "US parents managing shared family budgets",
+    "problem_space": "permission clarity and auditability",
+    "monitoring_intent": "assembler-generated review handoff sample"
+  },
+  "review_state": {
+    "state": "no_evidence",
+    "reasons": [
+      "no_supporting_evidence_items",
+      "evidence_unavailable_after_filtering"
+    ]
+  },
+  "source_coverage": {
+    "source_family_count": 0,
+    "public_source_ref_count": 0,
+    "coverage_boundary": "No public evidence items survived safe boundary filtering in this review snapshot.",
+    "source_families": []
+  },
+  "review_entries": [
+    {
+      "review_entry_id": "review-entry:review-run-generated-no-evidence:entry-1",
+      "review_priority_order": 1,
+      "cluster_seed": {
+        "headline": "Users want clearer privacy and permission controls.",
+        "summary": "Users want more explicit privacy controls and trust-preserving defaults."
+      },
+      "confidence": {
+        "label": "directional",
+        "boundary": "Claim candidate is directional because support spans 2 bounded source families while contradiction remains bounded."
+      },
+      "evidence_summary": {
+        "supporting_count": 0,
+        "contradicting_count": 0,
+        "weak_context_count": 1
+      },
+      "evidence_item_ids": [],
+      "caveats": [
+        "This multi-source fixture is still bounded and not market-wide.",
+        "No public evidence items crossed the safe review boundary for this entry.",
+        "Weak context is present in the bounded evidence set.",
+        "No supporting evidence items are available in this review snapshot."
+      ],
+      "next_validation_hint": "Prioritize this candidate for stronger review candidate validation and solution framing."
+    }
+  ],
+  "evidence_items": [],
+  "limitations": [
+    "This multi-source fixture is still bounded and not market-wide.",
+    "Review order is deterministic boundary triage order, not a score.",
+    "No evidence items crossed the safe handoff boundary.",
+    "Review entries are hypotheses only until supporting evidence crosses the boundary.",
+    "Public evidence item detail is unavailable for emitted review entries."
+  ]
+}
