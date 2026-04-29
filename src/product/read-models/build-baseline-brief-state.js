@@ -34,6 +34,7 @@ const BASELINE_BRIEF_UNAVAILABLE_REASONS = {
   UNKNOWN_FIXTURE_KEY: 'unknown_fixture_key',
   UNEXPECTED_TOPIC_STATUS: 'unexpected_topic_status',
   REVIEW_NOT_READY: 'review_not_ready',
+  REVIEW_BLOCKED: 'review_blocked',
 };
 
 const READY_TOPIC_STATUS = 'ready';
@@ -184,9 +185,9 @@ function resolveTopicScope(topicScope = {}, productMainline = {}) {
     topic_status: normalizeString(safeTopicScope.topic_status),
     topic_name: normalizeString(safeTopicScope.topic_name) || normalizeString(topicDraft.title),
     topic_summary: normalizeString(safeTopicScope.topic_summary) || normalizeString(topicDraft.summary),
-    target_audience: normalizeString(safeTopicScope.target_audience),
-    problem_space: normalizeString(safeTopicScope.problem_space),
-    monitoring_intent: normalizeString(safeTopicScope.monitoring_intent),
+    target_audience: normalizeString(safeTopicScope.target_audience) || normalizeString(topicDraft.target_audience),
+    problem_space: normalizeString(safeTopicScope.problem_space) || normalizeString(topicDraft.problem_space),
+    monitoring_intent: normalizeString(safeTopicScope.monitoring_intent) || normalizeString(topicDraft.monitoring_intent),
     monitoring_run_id: normalizeString(safeTopicScope.monitoring_run_id) || normalizeString(monitoringRun.id),
   };
 }
@@ -710,6 +711,17 @@ function buildBaselineBriefState({
     ensureObject(productMainline, 'productMainline');
 
     const workspaceViewState = buildTopicWorkspaceViewState(productMainline);
+
+    if (
+      workspaceViewState?.review_state?.state === 'blocked'
+      || workspaceViewState?.empty_or_sparse_state?.is_blocked
+    ) {
+      return buildIneligibleBrief({
+        topicScope: resolvedTopicScope,
+        unavailableReason: BASELINE_BRIEF_UNAVAILABLE_REASONS.REVIEW_BLOCKED,
+        summary: 'Initial Review is blocked, so no Baseline Brief is available from this handoff.',
+      });
+    }
 
     if (workspaceViewState?.empty_or_sparse_state?.is_empty) {
       return buildIneligibleBrief({

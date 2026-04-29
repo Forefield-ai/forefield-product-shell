@@ -1,0 +1,59 @@
+{
+  "handoff_version": "0.2.0-decision-core-review-handoff",
+  "run": {
+    "run_id": "review-run:field-service-pricing:2026-04-29",
+    "session_id": "review-session:field-service-pricing",
+    "run_type": "initial_review",
+    "status": "degraded",
+    "started_at": "2026-04-29T15:00:00.000Z",
+    "completed_at": "2026-04-29T15:00:45.000Z"
+  },
+  "decision_context": {
+    "topic_seed": "field service pricing transparency",
+    "audience": "small field service operators",
+    "problem_space": "public pricing expectations"
+  },
+  "review_state": {
+    "state": "no_evidence",
+    "reasons": [
+      "no_supporting_evidence_items",
+      "evidence_unavailable_after_filtering"
+    ]
+  },
+  "source_coverage": {
+    "source_family_count": 0,
+    "public_source_ref_count": 0,
+    "coverage_boundary": "No public evidence items survived filtering in this review snapshot.",
+    "source_families": []
+  },
+  "review_entries": [
+    {
+      "review_entry_id": "review-entry:field-service-pricing:pricing-transparency-question",
+      "review_priority_order": 1,
+      "cluster_seed": {
+        "headline": "Pricing-transparency question requires evidence",
+        "summary": "The topic remains reviewable as a hypothesis, but this handoff has no supporting public evidence items."
+      },
+      "confidence": {
+        "label": "unknown",
+        "boundary": "Unknown because no supporting evidence items crossed the boundary."
+      },
+      "evidence_summary": {
+        "supporting_count": 0,
+        "contradicting_count": 0,
+        "weak_context_count": 0
+      },
+      "evidence_item_ids": [],
+      "caveats": [
+        "No supporting evidence items are available in this review snapshot.",
+        "This state should prompt evidence collection, not a product conclusion."
+      ],
+      "next_validation_hint": "Run a new source review with manually curated public source items."
+    }
+  ],
+  "evidence_items": [],
+  "limitations": [
+    "No evidence items crossed the safe handoff boundary.",
+    "The cluster seed is a review hypothesis only."
+  ]
+}

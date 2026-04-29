@@ -1,0 +1,35 @@
+{
+  "handoff_version": "0.2.0-decision-core-review-handoff",
+  "run": {
+    "run_id": "review-run:restaurant-staffing:2026-04-29",
+    "session_id": "review-session:restaurant-staffing",
+    "run_type": "initial_review",
+    "status": "blocked",
+    "started_at": "2026-04-29T17:05:00.000Z",
+    "completed_at": "2026-04-29T17:05:04.000Z"
+  },
+  "decision_context": {
+    "topic_seed": "restaurant staffing coverage planning",
+    "audience": "independent restaurant managers",
+    "problem_space": "review source availability"
+  },
+  "review_state": {
+    "state": "blocked",
+    "reasons": [
+      "source_execution_blocked",
+      "missing_required_provider_credentials"
+    ]
+  },
+  "source_coverage": {
+    "source_family_count": 0,
+    "public_source_ref_count": 0,
+    "coverage_boundary": "Review did not reach evidence collection because source execution was blocked.",
+    "source_families": []
+  },
+  "review_entries": [],
+  "evidence_items": [],
+  "limitations": [
+    "Blocked state carries operational reasons only.",
+    "No review conclusion is available from this handoff."
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "handoff_version": "0.2.0-decision-core-review-handoff",
+  "run": {
+    "run_id": "review-run:privacy-controls:2026-04-29",
+    "session_id": "review-session:privacy-controls",
+    "run_type": "initial_review",
+    "status": "completed",
+    "started_at": "2026-04-29T13:00:00.000Z",
+    "completed_at": "2026-04-29T13:03:18.000Z"
+  },
+  "decision_context": {
+    "topic_seed": "privacy controls for family finance apps",
+    "audience": "US parents managing shared family budgets",
+    "problem_space": "permission clarity and auditability",
+    "monitoring_intent": "initial review snapshot for product-shell integration"
+  },
+  "review_state": {
+    "state": "ready",
+    "reasons": [
+      "review_ready"
+    ]
+  },
+  "source_coverage": {
+    "source_family_count": 2,
+    "public_source_ref_count": 3,
+    "coverage_boundary": "Public discussion evidence only; not a representative market sample.",
+    "source_families": [
+      "reddit_posts_and_comments",
+      "youtube_comments"
+    ]
+  },
+  "review_entries": [
+    {
+      "review_entry_id": "review-entry:privacy-controls:permission-clarity",
+      "review_priority_order": 1,
+      "cluster_seed": {
+        "headline": "Families ask for clearer permission boundaries",
+        "summary": "Multiple public discussions describe confusion about who can see transactions, edit budgets, or invite household members."
+      },
+      "confidence": {
+        "label": "directional",
+        "boundary": "Directional because the evidence is public discussion only and not a measured population sample."
+      },
+      "evidence_summary": {
+        "supporting_count": 2,
+        "contradicting_count": 0,
+        "weak_context_count": 1
+      },
+      "evidence_item_ids": [
+        "evidence-item:privacy-controls:reddit-permissions",
+        "evidence-item:privacy-controls:youtube-roles"
+      ],
+      "caveats": [
+        "The cited discussions do not prove willingness to switch tools.",
+        "The evidence does not cover non-public support tickets or interviews."
+      ],
+      "next_validation_hint": "Compare role and permission language across two more public community sources."
+    },
+    {
+      "review_entry_id": "review-entry:privacy-controls:audit-history",
+      "review_priority_order": 2,
+      "cluster_seed": {
+        "headline": "Shared-account users mention audit history gaps",
+        "summary": "A smaller set of comments asks for clearer logs when household members make budget or category changes."
+      },
+      "confidence": {
+        "label": "exploratory",
+        "boundary": "Exploratory because corroboration is limited and the comments may reflect power-user workflows."
+      },
+      "evidence_summary": {
+        "supporting_count": 1,
+        "contradicting_count": 0,
+        "weak_context_count": 1
+      },
+      "evidence_item_ids": [
+        "evidence-item:privacy-controls:reddit-audit-log"
+      ],
+      "caveats": [
+        "Audit-history language appears less frequently than permission-boundary language."
+      ],
+      "next_validation_hint": "Look for independent mentions of edit history, accountability, or household change logs."
+    }
+  ],
+  "evidence_items": [
+    {
+      "evidence_item_id": "evidence-item:privacy-controls:reddit-permissions",
+      "source_url": "https://example.com/reddit/family-budget-permissions",
+      "source_platform": "reddit",
+      "title": "Thread about family budget app permissions",
+      "summary": "A public thread describes confusion when a partner can see sensitive spending categories but cannot tell which role controls that visibility.",
+      "quote_excerpt": "I want a way to separate what my partner can edit from what they can only view.",
+      "published_at": "2026-03-11T00:00:00.000Z",
+      "provenance_note": "Public URL retained; raw thread payload is not included in the handoff."
+    },
+    {
+      "evidence_item_id": "evidence-item:privacy-controls:youtube-roles",
+      "source_url": "https://example.com/youtube/family-finance-roles",
+      "source_platform": "youtube",
+      "title": "Comments on a family finance setup video",
+      "summary": "Several comments ask whether children or partners can have read-only access without changing shared categories.",
+      "quote_excerpt": "Can my spouse view everything but my teen only see allowance categories?",
+      "published_at": "2026-02-24T00:00:00.000Z",
+      "provenance_note": "Public comment context is summarized; raw comment export is not included."
+    },
+    {
+      "evidence_item_id": "evidence-item:privacy-controls:reddit-audit-log",
+      "source_url": "https://example.com/reddit/shared-budget-edit-history",
+      "source_platform": "reddit",
+      "title": "Thread about shared budget edit history",
+      "summary": "A user describes difficulty understanding who changed a budget category in a shared household account.",
+      "quote_excerpt": "I need to know who changed a category before the month closed.",
+      "published_at": "2026-01-18T00:00:00.000Z",
+      "provenance_note": "Public source reference is retained as a URL only."
+    }
+  ],
+  "limitations": [
+    "This review snapshot is based on bounded public-source evidence.",
+    "The handoff does not include raw traces, raw source payloads, or scoring internals.",
+    "Review order is a boundary-level triage order, not a market score."
+  ]
+}

@@ -32,6 +32,7 @@ const COPILOT_WORKSPACE_STATES = {
   UNKNOWN_FIXTURE_KEY: 'unknown_fixture_key',
   UNEXPECTED_TOPIC_STATUS: 'unexpected_topic_status',
   REVIEW_NOT_READY: 'review_not_ready',
+  REVIEW_BLOCKED: 'review_blocked',
 };
 
 const COPILOT_OUTPUT_STATUS = {
@@ -309,6 +310,8 @@ function buildStateSummary(workspaceState, briefState) {
       return 'Copilot guided actions are unavailable because the current local topic status is unsupported.';
     case COPILOT_WORKSPACE_STATES.REVIEW_NOT_READY:
       return 'Copilot guided actions are unavailable because the current topic is not review-ready.';
+    case COPILOT_WORKSPACE_STATES.REVIEW_BLOCKED:
+      return 'Copilot guided actions are unavailable because Initial Review is blocked for the current handoff.';
     case COPILOT_WORKSPACE_STATES.DATA_UNAVAILABLE:
     default:
       return briefState?.eligibility?.summary
@@ -330,6 +333,8 @@ function mapUnavailableReasonToWorkspaceState(unavailableReason) {
       return COPILOT_WORKSPACE_STATES.UNEXPECTED_TOPIC_STATUS;
     case BASELINE_BRIEF_UNAVAILABLE_REASONS.REVIEW_NOT_READY:
       return COPILOT_WORKSPACE_STATES.REVIEW_NOT_READY;
+    case BASELINE_BRIEF_UNAVAILABLE_REASONS.REVIEW_BLOCKED:
+      return COPILOT_WORKSPACE_STATES.REVIEW_BLOCKED;
     case BASELINE_BRIEF_UNAVAILABLE_REASONS.DATA_UNAVAILABLE:
     default:
       return COPILOT_WORKSPACE_STATES.DATA_UNAVAILABLE;
@@ -429,6 +434,8 @@ function buildAvailabilitySummary(action, context, isAvailable, unavailableReaso
       return 'This action is unavailable because the current local topic status is unsupported.';
     case BASELINE_BRIEF_UNAVAILABLE_REASONS.REVIEW_NOT_READY:
       return 'This action is unavailable because the current topic is not review-ready.';
+    case BASELINE_BRIEF_UNAVAILABLE_REASONS.REVIEW_BLOCKED:
+      return 'This action is unavailable because Initial Review is blocked for the current handoff.';
     case BASELINE_BRIEF_UNAVAILABLE_REASONS.DATA_UNAVAILABLE:
     default:
       return 'This action is unavailable because the current prototype data cannot be used safely.';
@@ -504,6 +511,8 @@ function buildSafeUnavailableMessage(context) {
       return 'The current local topic status is unsupported, so this Copilot action cannot run safely.';
     case COPILOT_WORKSPACE_STATES.REVIEW_NOT_READY:
       return 'The current topic is not review-ready, so this Copilot action cannot run yet.';
+    case COPILOT_WORKSPACE_STATES.REVIEW_BLOCKED:
+      return 'Initial Review is blocked, so this Copilot action cannot generate market analysis.';
     case COPILOT_WORKSPACE_STATES.DATA_UNAVAILABLE:
     default:
       return 'Prototype data is unavailable, so this Copilot action cannot render safely.';

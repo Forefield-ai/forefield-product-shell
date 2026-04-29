@@ -1,0 +1,74 @@
+{
+  "handoff_version": "0.2.0-decision-core-review-handoff",
+  "run": {
+    "run_id": "review-run:caregiver-scheduling:2026-04-29",
+    "session_id": "review-session:caregiver-scheduling",
+    "run_type": "initial_review",
+    "status": "degraded",
+    "started_at": "2026-04-29T14:10:00.000Z",
+    "completed_at": "2026-04-29T14:11:42.000Z"
+  },
+  "decision_context": {
+    "topic_seed": "caregiver shift scheduling for home health coordinators",
+    "audience": "home health coordinators",
+    "problem_space": "short-notice shift coordination"
+  },
+  "review_state": {
+    "state": "sparse",
+    "reasons": [
+      "limited_public_source_coverage",
+      "single_source_support"
+    ]
+  },
+  "source_coverage": {
+    "source_family_count": 1,
+    "public_source_ref_count": 1,
+    "coverage_boundary": "Only one public source family produced usable review evidence.",
+    "source_families": [
+      "vertical_forum_posts"
+    ]
+  },
+  "review_entries": [
+    {
+      "review_entry_id": "review-entry:caregiver-scheduling:short-notice-swaps",
+      "review_priority_order": 1,
+      "cluster_seed": {
+        "headline": "Short-notice shift swaps create coordination friction",
+        "summary": "A small public forum sample describes coordinators manually chasing confirmations when caregivers trade shifts."
+      },
+      "confidence": {
+        "label": "exploratory",
+        "boundary": "Exploratory because corroboration is limited to one source family."
+      },
+      "evidence_summary": {
+        "supporting_count": 1,
+        "contradicting_count": 0,
+        "weak_context_count": 1
+      },
+      "evidence_item_ids": [
+        "evidence-item:caregiver-scheduling:forum-shift-swaps"
+      ],
+      "caveats": [
+        "Single-source support is not enough for stronger confidence.",
+        "The forum sample may overrepresent highly operational teams."
+      ],
+      "next_validation_hint": "Seek one independent public source family before treating the cluster as ready."
+    }
+  ],
+  "evidence_items": [
+    {
+      "evidence_item_id": "evidence-item:caregiver-scheduling:forum-shift-swaps",
+      "source_url": "https://example.com/forums/home-health-shift-swaps",
+      "source_platform": "vertical_forum",
+      "title": "Discussion about short-notice caregiver shift swaps",
+      "summary": "A coordinator describes manually texting multiple caregivers after a shift swap request.",
+      "quote_excerpt": "The hard part is confirming the replacement before the client notices a gap.",
+      "published_at": "2026-04-02T00:00:00.000Z",
+      "provenance_note": "Only public forum URL and bounded summary are included."
+    }
+  ],
+  "limitations": [
+    "Sparse state requires explicit limited-evidence reasons.",
+    "This fixture intentionally carries one review entry and one evidence item."
+  ]
+}
