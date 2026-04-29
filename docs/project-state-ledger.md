@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P12F` Product-Shell Fixture Refresh from Cached-Source Generated ReviewHandoff Artifacts, plus prior local shell milestones.
+This ledger records the accepted project state for `forefield-product-shell` through `P12F` / `P12` cached-source core-to-shell loop closeout, plus prior local shell milestones.
 
 ## Repository Split
 
@@ -1274,8 +1274,82 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - `npm run build` passed
   - `npm run smoke:browser` passed against temporary local dev server at `http://127.0.0.1:5174`
   - current tests: `170 / 170` passing
+- P12 overall closeout accepted
+- P12 completed chain:
+  - local cached source artifacts
+  - decision-core intake / evidence / opportunity / review handoff pipeline
+  - `DecisionCoreReviewHandoff` v0.2
+  - cached-source-generated artifacts
+  - product-shell copied external fixtures
+  - product-shell mapper / read-model compatibility
+  - smoke regression
+- relevant P12 commits:
+  - P12B cached source pipeline: `35a8278a68226a06f49b3fd2574d10b4971304ac`
+  - P12D cached source state coverage: `8fcbe72652f7c2f62d2571b5133cad45bf96da24`
+  - P12E decision-core cached-source generated artifacts: `8d779f4d605863688652c5e3d4ec9aef18626c87`
+  - P12F product-shell cached-source fixture refresh: `89439f13f50371454104845c637a26da11913d71`
+  - P12F ledger: `18d27ef1c724d539b03b0b8193e0e52f0dae5b1b`
+- P12 accepted closeout decision:
+  - P12 local cached-source core-to-shell loop is effectively complete
+  - live ingestion remains deferred
+  - DB / persistence remains deferred
+  - API / auth remains deferred
+  - LLM integration remains deferred
+  - product-shell UI polish remains deferred
+  - Copilot polish remains deferred
+  - Brief export / copy remains deferred
+  - cross-repo imports remain deferred
+  - production scraping remains deferred
+  - background jobs remain deferred
+  - Topic-to-core execution bridge remains deferred
+  - realistic cached source corpus remains deferred to the next planning phase
 
 ## Technical Debt
+
+### Manual Cross-Repo Artifact Copy
+
+- observed / introduced phase: accepted through `P12F`
+- reason: product-shell still copies JSON artifacts by commit rather than consuming a shared package or automated sync
+- current impact: product-shell preserves repo independence and avoids importing decision-core source
+- risk: decision-core artifacts may update while shell copied fixtures become stale
+- status: accepted for repo independence
+- revisit / trigger condition: revisit when `DecisionCoreReviewHandoff` changes, cached-source generated artifacts update, or cross-repo integration tooling is introduced
+
+### Cached-Source Samples Are Still Not Live Data
+
+- observed / introduced phase: accepted through `P12`
+- reason: P12 uses deterministic local cached fixtures, not live platform ingestion
+- current impact: local cached-source core-to-shell compatibility is covered without network/API/provider dependencies
+- risk: real source noise, missing fields, duplicates, weak comments, source skew, and platform-specific edge cases remain under-tested
+- status: accepted pre-live-ingestion limitation
+- revisit / trigger condition: revisit during `P13A` realistic cached source corpus planning or live ingestion planning
+
+### Handoff-Local Identity Only
+
+- observed / introduced phase: accepted through `P12`
+- reason: `evidence_item_id` and `review_entry_id` are stable only within one handoff
+- current impact: product-shell can map copied handoff artifacts into product-owned ids for local compatibility tests
+- risk: cross-run dedupe, monitoring continuity, and persistent Evidence Library identity remain unresolved
+- status: accepted for local cached-source phase
+- revisit / trigger condition: revisit during monitoring continuity, DB / persistence, or Evidence Library persistence planning
+
+### Decision Context Remains Option-Driven
+
+- observed / introduced phase: accepted through `P12`
+- reason: Topic / `decision_context` is still injected through explicit options rather than a real Topic-to-core execution path
+- current impact: cached-source ReviewHandoff generation is deterministic but not yet driven by product Topic creation
+- risk: future product Topic creation may not map cleanly into core execution context
+- status: accepted until Topic-to-core bridge planning
+- revisit / trigger condition: revisit during Topic-to-core execution bridge or API/runtime integration
+
+### Product-Shell Compatibility Remains Fixture-Based
+
+- observed / introduced phase: accepted through `P12F`
+- reason: shell verifies copied cached-source artifacts, not a runtime bridge to decision-core
+- current impact: shell mapper and read-model compatibility are covered without cross-repo imports
+- risk: future runtime integration may still expose differences not caught by copied fixture tests
+- status: accepted to avoid cross-repo imports
+- revisit / trigger condition: revisit during local core-run-to-shell handoff bridge or integration harness planning
 
 ### Prototype Malformed Payload / Unknown Error Fallback Gap
 
@@ -1675,11 +1749,15 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - no final `BaselineBrief` synthesis-quality layer
 - no open-ended `Copilot` assistant behavior
 - no live decision-core integration
+- no production scraping
+- no background jobs
+- no Topic-to-core execution bridge
+- no realistic cached source corpus beyond deterministic P12 fixtures
 
 ## Recommended Next Step
 
-- recommended next step: `P12G` Topic-to-core execution bridge planning, or a narrowly scoped generated-artifact refresh automation plan if copied fixture sync becomes painful
-- focus the next pass on deciding how product-shell should select, receive, and version real cached-source review handoff snapshots without importing decision-core source or adding live ingestion prematurely
+- recommended next step: `P13A` realistic cached source corpus planning
+- focus the next pass on improving realistic cached-source corpus coverage before live ingestion, persistence, API/auth, or Topic-to-core execution bridge work
 - do not move directly into additional Copilot polish, Brief export / copy, open-ended chat, API / DB / auth / persistence, or visual redesign by default
 
 ## Pre-Flight Checklist For Future Phases
