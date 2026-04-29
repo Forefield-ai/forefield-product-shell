@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P10B` Copilot guided action contract closeout, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B / `P9B` / `P9C` / `P9E-B` / `P9F-B` milestones.
+This ledger records the accepted project state for `forefield-product-shell` through `P10C-B` local Copilot guided action UI shell closeout, plus prior P8A / P8B / P8C / P8D / P8E-A / P8E-B / `P9B` / `P9C` / `P9E-B` / `P9F-B` milestones.
 
 ## Repository Split
 
@@ -1111,6 +1111,78 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - runtime contract expansion remains deferred
   - Figma-level visual design remains deferred
   - broad module-format cleanup remains deferred
+- P10C-B completed
+- P10C-B implementation commit: `ec898c2871d58515a10f913661baf0a8691e7d9b`
+- commit message: `feat(ui): add local copilot guided action shell`
+- modified:
+  - `src/product/copilot/build-copilot-guided-actions-state.browser.mjs`
+  - `src/ui/components/CopilotPanel.jsx`
+  - `src/ui/components/WorkspaceHeader.jsx`
+  - `src/ui/components/SignalClusterList.jsx`
+  - `src/ui/components/SignalClusterCard.jsx`
+  - `src/ui/components/BriefPreview.jsx`
+  - `src/ui/TopicWorkspacePage.jsx`
+  - `src/ui/pages/TopicWorkspaceShellPage.jsx`
+  - `src/ui/styles.css`
+  - `tests/product-workspace/build-copilot-guided-actions-state.test.js`
+  - `tests/smoke/browser-smoke.mjs`
+- concise summary:
+  - added a controlled local Copilot guided-action UI shell with a Workspace-level action entry, contextual cluster actions, and a Brief Takeaway support action without introducing floating assistant behavior or open-ended chat
+  - added a read-only, closeable `CopilotPanel` that renders deterministic mock output fields, preserves preliminary / unavailable cues, and stays visually separate from chat or report surfaces
+  - kept Copilot panel interaction mutually exclusive with Evidence Drawer and Brief Preview while adding trace-ref handoff back into cluster and evidence context
+  - added a browser-safe ESM Copilot builder counterpart and shell-level state preparation so leaf UI components do not directly import the CommonJS builder
+- confirmed:
+  - no LLM integration
+  - no open-ended chat
+  - no floating general assistant
+  - no API / DB / auth / persistence / browser storage / `fetch`
+  - no Brief export / markdown / copy-to-clipboard
+  - no runtime contract or runtime payload shape change
+  - no `src/runtime/*` changes
+  - no `src/product/actions/*` changes
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed through `npm run validate`
+  - `npm run build` passed
+  - `npm run smoke:browser` passed
+  - current tests: `144 / 144` passing
+  - working tree was clean after implementation commit
+- P10C-B final closeout accepted
+- P10C-B implementation commit: `ec898c2871d58515a10f913661baf0a8691e7d9b`
+- closeout summary:
+  - added controlled Workspace-level Copilot actions, Signal Cluster Card contextual actions, and a Brief Takeaway support action while keeping Copilot guided-actions only
+  - added an independent right-side `CopilotPanel` that is read-only, closeable, not chat-styled, and has no freeform input
+  - kept deterministic Copilot output bounded to `what_this_currently_supports`, `what_remains_limited`, `what_to_validate_next`, trace refs, and preliminary / unavailable cues
+  - preserved browser-safe builder parity and trace handoff back into cluster / evidence context without turning Copilot into a floating assistant or a report generator
+- manual Copilot UI spot check:
+  - Workspace header Copilot actions: passed
+  - Signal Cluster Card `Explain cluster`: passed
+  - Signal Cluster Card `Validation questions`: passed
+  - Brief Takeaway `Explain support`: passed
+  - `CopilotPanel` / `EvidenceDrawer` / `BriefPreview` mutual exclusivity: passed
+  - no_evidence Copilot behavior preserved monitoring-gap framing: passed
+  - sparse Copilot behavior preserved preliminary / limited-evidence framing: passed
+  - no freeform chat input appeared: passed
+- validation:
+  - `npm run validate` passed
+  - `npm test` passed or was executed through `npm run validate`
+  - `npm run build` passed
+  - `npm run smoke:browser` passed
+  - current tests: `144 / 144` passing
+  - working tree was clean after implementation commit
+- current decision:
+  - `P10C-B` is accepted and closed
+- explicit deferred items:
+  - LLM integration remains deferred
+  - open-ended chat remains deferred
+  - floating assistant remains deferred
+  - API / DB / auth / persistence remains deferred
+  - Brief export / markdown / copy-to-clipboard remains deferred
+  - runtime contract expansion remains deferred
+  - Figma-level visual design remains deferred
+  - Evidence Drawer Copilot entry remains deferred
+  - Saved Tab Copilot entry remains deferred
+  - broad module-format cleanup remains deferred
 
 ## Technical Debt
 
@@ -1324,33 +1396,33 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - revisit / trigger condition: revisit before real ingestion/API/persistence, export/citation support, or any production-backed Brief generation path
 - potential cleanup: re-evaluate trace metadata and handoff wording once real evidence variability is available, while preserving the current product-visible boundary
 
-### Future Copilot Browser-Safe Integration
+### Copilot Browser-Safe Builder Parity
 
-- observed / introduced phase: identified in `P10B` closeout
-- reason: the product-layer Copilot guided-action builder currently exists as a Node / CommonJS module and is not yet consumed by any browser-side UI surface
-- current impact: the current contract and deterministic mock layer remain safe and testable in Node, but future `P10C` UI work will need a careful browser-safe integration path rather than a direct leaf import
-- risk: a future Copilot guided-action UI shell could reintroduce the same CJS / browser ESM compatibility drift already seen in other product-layer builders if the bridge is added casually
-- status: deferred
-- revisit / trigger condition: revisit before implementing any Copilot guided-action UI shell or broader browser-side Copilot integration
-- potential cleanup: add a narrowly aligned browser-safe adapter or ESM counterpart only when the first Copilot UI consumer exists, and keep parity coverage in place when that bridge is introduced
+- observed / introduced phase: identified in `P10B`, increased in `P10C-B`
+- reason: the Copilot product builder now exists in both CommonJS and browser-safe ESM forms so the local UI shell can consume deterministic guided-action state without importing CommonJS directly into browser code
+- current impact: the current local prototype can safely render guided-action outputs in the browser while preserving product-layer parity checks
+- risk: future Copilot action additions or output-shape changes may drift between Node and browser behavior if parity is not maintained carefully
+- status: accepted temporary bridge with parity tests
+- revisit / trigger condition: revisit before broader module-format cleanup or production / API-backed Copilot behavior
+- potential cleanup: converge on a single canonical module format or a thinner shared core once browser-safe product-layer imports no longer need parallel entry points
 
 ### Copilot Scope Creep Risk
 
-- observed / introduced phase: identified in `P10A`, actively constrained in `P10B`
-- reason: once Copilot action contracts exist, future UI or LLM work may push the product from guided, Topic-scoped actions toward open-ended assistant behavior
-- current impact: the current implementation keeps the action set explicitly bounded and deterministic, which helps preserve Forefield as a monitoring workspace instead of a generic research chatbot
-- risk: future action additions or UI shells may bypass the guided-actions-only boundary and reintroduce unsupported analysis or broad assistant expectations
-- status: actively constrained in the current contract layer
-- revisit / trigger condition: revisit before any Copilot UI shell, LLM integration planning, or expansion beyond the current MVP action set
+- observed / introduced phase: identified in `P10A`, actively constrained in `P10B`, increased in `P10C-B`
+- reason: Copilot now has visible UI entry points in addition to contract-level actions, which increases the chance that future work expands it into open-ended chat or a floating assistant
+- current impact: the current implementation keeps Copilot bounded to guided, Topic-scoped actions with no freeform input, which helps preserve Forefield as an evidence-grounded monitoring workspace instead of a generic research chatbot
+- risk: future action additions, UI shell changes, or LLM work may bypass the guided-actions-only boundary and reintroduce unsupported analysis or broad assistant expectations
+- status: actively constrained by action contracts and the current guided-action UI shell
+- revisit / trigger condition: revisit before adding any new Copilot action, LLM integration, or floating assistant behavior
 - potential cleanup: require every new Copilot action to declare input type, allowed data sources, forbidden claims, state constraints, and availability rules before it can be added
 
 ### Fixture-Driven Copilot Output Quality
 
-- observed / introduced phase: identified in `P10B`
+- observed / introduced phase: identified in `P10B`, carried into `P10C-B`
 - reason: current Copilot outputs are deterministic mocks evaluated entirely against local fixtures, existing brief state, and product-visible demo evidence
-- current impact: the product now has a safe way to validate Copilot action boundaries and tone without introducing LLMs, but the output quality is still tuned to curated sample data
-- risk: future readers may overread these deterministic outputs as proof that Copilot is already ready for noisier real evidence, real user history, or production-backed guidance
-- status: accepted current MVP-shell limitation
+- current impact: the product now has a safe way to validate Copilot action boundaries, tone, and UI entry behavior without introducing LLMs, but the output quality is still tuned to curated sample data
+- risk: output wording and action availability may still need tuning once noisier real evidence diversity, real user history, or production-backed guidance are introduced
+- status: accepted MVP-shell limitation
 - revisit / trigger condition: revisit before LLM integration, real ingestion/API/persistence, or any production Copilot behavior beyond the current bounded mock layer
 - potential cleanup: add more diverse product-visible fixtures and state scenarios before expanding Copilot outputs beyond the current bounded mock layer
 
@@ -1373,6 +1445,16 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - status: deferred; no LLM added in `P10B`
 - revisit / trigger condition: revisit in `P10D` LLM integration planning or before any Copilot LLM implementation
 - potential cleanup: require an evidence-grounded prompt boundary, stronger traceability references, and more mature real-evidence validation before introducing any LLM-generated Copilot output
+
+### Panel Complexity
+
+- observed / introduced phase: identified in `P10C-B`
+- reason: Workspace now includes `EvidenceDrawer`, `BriefPreview`, and `CopilotPanel` as mutually exclusive right-side panels
+- current impact: the current local prototype keeps transitions understandable through simple mutual exclusivity rules and shell-level panel orchestration
+- risk: future panel additions or richer cross-panel workflows could create brittle UI state transitions, duplicated close/open logic, or confusing user context changes
+- status: accepted for the current local prototype with mutual exclusivity
+- revisit / trigger condition: revisit before Figma / UX handoff or any broader workspace interaction refactor
+- potential cleanup: centralize panel state ownership and transition rules more formally if right-side workspace surfaces continue to grow
 
 ### Generic Report Creep
 
@@ -1482,7 +1564,9 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - adds minimal brief trace metadata and in-preview handoff CTAs so synthesized takeaways and key clusters can return users to cluster context or the Evidence Drawer without turning Brief into a citation/report system
 - keeps no-evidence traceability bounded to monitoring-gap context rather than faking supporting evidence references
 - adds a bounded product-layer Copilot guided-action contract model with deterministic mock outputs, explicit state availability rules, and forbidden-claim guardrails without introducing any Copilot UI
-- current test count: 142 / 142 passing
+- adds a local-only Copilot guided-action UI shell with controlled Workspace-level and contextual action entry points, a read-only `CopilotPanel`, and browser-safe builder parity without introducing open-ended chat
+- keeps `CopilotPanel`, `EvidenceDrawer`, and `BriefPreview` mutually exclusive while allowing deterministic trace-ref handoff back into cluster and evidence context
+- current test count: 144 / 144 passing
 
 ## Current Product-Shell Non-Capabilities
 
@@ -1495,14 +1579,14 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 - no confirmed `Topic` promotion
 - no `BaselineBrief` export / copy / persistence behavior
 - no final `BaselineBrief` synthesis-quality layer
-- no `Copilot` UI or open-ended assistant behavior
+- no open-ended `Copilot` assistant behavior
 - no live decision-core integration
 
 ## Recommended Next Step
 
-- recommended next step: `P10C` Local Copilot Guided Action UI Planning
-- focus the next pass on deciding where guided Copilot actions should surface first, how they should hand off to current Workspace / Drawer / Brief contexts, and how to avoid turning the product into a floating assistant or open-ended chat surface
-- do not move directly into Copilot LLM integration, API / DB / auth / persistence, or visual redesign by default
+- recommended next step: `P10D` Copilot Output Quality / LLM Integration Boundary Planning, or a broader `P11` checkpoint before choosing between LLM integration, export/copy, persistence, or UX handoff
+- focus the next pass on defining whether future Copilot output quality should remain deterministic longer, how an evidence-grounded LLM boundary would need to behave, and what must stay prohibited before any narrative or assistant expansion
+- do not move directly into open-ended chat, API / DB / auth / persistence, or visual redesign by default
 
 ## Pre-Flight Checklist For Future Phases
 
