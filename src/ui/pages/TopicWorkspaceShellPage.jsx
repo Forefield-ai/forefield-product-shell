@@ -5,6 +5,10 @@ import TopicWorkspacePage from '../TopicWorkspacePage';
 import { buildBaselineBriefState } from '../../product/read-models/build-baseline-brief-state.browser.mjs';
 import { buildTopicWorkspaceViewState } from '../../product/read-models/build-topic-workspace-view-state.browser.mjs';
 import {
+  buildCopilotGuidedActionsState,
+  buildCopilotGuidedActionMockOutput,
+} from '../../product/copilot/build-copilot-guided-actions-state.browser.mjs';
+import {
   getSavedClusters,
   getSavedEvidence,
   initialActionState,
@@ -43,9 +47,20 @@ export default function TopicWorkspaceShellPage({
 }) {
   const [activeWorkspaceTab, setActiveWorkspaceTab] = useState('overview');
   const [isBriefPreviewOpen, setIsBriefPreviewOpen] = useState(false);
+  const [copilotPanelState, setCopilotPanelState] = useState(null);
   const [workspaceCommand, setWorkspaceCommand] = useState(null);
   const [savedTabNotice, setSavedTabNotice] = useState('');
   const currentActionState = topicActionState || initialActionState();
+  const topicScope = useMemo(() => ({
+    topic_id: topic?.id || '',
+    topic_status: topic?.status || '',
+    topic_name: topic?.draft?.topic_name || '',
+    topic_summary: topic?.draft?.topic_summary || '',
+    target_audience: topic?.draft?.target_audience || '',
+    problem_space: topic?.draft?.problem_space || '',
+    monitoring_intent: topic?.draft?.monitoring_intent || '',
+    monitoring_run_id: topic?.runId || '',
+  }), [topic]);
   const workspaceViewStateResult = useMemo(() => {
     if (!productMainline || typeof productMainline !== 'object' || Array.isArray(productMainline)) {
       return {
@@ -67,30 +82,34 @@ export default function TopicWorkspaceShellPage({
   const topicStatusIsKnown = Object.values(TOPIC_STATUSES).includes(topic?.status);
   const workspaceViewState = workspaceViewStateResult.ok ? workspaceViewStateResult.value : null;
   const briefState = useMemo(() => buildBaselineBriefState({
-    topicScope: {
-      topic_id: topic?.id || '',
-      topic_status: topic?.status || '',
-      topic_name: topic?.draft?.topic_name || '',
-      topic_summary: topic?.draft?.topic_summary || '',
-      target_audience: topic?.draft?.target_audience || '',
-      problem_space: topic?.draft?.problem_space || '',
-      monitoring_intent: topic?.draft?.monitoring_intent || '',
-      monitoring_run_id: topic?.runId || '',
-    },
+    topicScope,
     productMainline,
     actionState: currentActionState,
-  }), [currentActionState, productMainline, topic]);
+  }), [currentActionState, productMainline, topicScope]);
+  const copilotGuidedActionsState = useMemo(() => buildCopilotGuidedActionsState({
+    topicScope,
+    productMainline,
+    actionState: currentActionState,
+    briefState,
+  }), [briefState, currentActionState, productMainline, topicScope]);
   const briefPreviewIsEligible = Boolean(briefState?.eligibility?.is_eligible);
 
   useEffect(() => {
     setIsBriefPreviewOpen(false);
+    setCopilotPanelState(null);
   }, [topic?.id]);
 
   useEffect(() => {
-    if (activeWorkspaceTab !== 'overview' && isBriefPreviewOpen) {
-      setIsBriefPreviewOpen(false);
+    if (activeWorkspaceTab !== 'overview') {
+      if (isBriefPreviewOpen) {
+        setIsBriefPreviewOpen(false);
+      }
+
+      if (copilotPanelState) {
+        setCopilotPanelState(null);
+      }
     }
-  }, [activeWorkspaceTab, isBriefPreviewOpen]);
+  }, [activeWorkspaceTab, copilotPanelState, isBriefPreviewOpen]);
 
   useEffect(() => {
     if (!briefPreviewIsEligible && isBriefPreviewOpen) {
@@ -256,6 +275,7 @@ export default function TopicWorkspaceShellPage({
   const handleOpenOverviewCluster = (clusterId) => {
     setActiveWorkspaceTab('overview');
     setIsBriefPreviewOpen(false);
+    setCopilotPanelState(null);
     setSavedTabNotice('');
     setWorkspaceCommand({
       commandId: `workspace_command__select_cluster__${clusterId}__${Date.now()}`,
@@ -267,6 +287,7 @@ export default function TopicWorkspaceShellPage({
   const handleOpenOverviewEvidence = (clusterId) => {
     setActiveWorkspaceTab('overview');
     setIsBriefPreviewOpen(false);
+    setCopilotPanelState(null);
     setSavedTabNotice('');
     setWorkspaceCommand({
       commandId: `workspace_command__open_evidence__${clusterId}__${Date.now()}`,
@@ -377,11 +398,74 @@ export default function TopicWorkspaceShellPage({
       return;
     }
 
+    setCopilotPanelState(null);
     setIsBriefPreviewOpen(true);
   };
 
   const handleCloseBriefPreview = () => {
     setIsBriefPreviewOpen(false);
+  };
+
+  const handleOpenCopilotAction = ({ actionId, input = {}, sourceLabel = '' }) => {
+    const actionDescriptor = Array.isArray(copilotGuidedActionsState?.actions)
+      ? copilotGuidedActionsState.actions.find((action) => action.action_id === actionId)
+      : null;
+
+    if (!actionDescriptor) {
+      return;
+    }
+
+    const output = buildCopilotGuidedActionMockOutput({
+      topicScope,
+      productMainline,
+      actionState: currentActionState,
+      briefState,
+      actionId,
+      input,
+    });
+
+    setActiveWorkspaceTab('overview');
+    setSavedTabNotice('');
+    setIsBriefPreviewOpen(false);
+    setCopilotPanelState({
+      actionId,
+      actionDisplayName: actionDescriptor.display_name,
+      input,
+      output,
+      sourceLabel,
+    });
+  };
+
+  const handleCloseCopilotPanel = () => {
+    setCopilotPanelState(null);
+  };
+
+  const handleOpenCopilotTraceRef = (traceRef) => {
+    if (!traceRef || typeof traceRef !== 'object') {
+      return;
+    }
+
+    setCopilotPanelState(null);
+    setIsBriefPreviewOpen(false);
+    setSavedTabNotice('');
+    setActiveWorkspaceTab('overview');
+
+    if (traceRef.ref_kind === 'evidence_support' && traceRef.supporting_cluster_id) {
+      ensureClusterVisible(traceRef.supporting_cluster_id);
+      handleOpenOverviewEvidence(traceRef.supporting_cluster_id);
+      return;
+    }
+
+    if (traceRef.trace_kind === 'monitoring_gap' && traceRef.cluster_id) {
+      ensureClusterVisible(traceRef.cluster_id);
+      handleOpenOverviewCluster(traceRef.cluster_id);
+      return;
+    }
+
+    if (traceRef.cluster_id) {
+      ensureClusterVisible(traceRef.cluster_id);
+      handleOpenOverviewEvidence(traceRef.cluster_id);
+    }
   };
 
   return (
@@ -436,6 +520,7 @@ export default function TopicWorkspaceShellPage({
                 onClick={() => {
                   setActiveWorkspaceTab('overview');
                   setIsBriefPreviewOpen(false);
+                  setCopilotPanelState(null);
                   setSavedTabNotice('');
                 }}
               >
@@ -448,6 +533,7 @@ export default function TopicWorkspaceShellPage({
                 className={`workspace-shell-tabs__button${activeWorkspaceTab === 'saved' ? ' workspace-shell-tabs__button--active' : ''}`}
                 onClick={() => {
                   setIsBriefPreviewOpen(false);
+                  setCopilotPanelState(null);
                   setActiveWorkspaceTab('saved');
                 }}
               >
@@ -465,9 +551,14 @@ export default function TopicWorkspaceShellPage({
           actionState={currentActionState}
           workspaceCommand={workspaceCommand}
           briefState={briefState}
+          copilotGuidedActionsState={copilotGuidedActionsState}
+          copilotPanelState={copilotPanelState}
           isBriefPreviewOpen={isBriefPreviewOpen}
           onOpenBriefPreview={handleOpenBriefPreview}
           onCloseBriefPreview={handleCloseBriefPreview}
+          onRunCopilotAction={handleOpenCopilotAction}
+          onOpenCopilotTraceRef={handleOpenCopilotTraceRef}
+          onCloseCopilotPanel={handleCloseCopilotPanel}
           onWatchCluster={handleWatchCluster}
           onUnwatchCluster={handleUnwatchCluster}
           onSaveCluster={handleSaveCluster}

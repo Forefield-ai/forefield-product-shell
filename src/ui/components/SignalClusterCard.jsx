@@ -65,8 +65,11 @@ export default function SignalClusterCard({
   isSelected,
   isWatched,
   isSaved,
+  explainClusterAction,
+  validationQuestionsAction,
   onSelect,
   onViewEvidence,
+  onRunCopilotAction,
   onWatch,
   onUnwatch,
   onSave,
@@ -149,6 +152,39 @@ export default function SignalClusterCard({
             onUnsave={onUnsave}
             onHide={onHide}
           />
+          {(explainClusterAction || validationQuestionsAction) ? (
+            <div className="cluster-card__copilot">
+              <p className="cluster-card__copilot-label">Copilot guided actions</p>
+              <div className="cluster-card__copilot-buttons">
+                {explainClusterAction ? (
+                  <button
+                    type="button"
+                    className="cluster-card__copilot-button"
+                    disabled={!explainClusterAction.availability?.is_available}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onRunCopilotAction?.(explainClusterAction.action_id, signalClusterSection.cluster_id);
+                    }}
+                  >
+                    Explain cluster
+                  </button>
+                ) : null}
+                {validationQuestionsAction ? (
+                  <button
+                    type="button"
+                    className="cluster-card__copilot-button"
+                    disabled={!validationQuestionsAction.availability?.is_available}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onRunCopilotAction?.(validationQuestionsAction.action_id, signalClusterSection.cluster_id);
+                    }}
+                  >
+                    Validation questions
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
           <p className="cluster-card__actions-note">
             Watch keeps this cluster on your radar, Save keeps it available in this topic, and Not
             relevant removes it from the active review without deleting the evidence basis.

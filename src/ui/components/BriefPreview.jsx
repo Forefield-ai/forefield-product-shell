@@ -14,7 +14,9 @@ function renderMetaRows(rows) {
 
 export default function BriefPreview({
   briefState,
+  briefTakeawaySupportAction = null,
   onClose,
+  onExplainTakeawaySupport,
   onOpenCluster,
   onViewSupportingEvidence,
   onViewMonitoringGap,
@@ -220,6 +222,17 @@ export default function BriefPreview({
                 </div>
                 {takeaway.takeaway_summary ? (
                   <p className="brief-preview__copy">{takeaway.takeaway_summary}</p>
+                ) : null}
+                {briefTakeawaySupportAction?.availability?.is_available && takeaway.trace_available ? (
+                  <div className="brief-preview__trace-actions">
+                    <button
+                      className="brief-preview__trace-button brief-preview__trace-button--secondary"
+                      type="button"
+                      onClick={() => onExplainTakeawaySupport?.(takeaway.cluster_id)}
+                    >
+                      Explain support
+                    </button>
+                  </div>
                 ) : null}
                 {renderTakeawayTrace(takeaway)}
                 {Array.isArray(takeaway.supporting_evidence) && takeaway.supporting_evidence.length ? (

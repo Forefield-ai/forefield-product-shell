@@ -6,8 +6,10 @@ export default function SignalClusterList({
   signalClusterSections,
   hiddenSignalClusterSections,
   selectedClusterId,
+  copilotActionsById,
   onSelectCluster,
   onOpenEvidenceDrawer,
+  onRunCopilotAction,
   onWatchCluster,
   onUnwatchCluster,
   onSaveCluster,
@@ -38,8 +40,11 @@ export default function SignalClusterList({
             isSelected={selectedClusterId === signalClusterSection.cluster_id}
             isWatched={Boolean(isClusterWatched?.(signalClusterSection.cluster_id))}
             isSaved={Boolean(isClusterSaved?.(signalClusterSection.cluster_id))}
+            explainClusterAction={copilotActionsById?.explain_cluster || null}
+            validationQuestionsAction={copilotActionsById?.generate_validation_questions || null}
             onSelect={() => onSelectCluster(signalClusterSection.cluster_id)}
             onViewEvidence={onOpenEvidenceDrawer}
+            onRunCopilotAction={onRunCopilotAction}
             onWatch={() => onWatchCluster?.(signalClusterSection)}
             onUnwatch={() => onUnwatchCluster?.(signalClusterSection)}
             onSave={() => onSaveCluster?.(signalClusterSection)}

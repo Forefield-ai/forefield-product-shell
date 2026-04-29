@@ -6,6 +6,7 @@ import SignalClusterList from './components/SignalClusterList';
 import EmptySparseState from './components/EmptySparseState';
 import EvidenceDrawer from './components/EvidenceDrawer';
 import BriefPreview from './components/BriefPreview';
+import CopilotPanel from './components/CopilotPanel';
 import { buildTopicWorkspaceViewState } from '../product/read-models/build-topic-workspace-view-state.browser.mjs';
 import {
   initialActionState,
@@ -82,9 +83,14 @@ export default function TopicWorkspacePage({
   actionState = initialActionState(),
   workspaceCommand,
   briefState = null,
+  copilotGuidedActionsState = null,
+  copilotPanelState = null,
   isBriefPreviewOpen = false,
   onOpenBriefPreview,
   onCloseBriefPreview,
+  onRunCopilotAction,
+  onOpenCopilotTraceRef,
+  onCloseCopilotPanel,
   onWatchCluster,
   onUnwatchCluster,
   onSaveCluster,
@@ -124,6 +130,18 @@ export default function TopicWorkspacePage({
     : null;
   const selectedEvidenceDrawer = drawerWorkspaceViewState?.selected_evidence_drawer || null;
   const briefPreviewIsEligible = Boolean(briefState?.eligibility?.is_eligible);
+  const copilotActionsById = Array.isArray(copilotGuidedActionsState?.actions)
+    ? copilotGuidedActionsState.actions.reduce((accumulator, action) => {
+      accumulator[action.action_id] = action;
+      return accumulator;
+    }, {})
+    : {};
+  const workspaceCopilotActions = [
+    copilotActionsById.summarize_caveats,
+    copilotActionsById.suggest_what_to_watch_next,
+  ].filter(Boolean);
+  const briefTakeawaySupportAction = copilotActionsById.explain_brief_takeaway_support || null;
+  const copilotPanelIsOpen = Boolean(copilotPanelState?.output);
 
   const handleSelectCluster = (clusterId) => {
     setInteractionState((currentState) => selectCluster(currentState, clusterId));
@@ -133,6 +151,7 @@ export default function TopicWorkspacePage({
       onCloseBriefPreview?.();
     }
 
+    onCloseCopilotPanel?.();
     setInteractionState((currentState) => openEvidenceDrawer(currentState, clusterId));
   };
   const handleOpenBriefCluster = (clusterId) => {
@@ -148,6 +167,53 @@ export default function TopicWorkspacePage({
     }
 
     setInteractionState((currentState) => selectCluster(currentState, clusterId));
+  };
+  const handleRunWorkspaceCopilotAction = (actionId) => {
+    if (interactionState.drawer_state === 'open') {
+      setInteractionState((currentState) => closeEvidenceDrawer(currentState));
+    }
+
+    if (isBriefPreviewOpen) {
+      onCloseBriefPreview?.();
+    }
+
+    onRunCopilotAction?.({
+      actionId,
+      input: {},
+      sourceLabel: 'Triggered from the current review workspace context.',
+    });
+  };
+  const handleRunClusterCopilotAction = (actionId, clusterId) => {
+    if (interactionState.drawer_state === 'open') {
+      setInteractionState((currentState) => closeEvidenceDrawer(currentState));
+    }
+
+    if (isBriefPreviewOpen) {
+      onCloseBriefPreview?.();
+    }
+
+    setInteractionState((currentState) => selectCluster(currentState, clusterId));
+    onRunCopilotAction?.({
+      actionId,
+      input: { cluster_id: clusterId },
+      sourceLabel: 'Triggered from the selected signal cluster.',
+    });
+  };
+  const handleRunBriefTakeawaySupport = (clusterId) => {
+    if (interactionState.drawer_state === 'open') {
+      setInteractionState((currentState) => closeEvidenceDrawer(currentState));
+    }
+
+    if (isBriefPreviewOpen) {
+      onCloseBriefPreview?.();
+    }
+
+    setInteractionState((currentState) => selectCluster(currentState, clusterId));
+    onRunCopilotAction?.({
+      actionId: 'explain_brief_takeaway_support',
+      input: { cluster_id: clusterId },
+      sourceLabel: 'Triggered from the current Baseline Brief takeaway.',
+    });
   };
   const handleCloseEvidenceDrawer = () => {
     setInteractionState((currentState) => closeEvidenceDrawer(currentState));
@@ -277,15 +343,18 @@ export default function TopicWorkspacePage({
           workspaceHeader={workspaceViewState.workspace_header}
           topicDraftSummary={workspaceViewState.topic_draft_summary}
           briefEligibility={briefState?.eligibility || null}
+          workspaceCopilotActions={workspaceCopilotActions}
           isBriefPreviewOpen={isBriefPreviewOpen}
           onOpenBriefPreview={() => {
             if (interactionState.drawer_state === 'open') {
               setInteractionState((currentState) => closeEvidenceDrawer(currentState));
             }
 
+            onCloseCopilotPanel?.();
             onOpenBriefPreview?.();
           }}
           onCloseBriefPreview={onCloseBriefPreview}
+          onRunCopilotAction={handleRunWorkspaceCopilotAction}
         />
 
         <ReviewSummaryStrip reviewSummary={workspaceViewState.review_summary} />
@@ -303,8 +372,10 @@ export default function TopicWorkspacePage({
               signalClusterSections={visibleSignalClusterSections}
               hiddenSignalClusterSections={hiddenSignalClusterSections}
               selectedClusterId={interactionState.selected_cluster_id}
+              copilotActionsById={copilotActionsById}
               onSelectCluster={handleSelectCluster}
               onOpenEvidenceDrawer={handleOpenEvidenceDrawer}
+              onRunCopilotAction={handleRunClusterCopilotAction}
               onWatchCluster={handleWatchCluster}
               onUnwatchCluster={handleUnwatchCluster}
               onSaveCluster={handleSaveCluster}
@@ -329,10 +400,20 @@ export default function TopicWorkspacePage({
           {!isEmptyState && isBriefPreviewOpen && briefPreviewIsEligible ? (
             <BriefPreview
               briefState={briefState}
+              briefTakeawaySupportAction={briefTakeawaySupportAction}
               onClose={onCloseBriefPreview}
+              onExplainTakeawaySupport={handleRunBriefTakeawaySupport}
               onOpenCluster={handleOpenBriefCluster}
               onViewSupportingEvidence={handleOpenEvidenceDrawer}
               onViewMonitoringGap={handleOpenBriefMonitoringGap}
+            />
+          ) : null}
+
+          {!isEmptyState && !isBriefPreviewOpen && interactionState.drawer_state !== 'open' && copilotPanelIsOpen ? (
+            <CopilotPanel
+              panelState={copilotPanelState}
+              onClose={onCloseCopilotPanel}
+              onOpenTraceRef={onOpenCopilotTraceRef}
             />
           ) : null}
         </div>

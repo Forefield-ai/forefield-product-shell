@@ -24,6 +24,9 @@ const {
 const {
   BASELINE_BRIEF_PROTOTYPE_STATES,
 } = require('../../src/product/read-models/build-baseline-brief-state');
+const browserCopilotBuilderModulePromise = import(
+  '../../src/product/copilot/build-copilot-guided-actions-state.browser.mjs'
+);
 
 const SAMPLE_TOPIC_SCOPE = {
   topic_id: 'local_topic__privacy-workflow-demand__20260428120000',
@@ -186,6 +189,36 @@ test('rich deterministic mock outputs stay evidence-grounded across the allowed 
     assert.ok(Array.isArray(output.what_to_validate_next));
     assert.ok(Array.isArray(output.trace_refs));
   });
+});
+
+test('trace-aware outputs keep the minimal handoff references needed by the UI shell', () => {
+  const explainClusterOutput = buildCopilotGuidedActionMockOutput({
+    topicScope: SAMPLE_TOPIC_SCOPE,
+    productMainline: richProductMainlineFixture,
+    actionId: COPILOT_ACTION_IDS.EXPLAIN_CLUSTER,
+    input: { cluster_id: richProductMainlineFixture.signal_clusters[0].id },
+  });
+  const explainTakeawayOutput = buildCopilotGuidedActionMockOutput({
+    topicScope: SAMPLE_TOPIC_SCOPE,
+    productMainline: richProductMainlineFixture,
+    actionId: COPILOT_ACTION_IDS.EXPLAIN_BRIEF_TAKEAWAY_SUPPORT,
+    input: { cluster_id: richProductMainlineFixture.signal_clusters[0].id },
+  });
+
+  assert.deepEqual(explainClusterOutput.trace_refs[0], {
+    ref_kind: 'signal_cluster',
+    cluster_id: richProductMainlineFixture.signal_clusters[0].id,
+    headline: richProductMainlineFixture.signal_clusters[0].headline,
+    trace_kind: 'cluster',
+  });
+  assert.deepEqual(explainTakeawayOutput.trace_refs[1], {
+    ref_kind: 'evidence_support',
+    supporting_cluster_id: richProductMainlineFixture.signal_clusters[0].id,
+    evidence_ids: explainTakeawayOutput.trace_refs[1].evidence_ids,
+    evidence_count: explainTakeawayOutput.trace_refs[1].evidence_count,
+    source_link_count: explainTakeawayOutput.trace_refs[1].source_link_count,
+  });
+  assert.ok(explainTakeawayOutput.trace_refs[1].evidence_ids.length > 0);
 });
 
 test('sparse outputs include preliminary / limited-evidence language', () => {
@@ -413,4 +446,28 @@ test('action availability matrix matches rich, sparse, no-evidence, empty, and f
   failedState.actions.forEach((action) => {
     assert.equal(action.availability.is_available, false, action.action_id);
   });
+});
+
+test('browser-safe ESM copilot builder stays aligned with the CommonJS builder', async () => {
+  const browserBuilderModule = await browserCopilotBuilderModulePromise;
+  const richState = buildRichState();
+  const richBrowserState = browserBuilderModule.buildCopilotGuidedActionsState({
+    topicScope: SAMPLE_TOPIC_SCOPE,
+    productMainline: richProductMainlineFixture,
+  });
+  const sparseBrowserOutput = browserBuilderModule.buildCopilotGuidedActionMockOutput({
+    topicScope: SAMPLE_TOPIC_SCOPE,
+    productMainline: sparseProductMainlineFixture,
+    actionId: COPILOT_ACTION_IDS.EXPLAIN_BRIEF_TAKEAWAY_SUPPORT,
+    input: { cluster_id: sparseProductMainlineFixture.signal_clusters[0].id },
+  });
+  const sparseCjsOutput = buildCopilotGuidedActionMockOutput({
+    topicScope: SAMPLE_TOPIC_SCOPE,
+    productMainline: sparseProductMainlineFixture,
+    actionId: COPILOT_ACTION_IDS.EXPLAIN_BRIEF_TAKEAWAY_SUPPORT,
+    input: { cluster_id: sparseProductMainlineFixture.signal_clusters[0].id },
+  });
+
+  assert.deepEqual(richBrowserState, richState);
+  assert.deepEqual(sparseBrowserOutput, sparseCjsOutput);
 });

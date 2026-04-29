@@ -242,6 +242,23 @@ async function main() {
         })
       ).toBeVisible({ timeout: STEP_TIMEOUT_MS });
     });
+
+    await runScenario(browser, 'rich + standard baseline -> Copilot explain_cluster trace handoff', async (page) => {
+      await selectLocalScenario(page, 'rich', 'default');
+      await startTopicFlow(page);
+      await expectWorkspace(page);
+      await page.locator('.cluster-card__copilot-button', { hasText: 'Explain cluster' }).first().click();
+      await expect(page.getByLabel('Copilot guided action panel')).toBeVisible({ timeout: STEP_TIMEOUT_MS });
+      await expect(
+        page.getByLabel('Copilot guided action panel').getByRole('heading', {
+          name: 'Explain this cluster',
+        })
+      ).toBeVisible({ timeout: STEP_TIMEOUT_MS });
+      await expect(page.getByLabel('Copilot guided action panel').getByRole('textbox')).toHaveCount(0);
+      await page.getByLabel('Copilot guided action panel').getByRole('button', { name: 'View supporting evidence' }).first().click();
+      await expect(page.getByLabel('Copilot guided action panel')).toHaveCount(0);
+      await expect(page.locator('.evidence-drawer')).toBeVisible({ timeout: STEP_TIMEOUT_MS });
+    });
   } finally {
     await browser.close();
   }

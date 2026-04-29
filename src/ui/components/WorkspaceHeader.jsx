@@ -28,9 +28,11 @@ export default function WorkspaceHeader({
   workspaceHeader,
   topicDraftSummary,
   briefEligibility = null,
+  workspaceCopilotActions = [],
   isBriefPreviewOpen = false,
   onOpenBriefPreview,
   onCloseBriefPreview,
+  onRunCopilotAction,
 }) {
   const topicDefinitionStatus = formatTopicDefinitionStatus(workspaceHeader?.draft_state_label);
   const reviewSnapshot = formatTimestamp(workspaceHeader?.imported_at);
@@ -45,6 +47,23 @@ export default function WorkspaceHeader({
       ? 'Opens a preliminary preview with limited-evidence caveats.'
       : 'Opens a read-only preview built from the current workspace state.')
     : (typeof briefEligibility?.summary === 'string' ? briefEligibility.summary : '');
+  const workspaceCopilotHelperText = workspaceCopilotActions.some((action) => action?.availability?.is_available)
+    ? 'Guided, Topic-scoped actions only. Copilot stays inside the current review context.'
+    : (
+      workspaceCopilotActions.find((action) => typeof action?.availability?.summary === 'string')?.availability?.summary
+      || 'Copilot guided actions are unavailable for the current review state.'
+    );
+
+  function formatCopilotActionLabel(action) {
+    switch (action?.action_id) {
+      case 'summarize_caveats':
+        return 'Summarize caveats';
+      case 'suggest_what_to_watch_next':
+        return 'What to watch next';
+      default:
+        return action?.display_name || 'Copilot action';
+    }
+  }
 
   return (
     <header className="workspace-header">
@@ -58,17 +77,38 @@ export default function WorkspaceHeader({
           </div>
         </div>
         <div className="workspace-header__actions">
-          <button
-            className="flow-button flow-button--secondary"
-            type="button"
-            onClick={isBriefPreviewOpen ? onCloseBriefPreview : onOpenBriefPreview}
-            disabled={!briefIsEligible}
-          >
-            {briefTriggerLabel}
-          </button>
-          {briefHelperText ? (
-            <p className="workspace-header__brief-note">{briefHelperText}</p>
-          ) : null}
+          <div className="workspace-header__action-group">
+            <button
+              className="flow-button flow-button--secondary"
+              type="button"
+              onClick={isBriefPreviewOpen ? onCloseBriefPreview : onOpenBriefPreview}
+              disabled={!briefIsEligible}
+            >
+              {briefTriggerLabel}
+            </button>
+            {briefHelperText ? (
+              <p className="workspace-header__brief-note">{briefHelperText}</p>
+            ) : null}
+          </div>
+          <div className="workspace-header__action-group workspace-header__action-group--copilot">
+            <p className="workspace-header__action-group-label">Copilot actions</p>
+            <div className="workspace-header__copilot-buttons">
+              {workspaceCopilotActions.map((action) => (
+                <button
+                  key={action.action_id}
+                  className="workspace-header__copilot-button"
+                  type="button"
+                  disabled={!action?.availability?.is_available}
+                  onClick={() => onRunCopilotAction?.(action.action_id)}
+                >
+                  {formatCopilotActionLabel(action)}
+                </button>
+              ))}
+            </div>
+            {workspaceCopilotHelperText ? (
+              <p className="workspace-header__brief-note">{workspaceCopilotHelperText}</p>
+            ) : null}
+          </div>
         </div>
       </div>
       <h1 className="workspace-header__title">{workspaceHeader.workspace_title}</h1>
