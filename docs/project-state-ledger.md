@@ -1,6 +1,6 @@
 # Project State Ledger
 
-This ledger records the accepted project state for `forefield-product-shell` through `P12F` / `P12` cached-source core-to-shell loop closeout, plus prior local shell milestones.
+This ledger records the accepted project state for `forefield-product-shell` through `P13C-C` hardened ReviewHandoff fixture refresh, plus prior local shell milestones.
 
 ## Repository Split
 
@@ -1303,15 +1303,54 @@ This ledger records the accepted project state for `forefield-product-shell` thr
   - background jobs remain deferred
   - Topic-to-core execution bridge remains deferred
   - realistic cached source corpus remains deferred to the next planning phase
+- P13C-C completed
+- P13C-C implementation commit: `2740ea70323ff036d832a8f06dbeecb408191d41`
+- closeout summary:
+  - refreshed copied assembler-generated `DecisionCoreReviewHandoff` v0.2 ready/sparse artifacts from decision-core source commit `b7799d596353ea11ff1ee078f25b36733e8c1d75`
+  - refreshed copied cached-source-generated `DecisionCoreReviewHandoff` v0.2 ready/sparse artifacts from the same decision-core source commit
+  - copied source paths:
+    - `forefield-decision-core/fixtures/forefield-boundary/generated/`
+    - `forefield-decision-core/fixtures/forefield-boundary/generated/cached-source/`
+  - copied product-shell paths:
+    - `fixtures/external/decision-core/generated/`
+    - `fixtures/external/decision-core/generated/cached-source/`
+  - preserved hand-authored semantic fixtures, assembler-generated fixture coverage, and cached-source-generated five-state coverage
+  - recorded hardened source commit and refresh reason in `fixtures/external/decision-core/review-handoff-fixtures.md`
+  - verified source-like `quote_excerpt` values map into product-owned curated evidence records
+  - verified Evidence Drawer / Brief-compatible evidence summaries still consume refreshed evidence records without product UI changes
+  - expanded product-shell prohibited-field tests for legacy rank / score / card / claim / LLM patch metadata
+  - verified refreshed ready artifacts map to normal product mainline / Workspace / Brief / Copilot read models
+  - verified refreshed sparse artifacts preserve preliminary review state
+  - verified evidence ids remain product-owned with no dangling cluster refs
+  - verified `review_priority_order` remains review metadata, not score
+  - verified product-shell still does not import decision-core source
+- confirmed:
+  - no product-shell UI changes
+  - no decision-core changes
+  - no live LLM/model invocation
+  - no live ingestion
+  - no DB / persistence
+  - no API / auth
+  - no production scraping
+  - no background jobs
+  - no Copilot polish
+  - no Brief export / copy
+  - no cross-repo imports
+- validation:
+  - focused mapper/import tests passed: `27 / 27`
+  - `npm run validate` passed
+  - `npm test` passed: `170 / 170`
+  - `npm run build` passed
+  - `npm run smoke:browser` passed against temporary local dev server at `http://127.0.0.1:5174`
 
 ## Technical Debt
 
 ### Manual Cross-Repo Artifact Copy
 
-- observed / introduced phase: accepted through `P12F`
+- observed / introduced phase: accepted through `P12F`, refreshed in `P13C-C`
 - reason: product-shell still copies JSON artifacts by commit rather than consuming a shared package or automated sync
 - current impact: product-shell preserves repo independence and avoids importing decision-core source
-- risk: decision-core artifacts may update while shell copied fixtures become stale
+- risk: decision-core artifacts may update while shell copied fixtures become stale; `P13C-C` reduced the known P13C-B artifact drift but did not remove the manual-copy process risk
 - status: accepted for repo independence
 - revisit / trigger condition: revisit when `DecisionCoreReviewHandoff` changes, cached-source generated artifacts update, or cross-repo integration tooling is introduced
 
@@ -1756,8 +1795,8 @@ This ledger records the accepted project state for `forefield-product-shell` thr
 
 ## Recommended Next Step
 
-- recommended next step: `P13A` realistic cached source corpus planning
-- focus the next pass on improving realistic cached-source corpus coverage before live ingestion, persistence, API/auth, or Topic-to-core execution bridge work
+- recommended next step: `P13D` Semantic Intelligence Boundary Planning
+- focus the next pass on planning semantic / LLM-or-hybrid intelligence boundaries after P13C compatibility hardening and fixture refresh
 - do not move directly into additional Copilot polish, Brief export / copy, open-ended chat, API / DB / auth / persistence, or visual redesign by default
 
 ## Pre-Flight Checklist For Future Phases
