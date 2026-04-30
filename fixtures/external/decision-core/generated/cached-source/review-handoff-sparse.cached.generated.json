@@ -74,7 +74,7 @@
       "source_platform": "reddit_posts_and_comments",
       "title": "AI note taker privacy still feels unclear",
       "summary": "I need clearer privacy controls before I can trust this with client calls.",
-      "quote_excerpt": "Users want a clearer and lower-friction product behavior.",
+      "quote_excerpt": "I need clearer privacy controls before I can trust this with client calls.",
       "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
     },
     {
@@ -83,7 +83,7 @@
       "source_platform": "reddit_posts_and_comments",
       "title": "AI note taker privacy still feels unclear",
       "summary": "The workflow still makes me copy things manually when accuracy drops, and it is hard to trust the notes without double-checking.",
-      "quote_excerpt": "Users want more explicit privacy controls and trust-preserving defaults.",
+      "quote_excerpt": "The workflow still makes me copy things manually when accuracy drops, and it is hard to trust the notes without double-checking.",
       "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
     },
     {
@@ -92,7 +92,7 @@
       "source_platform": "youtube_comments",
       "title": "AI Note Taker Privacy and Accuracy Review",
       "summary": "I need clearer privacy controls before I can trust an AI note taker with client meetings.",
-      "quote_excerpt": "Users want a clearer and lower-friction product behavior.",
+      "quote_excerpt": "I need clearer privacy controls before I can trust an AI note taker with client meetings.",
       "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
     },
     {
@@ -101,7 +101,7 @@
       "source_platform": "youtube_comments",
       "title": "AI Note Taker Privacy and Accuracy Review",
       "summary": "Accuracy still drops when the meeting switches languages, so I end up fixing the notes manually.",
-      "quote_excerpt": "Users want a clearer and lower-friction product behavior.",
+      "quote_excerpt": "Accuracy still drops when the meeting switches languages, so I end up fixing the notes manually.",
       "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
     },
     {
@@ -110,7 +110,7 @@
       "source_platform": "youtube_comments",
       "title": "AI Note Taker Privacy and Accuracy Review",
       "summary": "The workflow is better, but I still want clearer permission settings before sharing team calls.",
-      "quote_excerpt": "Users want a clearer and lower-friction product behavior.",
+      "quote_excerpt": "The workflow is better, but I still want clearer permission settings before sharing team calls.",
       "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
     }
   ],

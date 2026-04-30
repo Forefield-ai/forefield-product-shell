@@ -27,7 +27,7 @@ Source repo:
 
 Source commit:
 
-- `45bcadf3f197665a78c09c6ba17639540a1bff40`
+- `b7799d596353ea11ff1ee078f25b36733e8c1d75`
 
 Source path:
 
@@ -41,6 +41,11 @@ These samples are assembler-generated artifacts, not hand-authored golden fixtur
 by commit so product-shell can verify mapper compatibility with real decision-core assembler output
 without importing decision-core source code.
 
+P13C-C refreshed these copied artifacts from the P13C-B hardened decision-core output. The refresh
+keeps legacy opportunity / score / rank / LLM patch metadata out of product-shell samples and
+captures the `quote_excerpt` hardening where ready/sparse evidence now prefers safe source-like text
+over derived outcome templates.
+
 ## Cached-Source-Pipeline-Generated Samples
 
 Source repo:
@@ -49,7 +54,7 @@ Source repo:
 
 Source commit:
 
-- `8d779f4d605863688652c5e3d4ec9aef18626c87`
+- `b7799d596353ea11ff1ee078f25b36733e8c1d75`
 
 Source path:
 
@@ -63,6 +68,11 @@ These samples are generated through `buildReviewHandoffFromCachedSourceArtifacts
 hand-authored and not assembler-only generated artifacts. They are copied by commit so
 product-shell can verify mapper compatibility with the local cached-source pipeline output while
 preserving repository independence.
+
+P13C-C refreshed these copied cached-source artifacts from the P13C-B hardened decision-core output.
+The main compatibility change is that ready/sparse `quote_excerpt` values now retain safe
+source-like evidence text. The copied files remain static external test samples and do not create a
+runtime dependency on decision-core.
 
 The samples are bounded external handoff inputs. They are not product-shell contracts and they
 must not be used to import decision-core source code or validation internals.

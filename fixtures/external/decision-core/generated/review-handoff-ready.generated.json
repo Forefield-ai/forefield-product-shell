@@ -64,7 +64,7 @@
       "source_platform": "reddit_posts_and_comments",
       "title": "Users complain about privacy settings",
       "summary": "People keep asking for clearer privacy controls.",
-      "quote_excerpt": "Users want more explicit privacy controls and trust-preserving defaults.",
+      "quote_excerpt": "People keep asking for clearer privacy controls.",
       "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
     },
     {
@@ -73,7 +73,7 @@
       "source_platform": "youtube_comments",
       "title": "Video commenters mention privacy confusion",
       "summary": "Commenters also ask for more explicit privacy settings.",
-      "quote_excerpt": "Users want more explicit privacy controls and trust-preserving defaults.",
+      "quote_excerpt": "Commenters also ask for more explicit privacy settings.",
       "provenance_note": "Public source URL retained; internal payloads and trace details are excluded."
     }
   ],

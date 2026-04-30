@@ -29,6 +29,9 @@ const {
   BASELINE_BRIEF_UNAVAILABLE_REASONS,
 } = require('../../src/product/read-models/build-baseline-brief-state');
 const {
+  buildEvidenceDrawerState,
+} = require('../../src/product/read-models/build-evidence-drawer-state');
+const {
   buildTopicWorkspaceViewState,
 } = require('../../src/product/read-models/build-topic-workspace-view-state');
 const {
@@ -46,12 +49,23 @@ const PROHIBITED_KEYS = new Set([
   'raw_opportunity_score',
   'market_opportunity_score',
   'business_value_score',
+  'opportunity_rank',
+  'score_band',
+  'scoring_hooks',
+  'opportunity_card_id',
   'raw_refs',
   'raw_trace_refs',
+  'raw_ref',
+  'raw_items',
   'claim_candidate_id',
+  'claim_trace_id',
   'claim_id',
   'opportunity_id',
+  'source_item_id',
+  'evidence_candidate_id',
+  'analysis_packet_id',
   'internal_decision_core',
+  'internal_priority_inputs',
   'decision_core_refs',
   'analysis_packets',
   'corroboration_record',
@@ -60,6 +74,13 @@ const PROHIBITED_KEYS = new Set([
   'weak_context_entries',
   'prompt_logs',
   'crawler_logs',
+  'llm_patch_status',
+  'llm_patch_provider',
+  'llm_patch_model',
+  'llm_patch_verification',
+  'analysis_llm_patch_decisions',
+  'raw_llm_decision',
+  'patch_status',
   'raw_source_payload',
   'unprocessed_source_payload',
   'debug_metadata',
@@ -73,6 +94,12 @@ const FORBIDDEN_PHRASES = [
   'proves strong demand',
   'purchase intent',
   'opportunity ranking',
+  'market opportunity',
+  'opportunity score',
+  'business opportunity ranking',
+  'gtm recommendation',
+  'pricing recommendation',
+  'roadmap recommendation',
   'market sizing',
   'no demand',
 ];
@@ -166,6 +193,42 @@ function assertClusterEvidenceRefsResolved(productMainline) {
       assert.equal(evidenceIds.has(evidenceId), true, `Dangling evidence id: ${evidenceId}`);
     });
   });
+}
+
+function assertSourceLikeEvidenceQuoteExcerpts(handoff, productMainline, expectedSnippet) {
+  const sourceLikeEvidence = handoff.evidence_items.find((item) =>
+    typeof item.quote_excerpt === 'string'
+    && item.quote_excerpt.includes(expectedSnippet)
+  );
+
+  assert.ok(sourceLikeEvidence, `Expected source-like quote excerpt containing "${expectedSnippet}"`);
+
+  const productEvidence = productMainline.curated_evidence_records.find((record) =>
+    record.source_review_evidence_ref.evidence_item_id === sourceLikeEvidence.evidence_item_id
+  );
+
+  assert.ok(productEvidence, 'Expected copied evidence item to map into a product-owned evidence record');
+  assert.equal(productEvidence.quote_excerpt, sourceLikeEvidence.quote_excerpt);
+  assert.equal(productEvidence.quote_excerpt.includes('Users want a clearer and lower-friction product behavior.'), false);
+  assert.equal(productEvidence.quote_excerpt.includes('Users want more explicit privacy controls'), false);
+  assert.equal(productEvidence.id.startsWith('curated_evidence_record_'), true);
+
+  const cluster = productMainline.signal_clusters.find((entry) =>
+    entry.curated_evidence_ids.includes(productEvidence.id)
+  );
+  const drawerState = buildEvidenceDrawerState({
+    topicDraft: productMainline.topic_draft,
+    signalCluster: cluster,
+    curatedEvidenceRecords: productMainline.curated_evidence_records,
+  });
+  const briefState = buildBaselineBriefState({ productMainline });
+
+  assert.ok(drawerState.evidence_items.some((item) => item.summary === productEvidence.summary));
+  assert.ok(
+    briefState.sections.evidence_backed_takeaways.some((takeaway) =>
+      takeaway.supporting_evidence.some((item) => item.summary === productEvidence.summary)
+    )
+  );
 }
 
 test('ready review handoff maps to normal product mainline and read models', () => {
@@ -373,6 +436,11 @@ test('generated ready review handoff maps to normal product mainline and read mo
   assert.equal(briefState.eligibility.brief_mode, BASELINE_BRIEF_MODES.STANDARD);
   assert.equal(copilotState.workspace_state, COPILOT_WORKSPACE_STATES.RICH);
   assertClusterEvidenceRefsResolved(productMainline);
+  assertSourceLikeEvidenceQuoteExcerpts(
+    generatedReadyReviewHandoff,
+    productMainline,
+    'People keep asking for clearer privacy controls.'
+  );
 });
 
 test('generated sparse review handoff preserves explicit preliminary state', () => {
@@ -392,6 +460,11 @@ test('generated sparse review handoff preserves explicit preliminary state', () 
   assert.equal(briefState.eligibility.brief_mode, BASELINE_BRIEF_MODES.PRELIMINARY);
   assert.equal(copilotState.workspace_state, COPILOT_WORKSPACE_STATES.SPARSE);
   assertClusterEvidenceRefsResolved(productMainline);
+  assertSourceLikeEvidenceQuoteExcerpts(
+    generatedSparseReviewHandoff,
+    productMainline,
+    'People keep asking for clearer privacy controls.'
+  );
 });
 
 test('generated no_evidence review handoff creates no fake evidence-backed takeaway', () => {
@@ -529,6 +602,11 @@ test('cached-source generated ready review handoff maps to normal product mainli
   assert.equal(briefState.eligibility.brief_mode, BASELINE_BRIEF_MODES.STANDARD);
   assert.equal(copilotState.workspace_state, COPILOT_WORKSPACE_STATES.RICH);
   assertClusterEvidenceRefsResolved(productMainline);
+  assertSourceLikeEvidenceQuoteExcerpts(
+    cachedGeneratedReadyReviewHandoff,
+    productMainline,
+    'I need clearer privacy controls before I can trust this with client calls.'
+  );
 });
 
 test('cached-source generated sparse review handoff preserves preliminary state', () => {
@@ -548,6 +626,11 @@ test('cached-source generated sparse review handoff preserves preliminary state'
   assert.equal(briefState.eligibility.brief_mode, BASELINE_BRIEF_MODES.PRELIMINARY);
   assert.equal(copilotState.workspace_state, COPILOT_WORKSPACE_STATES.SPARSE);
   assertClusterEvidenceRefsResolved(productMainline);
+  assertSourceLikeEvidenceQuoteExcerpts(
+    cachedGeneratedSparseReviewHandoff,
+    productMainline,
+    'I need clearer privacy controls before I can trust this with client calls.'
+  );
 });
 
 test('cached-source generated no_evidence creates visible review state without fake evidence-backed takeaways', () => {
