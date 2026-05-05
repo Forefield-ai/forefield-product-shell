@@ -1,0 +1,281 @@
+{
+  "handoff_version": "0.3.0-decision-core-review-handoff",
+  "run": {
+    "run_id": "initial-review-run:p16h:v03-shadow-fixture",
+    "run_type": "initial_review",
+    "status": "completed",
+    "started_at": "2026-05-05T12:00:00.000Z",
+    "completed_at": "2026-05-05T12:00:00.000Z"
+  },
+  "decision_context": {
+    "topic_seed": "AI meeting notes for product teams",
+    "topic_summary": "Monitor product-team friction around reviewing, cleaning, and sharing AI-generated meeting notes.",
+    "audience": "Product teams",
+    "problem_space": "Meeting follow-up",
+    "monitoring_intent": "Discover recurring workflow friction around AI meeting notes."
+  },
+  "review_state": {
+    "state": "ready",
+    "reasons": [
+      "grouped_evidence_shadow_fixture_available"
+    ]
+  },
+  "source_coverage": {
+    "source_family_count": 7,
+    "public_source_ref_count": 0,
+    "coverage_boundary": "Sanitized v0.3 shadow handoff fixture without public source links.",
+    "source_families": [
+      "reddit",
+      "youtube_comment",
+      "google_trends",
+      "linkedin_company",
+      "linkedin_post",
+      "google_forum_snippet",
+      "forum_discussion"
+    ]
+  },
+  "review_entries": [
+    {
+      "review_entry_id": "review-entry:p16h:v03-shadow:grouped",
+      "review_priority_order": 1,
+      "cluster_seed": {
+        "headline": "Manual cleanup before sharing AI meeting notes",
+        "summary": "Product teams may still need review and cleanup steps before AI meeting notes are safe to share broadly."
+      },
+      "confidence": {
+        "label": "directional",
+        "boundary": "Sanitized grouped evidence supports a preliminary review, not a settled market conclusion."
+      },
+      "evidence_summary": {
+        "supporting_count": 2,
+        "contradicting_count": 1,
+        "weak_context_count": 1,
+        "direct_evidence_count": 1,
+        "direct_support_count": 1,
+        "weak_support_count": 1,
+        "context_count": 0,
+        "trend_context_count": 1,
+        "competitive_context_count": 1,
+        "professional_context_count": 1,
+        "counter_evidence_count": 1,
+        "discovery_lead_count": 1
+      },
+      "evidence_item_ids": [],
+      "caveats": [
+        "This is a preliminary review.",
+        "Public source links are not included in this sanitized sample."
+      ],
+      "next_validation_hint": "Review stronger discussion evidence before treating this as a product requirement.",
+      "grouped_evidence": {
+        "direct_support": [
+          {
+            "grouped_evidence_item_id": "grouped-evidence-item:p16h:direct:1",
+            "source_family": "reddit",
+            "source_role": "primary_discussion",
+            "output_kind": "discussion_signal_candidate",
+            "support_role": "direct_support",
+            "contribution_summary": "Product-team users describe extra cleanup before AI meeting notes are ready to share.",
+            "confidence": "directional",
+            "caveats": [
+              "This is a preliminary review."
+            ],
+            "source_ref": {
+              "source_ref_id": "safe-source-ref:p16h:direct:1",
+              "source_family": "reddit",
+              "source_role": "primary_discussion",
+              "record_kind": "discussion_signal_candidate",
+              "source_task_id": "source-task:p16h:discussion:1"
+            },
+            "counts_toward_direct_evidence": true,
+            "verification_status": "verified_for_grouping",
+            "related_source_task_id": "source-task:p16h:discussion:1",
+            "contribution_draft_ref": "contribution-draft:p16h:direct:1"
+          }
+        ],
+        "weak_support": [
+          {
+            "grouped_evidence_item_id": "grouped-evidence-item:p16h:weak:1",
+            "source_family": "youtube_comment",
+            "source_role": "reaction_signal",
+            "output_kind": "reaction_signal_candidate",
+            "support_role": "weak_support",
+            "contribution_summary": "Comment-level reactions suggest interest in cleaner meeting-note workflows but do not establish direct demand.",
+            "confidence": "exploratory",
+            "caveats": [
+              "Weak support needs corroboration."
+            ],
+            "source_ref": {
+              "source_ref_id": "safe-source-ref:p16h:weak:1",
+              "source_family": "youtube_comment",
+              "source_role": "reaction_signal",
+              "record_kind": "reaction_signal_candidate",
+              "source_task_id": "source-task:p16h:weak:1"
+            },
+            "counts_toward_direct_evidence": false,
+            "verification_status": "grouped_context_only",
+            "related_source_task_id": "source-task:p16h:weak:1",
+            "contribution_draft_ref": "contribution-draft:p16h:weak:1"
+          }
+        ],
+        "context": [],
+        "trend_context": [
+          {
+            "grouped_evidence_item_id": "grouped-evidence-item:p16h:trend:1",
+            "source_family": "google_trends",
+            "source_role": "trend_context",
+            "output_kind": "trend_context_record",
+            "support_role": "trend_context",
+            "contribution_summary": "Trend context indicates attention around AI meeting notes without proving user demand.",
+            "confidence": "contextual",
+            "caveats": [
+              "Trend context does not prove user demand by itself."
+            ],
+            "source_ref": {
+              "source_ref_id": "safe-source-ref:p16h:trend:1",
+              "source_family": "google_trends",
+              "source_role": "trend_context",
+              "record_kind": "trend_context_record",
+              "source_task_id": "source-task:p16h:trend:1"
+            },
+            "counts_toward_direct_evidence": false,
+            "verification_status": "grouped_context_only",
+            "related_source_task_id": "source-task:p16h:trend:1",
+            "contribution_draft_ref": "contribution-draft:p16h:trend:1"
+          }
+        ],
+        "competitive_context": [
+          {
+            "grouped_evidence_item_id": "grouped-evidence-item:p16h:competitive:1",
+            "source_family": "linkedin_company",
+            "source_role": "promo_vendor_context",
+            "output_kind": "competitive_context_record",
+            "support_role": "competitive_context",
+            "contribution_summary": "Vendor messaging suggests the category is active, but this is not user demand evidence.",
+            "confidence": "contextual",
+            "caveats": [
+              "Competitive context is not direct evidence."
+            ],
+            "source_ref": {
+              "source_ref_id": "safe-source-ref:p16h:competitive:1",
+              "source_family": "linkedin_company",
+              "source_role": "promo_vendor_context",
+              "record_kind": "competitive_context_record",
+              "source_task_id": "source-task:p16h:competitive:1"
+            },
+            "counts_toward_direct_evidence": false,
+            "verification_status": "grouped_context_only",
+            "related_source_task_id": "source-task:p16h:competitive:1",
+            "contribution_draft_ref": "contribution-draft:p16h:competitive:1"
+          }
+        ],
+        "professional_context": [
+          {
+            "grouped_evidence_item_id": "grouped-evidence-item:p16h:professional:1",
+            "source_family": "linkedin_post",
+            "source_role": "professional_context",
+            "output_kind": "professional_context_record",
+            "support_role": "professional_context",
+            "contribution_summary": "Professional context indicates meeting-note review is an operator concern in team workflows.",
+            "confidence": "contextual",
+            "caveats": [
+              "Professional context is not direct evidence by default."
+            ],
+            "source_ref": {
+              "source_ref_id": "safe-source-ref:p16h:professional:1",
+              "source_family": "linkedin_post",
+              "source_role": "professional_context",
+              "record_kind": "professional_context_record",
+              "source_task_id": "source-task:p16h:professional:1"
+            },
+            "counts_toward_direct_evidence": false,
+            "verification_status": "grouped_context_only",
+            "related_source_task_id": "source-task:p16h:professional:1",
+            "contribution_draft_ref": "contribution-draft:p16h:professional:1"
+          }
+        ],
+        "counter_evidence": [
+          {
+            "grouped_evidence_item_id": "grouped-evidence-item:p16h:counter:1",
+            "source_family": "forum_discussion",
+            "source_role": "supporting_discussion",
+            "output_kind": "counter_evidence_candidate",
+            "support_role": "counter_evidence",
+            "contribution_summary": "Some teams report existing review habits are sufficient, which qualifies the urgency of the signal.",
+            "confidence": "directional",
+            "caveats": [
+              "Counter evidence is preserved separately from direct support."
+            ],
+            "source_ref": {
+              "source_ref_id": "safe-source-ref:p16h:counter:1",
+              "source_family": "forum_discussion",
+              "source_role": "supporting_discussion",
+              "record_kind": "counter_evidence_candidate",
+              "source_task_id": "source-task:p16h:counter:1"
+            },
+            "counts_toward_direct_evidence": false,
+            "verification_status": "verified_for_grouping",
+            "related_source_task_id": "source-task:p16h:counter:1",
+            "contribution_draft_ref": "contribution-draft:p16h:counter:1"
+          }
+        ],
+        "discovery_leads": [
+          {
+            "grouped_evidence_item_id": "grouped-evidence-item:p16h:discovery:1",
+            "source_family": "google_forum_snippet",
+            "source_role": "discovery_lead",
+            "output_kind": "discovery_lead",
+            "support_role": "discovery_lead",
+            "contribution_summary": "A sanitized discovery lead points to a follow-up discussion area to inspect later.",
+            "confidence": "exploratory",
+            "caveats": [
+              "Discovery leads are follow-up leads, not evidence yet."
+            ],
+            "source_ref": {
+              "source_ref_id": "safe-source-ref:p16h:discovery:1",
+              "source_family": "google_forum_snippet",
+              "source_role": "discovery_lead",
+              "record_kind": "discovery_lead",
+              "source_task_id": "source-task:p16h:discovery:1"
+            },
+            "counts_toward_direct_evidence": false,
+            "verification_status": "grouped_context_only",
+            "related_source_task_id": "source-task:p16h:discovery:1",
+            "contribution_draft_ref": "contribution-draft:p16h:discovery:1"
+          }
+        ]
+      }
+    }
+  ],
+  "evidence_items": [],
+  "limitations": [
+    "This is a preliminary review.",
+    "Discovery leads are follow-up leads, not evidence yet.",
+    "Trend context does not prove user demand by itself.",
+    "Direct evidence count only includes Direct Support."
+  ],
+  "grouped_evidence_support": {
+    "enabled": true,
+    "schema_version": "grouped_evidence_v1",
+    "direct_evidence_count": 1,
+    "source_coverage_summary": {
+      "source_families_seen": [
+        "reddit",
+        "youtube_comment",
+        "google_trends",
+        "linkedin_company",
+        "linkedin_post",
+        "google_forum_snippet",
+        "forum_discussion"
+      ],
+      "direct_support_source_count": 1,
+      "weak_support_source_count": 1,
+      "context_source_count": 0,
+      "trend_context_present": true,
+      "competitive_context_present": true,
+      "professional_context_present": true,
+      "counter_evidence_present": true,
+      "discovery_lead_count": 1,
+      "caveat_count": 4
+    }
+  }
+}
