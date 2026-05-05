@@ -60,6 +60,21 @@ function getEvidenceAccessMessage(signalClusterSection) {
   return 'Evidence is not available for this cluster in the current snapshot';
 }
 
+function getGroupedEvidencePreview(signalClusterSection) {
+  const preview = signalClusterSection?.grouped_evidence_preview;
+
+  if (!preview?.has_grouped_evidence) {
+    return null;
+  }
+
+  return [
+    `${Number(preview.direct_evidence_count || 0)} direct`,
+    `${Number(preview.counter_evidence_count || 0)} counter`,
+    `${Number(preview.discovery_lead_count || 0)} leads`,
+    `${Number(preview.total_grouped_evidence_count || 0)} grouped total`,
+  ].join(' · ');
+}
+
 export default function SignalClusterCard({
   signalClusterSection,
   isSelected,
@@ -138,6 +153,11 @@ export default function SignalClusterCard({
         <div className="cluster-card__footer-copy">
           <div className="cluster-card__footer-meta">
             <span className="cluster-card__stat">{getEvidenceBasisSummary(signalClusterSection)}</span>
+            {getGroupedEvidencePreview(signalClusterSection) ? (
+              <span className="cluster-card__stat">
+                {getGroupedEvidencePreview(signalClusterSection)}
+              </span>
+            ) : null}
             <span className="cluster-card__stat">
               {getEvidenceAccessMessage(signalClusterSection)}
             </span>

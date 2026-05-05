@@ -1,4 +1,5 @@
 import { buildEvidenceDrawerState } from './build-evidence-drawer-state.browser.mjs';
+import { buildGroupedEvidenceViewState } from './build-grouped-evidence-view-state.browser.mjs';
 
 function uniqueStrings(values) {
   const seen = new Set();
@@ -69,8 +70,16 @@ function buildClusterSection(signalCluster, curatedEvidenceRecords) {
     )
   );
   const limitations = normalizeLimitations(signalCluster.limitations);
+  const groupedEvidenceViewState = buildGroupedEvidenceViewState({
+    signalCluster,
+    curatedEvidenceRecords,
+  });
+  const sectionCountById = groupedEvidenceViewState.groupedEvidenceSections.reduce((accumulator, section) => {
+    accumulator[section.section_id] = section.count;
+    return accumulator;
+  }, {});
 
-  return {
+  const clusterSection = {
     cluster_id: signalCluster.id,
     headline: signalCluster.headline,
     summary: signalCluster.summary,
@@ -78,8 +87,23 @@ function buildClusterSection(signalCluster, curatedEvidenceRecords) {
     limitations,
     evidence_count: relevantEvidenceRecords.length,
     source_links: sourceLinks,
-    drawer_available: relevantEvidenceRecords.length > 0,
+    drawer_available: relevantEvidenceRecords.length > 0
+      || groupedEvidenceViewState.totalGroupedEvidenceCount > 0,
   };
+
+  if (groupedEvidenceViewState.hasGroupedEvidence) {
+    clusterSection.grouped_evidence_preview = {
+      has_grouped_evidence: true,
+      fallback_mode: false,
+      direct_evidence_count: groupedEvidenceViewState.directEvidenceCount,
+      total_grouped_evidence_count: groupedEvidenceViewState.totalGroupedEvidenceCount,
+      direct_support_count: sectionCountById.direct_support || 0,
+      counter_evidence_count: sectionCountById.counter_evidence || 0,
+      discovery_lead_count: sectionCountById.discovery_leads || 0,
+    };
+  }
+
+  return clusterSection;
 }
 
 function countConfidenceLabel(signalClusters, label) {

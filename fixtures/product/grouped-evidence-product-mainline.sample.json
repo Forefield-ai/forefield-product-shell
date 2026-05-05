@@ -1,0 +1,166 @@
+{
+  "monitoring_run": {
+    "id": "monitoring_run_ps__p16c-grouped-evidence",
+    "handoff_version": "0.3.0-decision-core-review-handoff",
+    "source_bundle_id": "bundle:p16c-grouped-evidence-shadow",
+    "source_bundle_status": "shadow",
+    "ingest_status": "imported",
+    "imported_at": "2026-05-05T00:00:00Z"
+  },
+  "topic_draft": {
+    "id": "topic_draft_ps__p16c-grouped-evidence",
+    "monitoring_run_id": "monitoring_run_ps__p16c-grouped-evidence",
+    "lifecycle_state": "draft",
+    "title": "AI meeting notes for product teams",
+    "summary": "Controlled grouped evidence fixture for functional intake only.",
+    "limitations_summary": "Grouped evidence is additive and not the default product contract.",
+    "provenance": {
+      "source_bundle_id": "bundle:p16c-grouped-evidence-shadow"
+    }
+  },
+  "source_coverage_summary": {
+    "source_family_count": 7,
+    "public_source_ref_count": 0,
+    "coverage_boundary": "grouped evidence fixture without public source links",
+    "source_families": [
+      "reddit",
+      "youtube_comment",
+      "google_trends",
+      "linkedin_company",
+      "linkedin_post",
+      "google_forum_snippet",
+      "forum_discussion"
+    ]
+  },
+  "signal_clusters": [
+    {
+      "id": "signal_cluster_ps__p16c-grouped-evidence__r1",
+      "parent_topic_ref": {
+        "topic_draft_id": "topic_draft_ps__p16c-grouped-evidence"
+      },
+      "monitoring_run_id": "monitoring_run_ps__p16c-grouped-evidence",
+      "source_review_entry_ref": {
+        "review_entry_id": "review-entry:p16c:grouped",
+        "review_priority_order": 1
+      },
+      "headline": "Manual cleanup before sharing AI meeting notes",
+      "summary": "The controlled v0.3 fixture separates direct support from context, discovery leads, and counter evidence.",
+      "confidence_display": {
+        "label": "directional",
+        "summary": "Confidence remains bounded because grouped context does not inflate direct support."
+      },
+      "limitations": [
+        "Functional grouped evidence intake only.",
+        "Not final visual design."
+      ],
+      "grouped_evidence_caveats": [
+        "Discovery leads require follow-up before becoming evidence.",
+        "Trend and competitive context are not direct support."
+      ],
+      "grouped_evidence": {
+        "direct_support": [
+          {
+            "item_id": "grouped_evidence:p16c:direct:1",
+            "label": "Direct support 1",
+            "summary": "Product teams describe cleanup steps before sharing AI meeting notes.",
+            "source_family": "reddit",
+            "source_role": "primary_discussion",
+            "support_role": "direct_support",
+            "confidence_label": "directional",
+            "counts_toward_direct_evidence": true,
+            "caveats": [
+              "Controlled fixture item."
+            ]
+          }
+        ],
+        "weak_support": [
+          {
+            "item_id": "grouped_evidence:p16c:weak:1",
+            "label": "Weak support 1",
+            "summary": "A reaction-level signal mentions summary quality friction.",
+            "source_family": "youtube_comment",
+            "source_role": "reaction_signal",
+            "support_role": "weak_support",
+            "confidence_label": "weak",
+            "counts_toward_direct_evidence": false,
+            "caveats": [
+              "Reaction context only."
+            ]
+          }
+        ],
+        "trend_context": [
+          {
+            "item_id": "grouped_evidence:p16c:trend:1",
+            "label": "Trend context 1",
+            "summary": "Attention context exists around meeting note workflow terms.",
+            "source_family": "google_trends",
+            "source_role": "trend_context",
+            "support_role": "trend_context",
+            "confidence_label": "exploratory",
+            "counts_toward_direct_evidence": false
+          }
+        ],
+        "competitive_context": [
+          {
+            "item_id": "grouped_evidence:p16c:competitive:1",
+            "label": "Competitive context 1",
+            "summary": "Vendor positioning suggests category activity but not user demand evidence.",
+            "source_family": "linkedin_company",
+            "source_role": "promo_vendor_context",
+            "support_role": "competitive_context",
+            "confidence_label": "exploratory",
+            "counts_toward_direct_evidence": false
+          }
+        ],
+        "professional_context": [
+          {
+            "item_id": "grouped_evidence:p16c:professional:1",
+            "label": "Professional context 1",
+            "summary": "Professional context mentions follow-up workflow friction.",
+            "source_family": "linkedin_post",
+            "source_role": "professional_context",
+            "support_role": "professional_context",
+            "confidence_label": "weak",
+            "counts_toward_direct_evidence": false
+          }
+        ],
+        "counter_evidence": [
+          {
+            "item_id": "grouped_evidence:p16c:counter:1",
+            "label": "Counter evidence 1",
+            "summary": "Some teams report current summary quality is sufficient for their process.",
+            "source_family": "forum_discussion",
+            "source_role": "supporting_discussion",
+            "support_role": "counter_evidence",
+            "confidence_label": "directional",
+            "counts_toward_direct_evidence": false,
+            "caveats": [
+              "Preserved separately from direct support."
+            ]
+          }
+        ],
+        "discovery_leads": [
+          {
+            "item_id": "grouped_evidence:p16c:discovery:1",
+            "label": "Discovery lead 1",
+            "summary": "A controlled lead points to a possible forum discussion to inspect later.",
+            "source_family": "google_forum_snippet",
+            "source_role": "discovery_lead",
+            "support_role": "discovery_lead",
+            "confidence_label": "exploratory",
+            "counts_toward_direct_evidence": false,
+            "caveats": [
+              "Follow-up lead only."
+            ]
+          }
+        ]
+      },
+      "curated_evidence_ids": [],
+      "provenance": {
+        "handoff_version": "0.3.0-decision-core-review-handoff",
+        "source_bundle_id": "bundle:p16c-grouped-evidence-shadow"
+      }
+    }
+  ],
+  "curated_evidence_records": []
+}

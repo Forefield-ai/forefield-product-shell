@@ -193,6 +193,10 @@ function buildLocalTopicWorkspaceData({
       summary: typeof signalCluster.summary === 'string' ? signalCluster.summary : '',
       confidence_display: signalCluster.confidence_display || null,
       limitations: normalizeLimitations(signalCluster.limitations),
+      ...(signalCluster.grouped_evidence ? { grouped_evidence: signalCluster.grouped_evidence } : {}),
+      ...(Array.isArray(signalCluster.grouped_evidence_caveats)
+        ? { grouped_evidence_caveats: normalizeLimitations(signalCluster.grouped_evidence_caveats) }
+        : {}),
       curated_evidence_ids: Array.isArray(signalCluster.curated_evidence_ids)
         ? signalCluster.curated_evidence_ids.filter((entry) => typeof entry === 'string' && entry.trim())
         : relevantEvidenceRecords.map((record) => record.id),
@@ -288,6 +292,10 @@ function buildProductMainlineCompatibilityPayload(workspaceData, options = {}) {
       summary: signalCluster.summary,
       confidence_display: signalCluster.confidence_display,
       limitations: signalCluster.limitations,
+      ...(signalCluster.grouped_evidence ? { grouped_evidence: signalCluster.grouped_evidence } : {}),
+      ...(Array.isArray(signalCluster.grouped_evidence_caveats)
+        ? { grouped_evidence_caveats: signalCluster.grouped_evidence_caveats }
+        : {}),
       curated_evidence_ids: signalCluster.curated_evidence_ids,
     })),
     curated_evidence_records: curatedEvidenceRecords.map((record) => ({

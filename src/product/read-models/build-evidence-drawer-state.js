@@ -1,3 +1,7 @@
+const {
+  buildGroupedEvidenceViewState,
+} = require('./build-grouped-evidence-view-state');
+
 function uniqueStrings(values) {
   const seen = new Set();
 
@@ -49,8 +53,12 @@ function buildEvidenceDrawerState({ topicDraft, signalCluster, curatedEvidenceRe
     url: Array.isArray(record.public_source_refs) ? record.public_source_refs[0] : undefined,
     summary: record.summary,
   }));
+  const groupedEvidenceViewState = buildGroupedEvidenceViewState({
+    signalCluster,
+    curatedEvidenceRecords,
+  });
 
-  return {
+  const drawerState = {
     topic_ref: {
       topic_draft_id: topicDraft.id,
     },
@@ -70,6 +78,19 @@ function buildEvidenceDrawerState({ topicDraft, signalCluster, curatedEvidenceRe
     ),
     evidence_items: evidenceItems,
   };
+
+  if (groupedEvidenceViewState.hasGroupedEvidence) {
+    drawerState.grouped_evidence_sections = groupedEvidenceViewState.groupedEvidenceSections;
+    drawerState.grouped_evidence_summary = {
+      has_grouped_evidence: true,
+      fallback_mode: false,
+      direct_evidence_count: groupedEvidenceViewState.directEvidenceCount,
+      total_grouped_evidence_count: groupedEvidenceViewState.totalGroupedEvidenceCount,
+      evidence_caveats: groupedEvidenceViewState.evidenceCaveats,
+    };
+  }
+
+  return drawerState;
 }
 
 module.exports = {
