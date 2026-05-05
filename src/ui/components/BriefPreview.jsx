@@ -14,6 +14,7 @@ function renderMetaRows(rows) {
 
 export default function BriefPreview({
   briefState,
+  baselineBriefViewState = null,
   briefTakeawaySupportAction = null,
   onClose,
   onExplainTakeawaySupport,
@@ -30,6 +31,9 @@ export default function BriefPreview({
     ? briefState.sections.evidence_backed_takeaways
     : [];
   const caveatsAndLimitations = briefState?.sections?.caveats_and_limitations || null;
+  const copyableMarkdown = typeof baselineBriefViewState?.copyableMarkdown === 'string'
+    ? baselineBriefViewState.copyableMarkdown
+    : '';
   const suggestedNextReviewActions = renderList(
     briefState?.sections?.suggested_next_review_actions
   );
@@ -182,6 +186,24 @@ export default function BriefPreview({
         </dl>
       </section>
 
+      {copyableMarkdown ? (
+        <section className="brief-preview__section">
+          <p className="brief-preview__section-label">Copyable Markdown Draft</p>
+          <h3>{baselineBriefViewState?.briefTitle || 'Baseline Brief'}</h3>
+          <p className="brief-preview__copy">
+            Functional draft generated from the current workspace state. It omits source links and
+            provider details from the copyable text.
+          </p>
+          <textarea
+            className="brief-preview__markdown"
+            aria-label="Copyable baseline brief markdown"
+            readOnly
+            rows={14}
+            value={copyableMarkdown}
+          />
+        </section>
+      ) : null}
+
       <section className="brief-preview__section">
         <p className="brief-preview__section-label">Key Signal Clusters</p>
         <div className="brief-preview__cards">
@@ -247,7 +269,7 @@ export default function BriefPreview({
                             {evidence.summary}
                           </p>
                         ) : null}
-                        {evidence.source_url ? (
+                        {evidence.source_url && !copyableMarkdown ? (
                           <a href={evidence.source_url} target="_blank" rel="noreferrer">
                             {evidence.source_url}
                           </a>

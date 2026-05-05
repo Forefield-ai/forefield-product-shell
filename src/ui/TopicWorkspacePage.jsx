@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import WorkspaceHeader from './components/WorkspaceHeader';
 import ReviewSummaryStrip from './components/ReviewSummaryStrip';
 import SourceCoverageStrip from './components/SourceCoverageStrip';
@@ -7,6 +7,7 @@ import EmptySparseState from './components/EmptySparseState';
 import EvidenceDrawer from './components/EvidenceDrawer';
 import BriefPreview from './components/BriefPreview';
 import CopilotPanel from './components/CopilotPanel';
+import { buildBaselineBriefViewState } from '../product/read-models/build-baseline-brief-view-state.browser.mjs';
 import { buildTopicWorkspaceViewState } from '../product/read-models/build-topic-workspace-view-state.browser.mjs';
 import {
   initialActionState,
@@ -105,6 +106,37 @@ export default function TopicWorkspacePage({
   );
   const lastHandledWorkspaceCommandId = useRef(null);
   const workspaceViewState = buildTopicWorkspaceViewState(productMainline);
+  const baselineBriefViewState = useMemo(() => {
+    try {
+      const baseWorkspaceViewState = buildTopicWorkspaceViewState(productMainline);
+      const evidenceDrawersByClusterId = (baseWorkspaceViewState.signal_cluster_sections || [])
+        .reduce((accumulator, signalClusterSection) => {
+          const clusterId = signalClusterSection?.cluster_id;
+
+          if (!clusterId) {
+            return accumulator;
+          }
+
+          const clusterWorkspaceViewState = buildTopicWorkspaceViewState(productMainline, {
+            selectedClusterId: clusterId,
+          });
+
+          if (clusterWorkspaceViewState?.selected_evidence_drawer) {
+            accumulator[clusterId] = clusterWorkspaceViewState.selected_evidence_drawer;
+          }
+
+          return accumulator;
+        }, {});
+
+      return buildBaselineBriefViewState({
+        workspaceViewState: baseWorkspaceViewState,
+        evidenceDrawersByClusterId,
+        briefState,
+      });
+    } catch (error) {
+      return null;
+    }
+  }, [briefState, productMainline]);
   const allSignalClusterSections = Array.isArray(workspaceViewState?.signal_cluster_sections)
     ? workspaceViewState.signal_cluster_sections
     : [];
@@ -400,6 +432,7 @@ export default function TopicWorkspacePage({
           {!isEmptyState && isBriefPreviewOpen && briefPreviewIsEligible ? (
             <BriefPreview
               briefState={briefState}
+              baselineBriefViewState={baselineBriefViewState}
               briefTakeawaySupportAction={briefTakeawaySupportAction}
               onClose={onCloseBriefPreview}
               onExplainTakeawaySupport={handleRunBriefTakeawaySupport}

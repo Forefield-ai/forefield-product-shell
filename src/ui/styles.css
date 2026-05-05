@@ -1687,6 +1687,21 @@ select {
   background: rgba(255, 248, 237, 0.92);
 }
 
+.brief-preview__markdown {
+  width: 100%;
+  min-height: 260px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  resize: vertical;
+}
+
 .brief-preview__meta {
   margin: 14px 0 0;
   display: grid;
