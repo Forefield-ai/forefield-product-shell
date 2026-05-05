@@ -5,6 +5,7 @@ const FIXTURE_OPTIONS = [
   { value: 'minimal', label: 'Minimal review snapshot' },
   { value: 'sparse', label: 'Sparse review snapshot' },
   { value: 'no_evidence', label: 'No-evidence cluster' },
+  { value: 'grouped_evidence', label: 'Grouped evidence review snapshot' },
   { value: 'empty', label: 'Empty review snapshot' },
 ];
 

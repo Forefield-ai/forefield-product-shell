@@ -160,7 +160,54 @@
         "handoff_version": "0.3.0-decision-core-review-handoff",
         "source_bundle_id": "bundle:p16c-grouped-evidence-shadow"
       }
+    },
+    {
+      "id": "signal_cluster_ps__p16c-grouped-evidence__fallback",
+      "parent_topic_ref": {
+        "topic_draft_id": "topic_draft_ps__p16c-grouped-evidence"
+      },
+      "monitoring_run_id": "monitoring_run_ps__p16c-grouped-evidence",
+      "source_review_entry_ref": {
+        "review_entry_id": "review-entry:p16c:fallback",
+        "review_priority_order": 2
+      },
+      "headline": "Fallback cluster keeps flat v0.2 evidence behavior",
+      "summary": "This cluster intentionally has no grouped evidence so the workspace can verify the flat evidence fallback path.",
+      "confidence_display": {
+        "label": "exploratory",
+        "summary": "Confidence remains exploratory for the fallback cluster."
+      },
+      "limitations": [
+        "Fallback behavior only.",
+        "No grouped evidence for this cluster."
+      ],
+      "curated_evidence_ids": [
+        "curated_evidence_record_ps__p16c-grouped-evidence__fallback__s1"
+      ],
+      "provenance": {
+        "handoff_version": "0.3.0-decision-core-review-handoff",
+        "source_bundle_id": "bundle:p16c-grouped-evidence-shadow"
+      }
     }
   ],
-  "curated_evidence_records": []
+  "curated_evidence_records": [
+    {
+      "id": "curated_evidence_record_ps__p16c-grouped-evidence__fallback__s1",
+      "signal_cluster_id": "signal_cluster_ps__p16c-grouped-evidence__fallback",
+      "monitoring_run_id": "monitoring_run_ps__p16c-grouped-evidence",
+      "summary": "Fallback flat evidence summary for functional workspace flow validation.",
+      "public_source_refs": [],
+      "confidence_display": {
+        "label": "exploratory",
+        "summary": "Fallback evidence stays product-facing and sanitized."
+      },
+      "limitations": [
+        "No public source link is included in this functional fixture."
+      ],
+      "provenance": {
+        "handoff_version": "0.3.0-decision-core-review-handoff",
+        "source_bundle_id": "bundle:p16c-grouped-evidence-shadow"
+      }
+    }
+  ]
 }

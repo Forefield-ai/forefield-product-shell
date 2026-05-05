@@ -12,6 +12,7 @@ import richProductMainline from '../../fixtures/product/rich-product-mainline.sa
 import emptyProductMainline from '../../fixtures/product/empty-product-mainline.sample.json';
 import sparseProductMainline from '../../fixtures/product/sparse-product-mainline.sample.json';
 import noEvidenceProductMainline from '../../fixtures/product/no-evidence-product-mainline.sample.json';
+import groupedEvidenceProductMainline from '../../fixtures/product/grouped-evidence-product-mainline.sample.json';
 import { createLocalRuntimeAdapter } from '../runtime/adapters/local-runtime-adapter.browser.mjs';
 import { buildProductMainlineCompatibilityPayload } from '../runtime/workspace/local-workspace-payload.browser.mjs';
 import { initialActionState } from '../product/actions/user-action-state.browser.mjs';
@@ -30,6 +31,7 @@ const PRODUCT_MAINLINE_FIXTURES = {
   empty: emptyProductMainline,
   sparse: sparseProductMainline,
   no_evidence: noEvidenceProductMainline,
+  grouped_evidence: groupedEvidenceProductMainline,
 };
 
 const FIXTURE_PREVIEW_LABELS = {
@@ -38,6 +40,7 @@ const FIXTURE_PREVIEW_LABELS = {
   empty: 'Empty review snapshot',
   sparse: 'Sparse review snapshot',
   no_evidence: 'No-evidence cluster',
+  grouped_evidence: 'Grouped evidence review snapshot',
 };
 
 const BASELINE_SCENARIO_LABELS = {
