@@ -10,6 +10,7 @@ require('./product-workspace/build-baseline-brief-view-state.test');
 require('./product-workspace/build-copilot-guided-actions-state.test');
 require('./product-workspace/build-topic-workspace-view-state.test');
 require('./product-workspace/grouped-evidence-workspace-flow.test');
+require('./product-workspace/local-mvp-functional-demo-flow.test');
 require('./product-workspace/workspace-interaction-state.test');
 require('./product-actions/user-action-state.test');
 require('./ui-flow/generate-local-topic-draft.test');
