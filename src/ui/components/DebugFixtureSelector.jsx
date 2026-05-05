@@ -10,9 +10,9 @@ const FIXTURE_OPTIONS = [
 ];
 
 const BASELINE_SCENARIO_OPTIONS = [
-  { value: 'default', label: 'Standard local baseline path' },
-  { value: 'baseline_failed', label: 'Failed local baseline scenario' },
-  { value: 'baseline_stuck', label: 'Stuck local baseline scenario' },
+  { value: 'default', label: 'Standard baseline path' },
+  { value: 'baseline_failed', label: 'Unavailable baseline sample' },
+  { value: 'baseline_stuck', label: 'Delayed baseline sample' },
 ];
 
 export default function DebugFixtureSelector({
@@ -23,14 +23,13 @@ export default function DebugFixtureSelector({
   fixtureNotice = '',
 }) {
   return (
-    <section className="fixture-selector" aria-label="Development preview controls">
+    <section className="fixture-selector" aria-label="Local demo controls">
       <div className="fixture-selector__inner">
         <div>
-          <p className="fixture-selector__eyebrow">Development Preview</p>
+          <p className="fixture-selector__eyebrow">Local Demo</p>
           <h1 className="fixture-selector__title">Sample workspace data</h1>
           <p className="fixture-selector__copy">
-            Switch between sample review snapshots and local-only baseline scenarios while testing
-            the prototype workspace.
+            Choose a sample review snapshot and baseline path for the local workspace walkthrough.
           </p>
         </div>
 

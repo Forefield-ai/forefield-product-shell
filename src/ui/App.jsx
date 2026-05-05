@@ -44,9 +44,9 @@ const FIXTURE_PREVIEW_LABELS = {
 };
 
 const BASELINE_SCENARIO_LABELS = {
-  [LOCAL_BASELINE_SCENARIO_KEYS.DEFAULT]: 'standard local baseline path',
-  [LOCAL_BASELINE_SCENARIO_KEYS.FAILED]: 'failed local baseline scenario',
-  [LOCAL_BASELINE_SCENARIO_KEYS.STUCK]: 'stuck local baseline scenario',
+  [LOCAL_BASELINE_SCENARIO_KEYS.DEFAULT]: 'standard baseline path',
+  [LOCAL_BASELINE_SCENARIO_KEYS.FAILED]: 'unavailable baseline sample',
+  [LOCAL_BASELINE_SCENARIO_KEYS.STUCK]: 'delayed baseline sample',
 };
 
 function isKnownFixtureKey(fixtureKey) {
@@ -428,7 +428,7 @@ export default function App() {
               <PrototypeFallbackState
                 eyebrow="Sample workspace unavailable"
                 title="This local sample review snapshot is unavailable"
-                copy="The topic is linked to a local sample workspace the prototype can no longer load safely. This is a local fixture issue, not a review conclusion."
+                copy="The topic is linked to a local sample workspace the app can no longer load safely. This is a sample data issue, not a review conclusion."
                 detail="Return Home or open Recent Topics to continue with a valid local sample."
                 variant="warning"
                 actions={[

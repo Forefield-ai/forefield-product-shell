@@ -191,7 +191,7 @@ export default function BriefPreview({
           <p className="brief-preview__section-label">Copyable Markdown Draft</p>
           <h3>{baselineBriefViewState?.briefTitle || 'Baseline Brief'}</h3>
           <p className="brief-preview__copy">
-            Functional draft generated from the current workspace state. It omits source links and
+            Markdown draft generated from the current workspace state. It omits source links and
             provider details from the copyable text.
           </p>
           <textarea

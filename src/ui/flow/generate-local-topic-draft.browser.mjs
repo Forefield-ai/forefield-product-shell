@@ -6,6 +6,7 @@ const DEFAULT_SIGNAL_FOCUS = [
   'switching_signal',
   'emerging_use_case',
 ];
+const DEFAULT_LOCAL_DEMO_TOPIC_NAME = 'AI meeting notes for product teams';
 
 function ensureInput(input) {
   if (typeof input !== 'string' || !input.trim()) {
@@ -25,6 +26,11 @@ function toTitleCase(value) {
 
 function createTopicName(trimmedInput) {
   const normalized = trimmedInput.replace(/\s+/g, ' ').replace(/[.!?]+$/, '');
+
+  if (!/[a-z]/i.test(normalized) || normalized.length < 3) {
+    return DEFAULT_LOCAL_DEMO_TOPIC_NAME;
+  }
+
   const candidate = normalized.length > 72
     ? `${normalized.slice(0, 69).trim()}...`
     : normalized;
@@ -101,6 +107,7 @@ function generateLocalTopicDraftFromInput(input) {
 }
 
 export {
+  DEFAULT_LOCAL_DEMO_TOPIC_NAME,
   DEFAULT_SIGNAL_FOCUS,
   generateLocalTopicDraftFromInput,
 };

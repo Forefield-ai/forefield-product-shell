@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const {
+  DEFAULT_LOCAL_DEMO_TOPIC_NAME,
   DEFAULT_SIGNAL_FOCUS,
   generateLocalTopicDraftFromInput,
 } = require('../../src/ui/flow/generate-local-topic-draft');
@@ -64,6 +65,21 @@ test('non-empty input returns required fields', () => {
 test('topic_name is non-empty', () => {
   const draft = generateLocalTopicDraftFromInput('Developers want cleaner error triage flows.');
   assert.equal(draft.topic_name.length > 0, true);
+});
+
+test('low-information numeric input falls back to stable demo topic copy', () => {
+  const draft = generateLocalTopicDraftFromInput('1');
+  const visibleCopy = [
+    draft.topic_name,
+    draft.topic_summary,
+    draft.target_audience,
+    draft.problem_space,
+    draft.monitoring_intent,
+  ].join(' ');
+
+  assert.equal(draft.original_input, '1');
+  assert.equal(draft.topic_name, DEFAULT_LOCAL_DEMO_TOPIC_NAME);
+  assert.doesNotMatch(visibleCopy, /(^|\s)1(\s|$)/);
 });
 
 test('signal_focus includes expected canonical signal types', () => {

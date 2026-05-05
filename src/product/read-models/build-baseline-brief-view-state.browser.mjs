@@ -20,10 +20,19 @@ const SECTION_TITLES = Object.freeze({
 
 const SEMANTIC_CAVEATS = Object.freeze([
   'Discovery leads are not evidence yet.',
-  'Trend context does not prove user demand.',
+  'Trend context does not prove user demand by itself.',
   'Competitive/vendor context does not prove user demand by itself.',
   'Direct evidence count only includes Direct Support.',
   'Counter evidence is preserved separately from direct support.',
+]);
+const DEBUG_PHRASES = Object.freeze([
+  'functional grouped evidence intake only',
+  'not final visual design',
+  'controlled v0.3 fixture',
+  'controlled v0.3',
+  'fallback behavior only',
+  'no grouped evidence for this cluster',
+  'fixture',
 ]);
 
 const URL_PATTERN = /https?:\/\/\S+/gi;
@@ -44,12 +53,19 @@ function normalizeString(value, maxLength = 520) {
     .slice(0, maxLength);
 }
 
+function isDebugPhrase(value) {
+  const normalized = normalizeString(value, 800).toLowerCase();
+
+  return DEBUG_PHRASES.some((phrase) => normalized.includes(phrase));
+}
+
 function normalizeStringArray(value, maxItems = 12, maxLength = 220) {
   const seen = new Set();
 
   return arr(value)
     .map((entry) => normalizeString(entry, maxLength))
     .filter(Boolean)
+    .filter((entry) => !isDebugPhrase(entry))
     .filter((entry) => {
       const key = entry.toLowerCase();
 
@@ -143,7 +159,7 @@ function buildFallbackDirectSupportSection(clusterBrief, drawerState) {
     clusterId: clusterBrief.clusterId,
     clusterTitle: clusterBrief.title,
     isDirectEvidence: true,
-    caveatLabel: 'Counts only as v0.2 flat evidence fallback.',
+    caveatLabel: 'Counts as direct support in the standard evidence view.',
     items,
     count: items.length,
     fallbackMode: true,
@@ -180,6 +196,13 @@ function buildEvidenceHighlightsForCluster(clusterBrief, drawerState) {
       fallbackMode: false,
     };
   }).filter(Boolean);
+}
+
+function compareClusterBriefs(left, right) {
+  return Number(right.directEvidenceCount || 0) - Number(left.directEvidenceCount || 0)
+    || Number(right.counterEvidenceCount || 0) - Number(left.counterEvidenceCount || 0)
+    || Number(right.hasGroupedEvidence) - Number(left.hasGroupedEvidence)
+    || left.title.localeCompare(right.title);
 }
 
 function summarizeBaselineBriefSections(briefViewState) {
@@ -230,7 +253,7 @@ function buildBaselineBriefMarkdown(briefViewState = {}) {
   lines.push('## Review Summary');
   lines.push(renderBullet('Outcome', reviewOutcome.summary || 'Current review snapshot is available.'));
   lines.push(renderBullet('Generated from', briefViewState.generatedFrom?.label || 'TopicWorkspace view state'));
-  lines.push(renderBullet('Grouped evidence mode', briefViewState.hasGroupedEvidence ? 'Grouped evidence available as additive intake.' : 'Using v0.2 flat evidence fallback.'));
+  lines.push(renderBullet('Evidence mode', briefViewState.hasGroupedEvidence ? 'Grouped evidence available.' : 'Standard evidence view available.'));
   lines.push('');
 
   lines.push('## Key Signal Clusters');
@@ -302,7 +325,6 @@ function buildBaselineBriefViewState({
   const reviewSnapshot = briefState?.sections?.review_snapshot || {};
   const clusterSections = arr(workspaceViewState.signal_cluster_sections);
   const clusterBriefs = [];
-  const evidenceHighlights = [];
 
   clusterSections.forEach((clusterSection) => {
     const clusterId = clusterSection?.cluster_id;
@@ -310,7 +332,18 @@ function buildBaselineBriefViewState({
     const clusterBrief = buildClusterBrief(clusterSection, drawerState);
 
     clusterBriefs.push(clusterBrief);
-    evidenceHighlights.push(...buildEvidenceHighlightsForCluster(clusterBrief, drawerState));
+  });
+
+  clusterBriefs.sort(compareClusterBriefs);
+
+  const evidenceHighlights = clusterBriefs.flatMap((clusterBrief) => {
+    const drawerState = getDrawerForCluster(
+      evidenceDrawersByClusterId,
+      workspaceViewState,
+      clusterBrief.clusterId
+    );
+
+    return buildEvidenceHighlightsForCluster(clusterBrief, drawerState);
   });
 
   const hasGroupedEvidence = clusterBriefs.some((cluster) => cluster.hasGroupedEvidence);
@@ -350,7 +383,7 @@ function buildBaselineBriefViewState({
     },
     generatedFrom: {
       kind: 'topic_workspace_view_state',
-      label: 'TopicWorkspace view state and grouped evidence read-model',
+      label: 'Current workspace review state',
       handoffVersion: normalizeString(workspaceViewState?.workspace_header?.handoff_version, 120),
     },
     clusterBriefs,

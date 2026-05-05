@@ -287,11 +287,16 @@ function buildAssessment(signalClusterSection, signalCluster, actionState) {
       : signalCluster.limitations
   );
   const limitationFlags = buildLimitationFlags(limitations);
-  const evidenceCount = Number(
+  const groupedPreview = signalClusterSection?.grouped_evidence_preview || {};
+  const groupedDirectEvidenceCount = groupedPreview?.has_grouped_evidence
+    ? Number(groupedPreview.direct_evidence_count || 0)
+    : 0;
+  const flatEvidenceCount = Number(
     signalClusterSection.evidence_count
     || signalClusterSection.evidenceCount
     || 0
   );
+  const evidenceCount = groupedDirectEvidenceCount > 0 ? groupedDirectEvidenceCount : flatEvidenceCount;
   const sourceLinkCount = Array.isArray(signalClusterSection.source_links)
     ? signalClusterSection.source_links.length
     : Number(
@@ -301,6 +306,9 @@ function buildAssessment(signalClusterSection, signalCluster, actionState) {
     );
   const supportState = getSupportState({
     evidenceCount,
+    flatEvidenceCount,
+    groupedDirectEvidenceCount,
+    groupedEvidenceCount: Number(groupedPreview.total_grouped_evidence_count || 0),
     sourceLinkCount,
   });
   const confidenceLabel = normalizeString(
@@ -472,6 +480,25 @@ function compareSupportingEvidence(actionState) {
   );
 }
 
+function buildGroupedDirectSupportingEvidence(evidenceDrawer) {
+  const directSupportSection = Array.isArray(evidenceDrawer?.grouped_evidence_sections)
+    ? evidenceDrawer.grouped_evidence_sections.find((section) => section?.section_id === 'direct_support')
+    : null;
+
+  if (!directSupportSection || !Array.isArray(directSupportSection.items)) {
+    return [];
+  }
+
+  return directSupportSection.items
+    .map((item, index) => ({
+      evidence_id: normalizeString(item.id || item.item_id || `direct_support_${index + 1}`),
+      label: normalizeString(item.label || `Direct Support ${index + 1}`),
+      summary: normalizeString(item.summary),
+      source_url: '',
+    }))
+    .filter((item) => item.summary);
+}
+
 function buildEvidenceBackedTakeaways({
   topicDraft,
   signalClusters,
@@ -495,7 +522,8 @@ function buildEvidenceBackedTakeaways({
         curatedEvidenceRecords,
       });
       const assessment = buildAssessment(cluster, signalCluster, actionState);
-      const supportingEvidence = evidenceDrawer.evidence_items
+      const groupedSupportingEvidence = buildGroupedDirectSupportingEvidence(evidenceDrawer);
+      const flatSupportingEvidence = evidenceDrawer.evidence_items
         .map((item) => ({
           evidence_id: normalizeString(item.curated_evidence_record_id),
           curated_evidence_record_id: normalizeString(item.curated_evidence_record_id),
@@ -512,6 +540,9 @@ function buildEvidenceBackedTakeaways({
           summary,
           source_url,
         }));
+      const supportingEvidence = groupedSupportingEvidence.length
+        ? groupedSupportingEvidence
+        : flatSupportingEvidence;
 
       return {
         cluster_id: cluster.cluster_id,

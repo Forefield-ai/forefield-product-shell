@@ -128,6 +128,9 @@ test('TopicWorkspace view state contains grouped evidence for grouped cluster', 
 
   assert.equal(groupedCluster.drawer_available, true);
   assert.equal(groupedCluster.evidence_count, 0);
+  assert.equal(groupedCluster.display_evidence_count, 1);
+  assert.equal(groupedCluster.display_evidence_label, '1 direct support item');
+  assert.match(groupedCluster.display_evidence_basis_summary, /1 direct support item and 7 grouped evidence items/);
   assert.equal(groupedCluster.grouped_evidence_preview.direct_evidence_count, 1);
   assert.equal(groupedCluster.grouped_evidence_preview.counter_evidence_count, 1);
   assert.equal(groupedCluster.grouped_evidence_preview.discovery_lead_count, 1);
@@ -174,7 +177,7 @@ test('EvidenceDrawer state falls back when grouped evidence is absent', () => {
   }).selected_evidence_drawer;
 
   assert.equal(drawerState.evidence_items.length, 1);
-  assert.equal(drawerState.evidence_items[0].summary, 'Fallback flat evidence summary for functional workspace flow validation.');
+  assert.equal(drawerState.evidence_items[0].summary, 'Flat evidence summary for teams comparing meeting note cleanup expectations.');
   assert.equal('grouped_evidence_sections' in drawerState, false);
 });
 

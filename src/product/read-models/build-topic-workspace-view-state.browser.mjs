@@ -60,6 +60,37 @@ function normalizeReviewState(reviewState) {
   };
 }
 
+function pluralize(count, singular, plural = `${singular}s`) {
+  return `${count} ${count === 1 ? singular : plural}`;
+}
+
+function buildEvidenceDisplaySummary({
+  groupedEvidenceViewState,
+  relevantEvidenceRecords,
+  sourceLinks,
+}) {
+  const hasGroupedEvidence = Boolean(groupedEvidenceViewState?.hasGroupedEvidence);
+  const directEvidenceCount = hasGroupedEvidence
+    ? Number(groupedEvidenceViewState.directEvidenceCount || 0)
+    : relevantEvidenceRecords.length;
+  const totalEvidenceCount = hasGroupedEvidence
+    ? Number(groupedEvidenceViewState.totalGroupedEvidenceCount || 0)
+    : relevantEvidenceRecords.length;
+  const sourceLinkCount = Array.isArray(sourceLinks) ? sourceLinks.length : 0;
+
+  if (hasGroupedEvidence) {
+    return {
+      display_evidence_count: directEvidenceCount,
+      display_evidence_label: pluralize(directEvidenceCount, 'direct support item', 'direct support items'),
+      display_evidence_basis_summary: `${pluralize(directEvidenceCount, 'direct support item', 'direct support items')} and ${pluralize(totalEvidenceCount, 'grouped evidence item', 'grouped evidence items')} available for review; ${pluralize(sourceLinkCount, 'source link', 'source links')} available.`,
+      display_evidence_metric_label: 'Direct support',
+      display_total_grouped_evidence_count: totalEvidenceCount,
+    };
+  }
+
+  return {};
+}
+
 function buildClusterSection(signalCluster, curatedEvidenceRecords) {
   const relevantEvidenceRecords = curatedEvidenceRecords.filter(
     (record) => record && record.signal_cluster_id === signalCluster.id
@@ -79,6 +110,12 @@ function buildClusterSection(signalCluster, curatedEvidenceRecords) {
     return accumulator;
   }, {});
 
+  const evidenceDisplaySummary = buildEvidenceDisplaySummary({
+    groupedEvidenceViewState,
+    relevantEvidenceRecords,
+    sourceLinks,
+  });
+
   const clusterSection = {
     cluster_id: signalCluster.id,
     headline: signalCluster.headline,
@@ -86,6 +123,7 @@ function buildClusterSection(signalCluster, curatedEvidenceRecords) {
     confidence_display: signalCluster.confidence_display,
     limitations,
     evidence_count: relevantEvidenceRecords.length,
+    ...evidenceDisplaySummary,
     source_links: sourceLinks,
     drawer_available: relevantEvidenceRecords.length > 0
       || groupedEvidenceViewState.totalGroupedEvidenceCount > 0,
@@ -217,7 +255,19 @@ function buildSourceCoverageStrip(signalClusters, curatedEvidenceRecords, source
         )
       );
 
-      return {
+      const groupedEvidenceViewState = buildGroupedEvidenceViewState({
+        signalCluster,
+        curatedEvidenceRecords,
+      });
+      const hasGroupedEvidence = Boolean(groupedEvidenceViewState.hasGroupedEvidence);
+      const directEvidenceCount = hasGroupedEvidence
+        ? Number(groupedEvidenceViewState.directEvidenceCount || 0)
+        : relevantEvidenceRecords.length;
+      const totalEvidenceCount = hasGroupedEvidence
+        ? Number(groupedEvidenceViewState.totalGroupedEvidenceCount || 0)
+        : relevantEvidenceRecords.length;
+
+      const clusterCoverage = {
         cluster_id: signalCluster.id,
         evidence_count: relevantEvidenceRecords.length,
         public_source_ref_count: relevantEvidenceRecords.reduce((sum, record) => {
@@ -226,6 +276,14 @@ function buildSourceCoverageStrip(signalClusters, curatedEvidenceRecords, source
         }, 0),
         unique_public_source_ref_count: clusterSourceLinks.length,
       };
+
+      if (hasGroupedEvidence) {
+        clusterCoverage.display_evidence_count = directEvidenceCount;
+        clusterCoverage.display_evidence_metric_label = 'Direct support';
+        clusterCoverage.display_total_grouped_evidence_count = totalEvidenceCount;
+      }
+
+      return clusterCoverage;
     }),
   };
 }

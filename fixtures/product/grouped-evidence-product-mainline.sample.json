@@ -12,8 +12,8 @@
     "monitoring_run_id": "monitoring_run_ps__p16c-grouped-evidence",
     "lifecycle_state": "draft",
     "title": "AI meeting notes for product teams",
-    "summary": "Controlled grouped evidence fixture for functional intake only.",
-    "limitations_summary": "Grouped evidence is additive and not the default product contract.",
+    "summary": "Product teams are reviewing whether AI meeting notes need safer cleanup before sharing.",
+    "limitations_summary": "This is a preliminary review.",
     "provenance": {
       "source_bundle_id": "bundle:p16c-grouped-evidence-shadow"
     }
@@ -21,7 +21,7 @@
   "source_coverage_summary": {
     "source_family_count": 7,
     "public_source_ref_count": 0,
-    "coverage_boundary": "grouped evidence fixture without public source links",
+    "coverage_boundary": "local grouped evidence snapshot without public source links",
     "source_families": [
       "reddit",
       "youtube_comment",
@@ -44,18 +44,18 @@
         "review_priority_order": 1
       },
       "headline": "Manual cleanup before sharing AI meeting notes",
-      "summary": "The controlled v0.3 fixture separates direct support from context, discovery leads, and counter evidence.",
+      "summary": "Product teams may need cleanup steps before sharing AI meeting notes, with context and counter evidence kept separate.",
       "confidence_display": {
         "label": "directional",
         "summary": "Confidence remains bounded because grouped context does not inflate direct support."
       },
       "limitations": [
-        "Functional grouped evidence intake only.",
-        "Not final visual design."
+        "This is a preliminary review.",
+        "Direct support should be checked alongside counter evidence."
       ],
       "grouped_evidence_caveats": [
-        "Discovery leads require follow-up before becoming evidence.",
-        "Trend and competitive context are not direct support."
+        "Discovery leads are follow-up leads, not evidence yet.",
+        "Trend context does not prove user demand by itself."
       ],
       "grouped_evidence": {
         "direct_support": [
@@ -69,7 +69,7 @@
             "confidence_label": "directional",
             "counts_toward_direct_evidence": true,
             "caveats": [
-              "Controlled fixture item."
+              "This is a preliminary review."
             ]
           }
         ],
@@ -143,7 +143,7 @@
           {
             "item_id": "grouped_evidence:p16c:discovery:1",
             "label": "Discovery lead 1",
-            "summary": "A controlled lead points to a possible forum discussion to inspect later.",
+            "summary": "A follow-up lead points to a possible forum discussion to inspect later.",
             "source_family": "google_forum_snippet",
             "source_role": "discovery_lead",
             "support_role": "discovery_lead",
@@ -171,15 +171,15 @@
         "review_entry_id": "review-entry:p16c:fallback",
         "review_priority_order": 2
       },
-      "headline": "Fallback cluster keeps flat v0.2 evidence behavior",
-      "summary": "This cluster intentionally has no grouped evidence so the workspace can verify the flat evidence fallback path.",
+      "headline": "Template cleanup expectations remain exploratory",
+      "summary": "This cluster keeps a flat evidence path available for review while grouped evidence is absent.",
       "confidence_display": {
         "label": "exploratory",
         "summary": "Confidence remains exploratory for the fallback cluster."
       },
       "limitations": [
-        "Fallback behavior only.",
-        "No grouped evidence for this cluster."
+        "This is a preliminary review.",
+        "Flat evidence should be reviewed before treating this as a takeaway."
       ],
       "curated_evidence_ids": [
         "curated_evidence_record_ps__p16c-grouped-evidence__fallback__s1"
@@ -195,14 +195,14 @@
       "id": "curated_evidence_record_ps__p16c-grouped-evidence__fallback__s1",
       "signal_cluster_id": "signal_cluster_ps__p16c-grouped-evidence__fallback",
       "monitoring_run_id": "monitoring_run_ps__p16c-grouped-evidence",
-      "summary": "Fallback flat evidence summary for functional workspace flow validation.",
+      "summary": "Flat evidence summary for teams comparing meeting note cleanup expectations.",
       "public_source_refs": [],
       "confidence_display": {
         "label": "exploratory",
         "summary": "Fallback evidence stays product-facing and sanitized."
       },
       "limitations": [
-        "No public source link is included in this functional fixture."
+        "No public source link is included in this local snapshot."
       ],
       "provenance": {
         "handoff_version": "0.3.0-decision-core-review-handoff",

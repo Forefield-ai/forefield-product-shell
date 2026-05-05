@@ -131,8 +131,7 @@ export default function EvidenceDrawer({
                 open={section.default_expanded}
               >
                 <summary className="evidence-drawer__grouped-summary">
-                  <span>{section.title}</span>
-                  <span>{section.count}</span>
+                  <span>{`${section.title} (${section.count})`}</span>
                 </summary>
                 <p className="evidence-drawer__grouped-description">
                   {section.role_description}
@@ -140,9 +139,9 @@ export default function EvidenceDrawer({
                 {section.caveat_label ? (
                   <p className="evidence-drawer__grouped-caveat">{section.caveat_label}</p>
                 ) : null}
-                <ul className="evidence-drawer__items">
+                <div className="evidence-drawer__items evidence-drawer__items--grouped">
                   {section.items.map((item) => (
-                    <li className="evidence-drawer__item" key={`${section.section_id}__${item.id}`}>
+                    <article className="evidence-drawer__item" key={`${section.section_id}__${item.id}`}>
                       <div className="evidence-drawer__item-body">
                         <div className="evidence-drawer__item-block">
                           <p className="evidence-drawer__item-block-label">{item.label}</p>
@@ -169,9 +168,9 @@ export default function EvidenceDrawer({
                           </div>
                         ) : null}
                       </div>
-                    </li>
+                    </article>
                   ))}
-                </ul>
+                </div>
               </details>
             ))}
           </div>

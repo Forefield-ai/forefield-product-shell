@@ -6,6 +6,15 @@ const path = require('node:path');
 const groupedProductMainlineFixture = require('../../fixtures/product/grouped-evidence-product-mainline.sample.json');
 const minimalProductMainlineFixture = require('../../fixtures/product/product-mainline.sample.json');
 const {
+  hideCluster,
+  initialActionState,
+  isClusterHidden,
+  isClusterSaved,
+  isClusterWatched,
+  saveCluster,
+  watchCluster,
+} = require('../../src/product/actions/user-action-state');
+const {
   buildBaselineBriefState,
 } = require('../../src/product/read-models/build-baseline-brief-state');
 const {
@@ -47,6 +56,16 @@ const FORBIDDEN_KEYS = new Set([
   'raw_text',
   'target_url',
 ]);
+const DEBUG_PHRASES = [
+  'Functional grouped evidence intake only',
+  'Not final visual design',
+  'Controlled v0.3 fixture',
+  'Fallback behavior only',
+  'No grouped evidence for this cluster',
+  'Using v0.2 flat evidence fallback',
+  'v0.2 flat evidence fallback',
+  'controlled lead',
+];
 
 function createTopicFixture() {
   return {
@@ -175,6 +194,8 @@ test('local MVP demo flow validates grouped workspace drawer and baseline brief 
   assert.equal(workspaceData.signal_clusters.length, 2);
   assert.equal(workspaceViewState.review_summary.signal_cluster_count, 2);
   assert.equal(groupedCluster.drawer_available, true);
+  assert.equal(groupedCluster.display_evidence_count, 1);
+  assert.equal(groupedCluster.display_evidence_label, '1 direct support item');
   assert.equal(groupedCluster.grouped_evidence_preview.direct_evidence_count, 1);
   assert.equal(groupedCluster.grouped_evidence_preview.counter_evidence_count, 1);
   assert.equal(groupedCluster.grouped_evidence_preview.discovery_lead_count, 1);
@@ -200,7 +221,14 @@ test('local MVP demo flow validates grouped workspace drawer and baseline brief 
   assert.match(briefViewState.copyableMarkdown, /## Evidence Highlights/);
   assert.match(briefViewState.copyableMarkdown, /## Caveats/);
   assert.match(briefViewState.copyableMarkdown, /Discovery leads are not evidence yet/);
-  assert.match(briefViewState.copyableMarkdown, /Trend context does not prove user demand/);
+  assert.match(briefViewState.copyableMarkdown, /Trend context does not prove user demand by itself/);
+  DEBUG_PHRASES.forEach((phrase) => {
+    assert.doesNotMatch(
+      briefViewState.copyableMarkdown,
+      new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
+    );
+  });
+  assert.equal(briefViewState.clusterBriefs[0].clusterId, GROUPED_CLUSTER_ID);
   assert.equal(briefSummary.direct_evidence_count, 2);
   assert.equal(briefSummary.counter_evidence_count, 1);
   assert.equal(briefSummary.discovery_lead_count, 1);
@@ -212,6 +240,40 @@ test('local MVP demo flow validates grouped workspace drawer and baseline brief 
     fallbackDrawerState,
     briefViewState,
   ].forEach(assertNoRawPrivateSourceProviderFields);
+});
+
+test('EvidenceDrawer component renders grouped section headings with counts', () => {
+  const componentSource = fs.readFileSync(
+    path.resolve(__dirname, '../../src/ui/components/EvidenceDrawer.jsx'),
+    'utf8'
+  );
+
+  assert.match(componentSource, /\{`\$\{section\.title\} \(\$\{section\.count\}\)`\}/);
+  assert.doesNotMatch(componentSource, /<span>\{section\.count\}<\/span>/);
+  assert.match(componentSource, /evidence-drawer__items--grouped/);
+});
+
+test('local demo stateful cluster actions mutate state when controls remain active', () => {
+  let actionState = initialActionState();
+
+  actionState = watchCluster(actionState, {
+    localTopicId: 'topic_rt__p16f_local_mvp_demo',
+    clusterId: GROUPED_CLUSTER_ID,
+  }, { now: FIXED_NOW });
+  actionState = saveCluster(actionState, {
+    localTopicId: 'topic_rt__p16f_local_mvp_demo',
+    clusterId: GROUPED_CLUSTER_ID,
+    titleSnapshot: 'Manual cleanup before sharing AI meeting notes',
+    summarySnapshot: 'Product teams may need cleanup steps before sharing AI meeting notes.',
+  }, { now: FIXED_NOW });
+  actionState = hideCluster(actionState, {
+    localTopicId: 'topic_rt__p16f_local_mvp_demo',
+    clusterId: FALLBACK_CLUSTER_ID,
+  }, { now: FIXED_NOW });
+
+  assert.equal(isClusterWatched(actionState, GROUPED_CLUSTER_ID), true);
+  assert.equal(isClusterSaved(actionState, GROUPED_CLUSTER_ID), true);
+  assert.equal(isClusterHidden(actionState, FALLBACK_CLUSTER_ID), true);
 });
 
 test('local MVP demo fixture is exposed in the development selector and App fixture map', () => {
@@ -254,6 +316,6 @@ test('local MVP demo flow preserves v0.2 fallback workspace behavior', () => {
   assert.equal(workspaceViewState.selected_evidence_drawer.evidence_items.length, 2);
   assert.equal(briefViewState.hasGroupedEvidence, false);
   assert.equal(briefViewState.fallbackMode, true);
-  assert.match(briefViewState.copyableMarkdown, /Using v0\.2 flat evidence fallback/);
+  assert.match(briefViewState.copyableMarkdown, /Standard evidence view available/);
   assert.doesNotMatch(briefViewState.copyableMarkdown, /example\.com/);
 });

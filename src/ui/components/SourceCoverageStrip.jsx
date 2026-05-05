@@ -10,7 +10,9 @@ function describeCoverage(sourceCoverageStrip) {
   const clusterCoverage = Array.isArray(sourceCoverageStrip?.cluster_coverage)
     ? sourceCoverageStrip.cluster_coverage
     : [];
-  const thinClusters = clusterCoverage.filter((cluster) => Number(cluster?.evidence_count || 0) <= 1).length;
+  const thinClusters = clusterCoverage.filter((cluster) => Number(
+    cluster?.display_evidence_count ?? cluster?.evidence_count ?? 0
+  ) <= 1).length;
 
   let summary = `${pluralize(publicSourceRefCount, 'public source link is', 'public source links are')} available across ${pluralize(uniqueUrlCount, 'unique URL', 'unique URLs')}.`;
 
@@ -24,11 +26,15 @@ function describeCoverage(sourceCoverageStrip) {
 }
 
 function describeClusterStrength(clusterCoverage) {
-  const evidenceCount = Number(clusterCoverage?.evidence_count || 0);
+  const evidenceCount = Number(clusterCoverage?.display_evidence_count ?? clusterCoverage?.evidence_count ?? 0);
   const publicSourceRefCount = Number(clusterCoverage?.public_source_ref_count || 0);
 
-  if (evidenceCount === 0 || publicSourceRefCount === 0) {
+  if (evidenceCount === 0) {
     return 'Limited coverage';
+  }
+
+  if (publicSourceRefCount === 0) {
+    return 'Evidence available';
   }
 
   if (evidenceCount === 1 || publicSourceRefCount === 1) {
@@ -39,11 +45,15 @@ function describeClusterStrength(clusterCoverage) {
 }
 
 function describeClusterGuidance(clusterCoverage) {
-  const evidenceCount = Number(clusterCoverage?.evidence_count || 0);
+  const evidenceCount = Number(clusterCoverage?.display_evidence_count ?? clusterCoverage?.evidence_count ?? 0);
   const publicSourceRefCount = Number(clusterCoverage?.public_source_ref_count || 0);
 
-  if (evidenceCount === 0 || publicSourceRefCount === 0) {
+  if (evidenceCount === 0) {
     return 'Open the drawer carefully if evidence becomes available; the current basis is very limited.';
+  }
+
+  if (publicSourceRefCount === 0) {
+    return 'Evidence is available in the drawer, but public source links are not exposed in this local snapshot.';
   }
 
   if (evidenceCount === 1 || publicSourceRefCount === 1) {
@@ -89,8 +99,12 @@ export default function SourceCoverageStrip({ sourceCoverageStrip }) {
             </div>
             <div className="coverage-strip__cluster-metrics">
               <div className="coverage-strip__metric">
-                <span className="coverage-strip__metric-value">{clusterCoverageEntry.evidence_count}</span>
-                <span className="coverage-strip__metric-label">Evidence items</span>
+                <span className="coverage-strip__metric-value">
+                  {clusterCoverageEntry.display_evidence_count ?? clusterCoverageEntry.evidence_count}
+                </span>
+                <span className="coverage-strip__metric-label">
+                  {clusterCoverageEntry.display_evidence_metric_label || 'Evidence items'}
+                </span>
               </div>
               <div className="coverage-strip__metric">
                 <span className="coverage-strip__metric-value">{clusterCoverageEntry.public_source_ref_count}</span>

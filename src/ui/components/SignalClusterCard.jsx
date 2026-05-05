@@ -28,12 +28,26 @@ function pluralize(count, singular, plural) {
 }
 
 function getEvidenceBasisSummary(signalClusterSection) {
+  if (typeof signalClusterSection?.display_evidence_basis_summary === 'string'
+    && signalClusterSection.display_evidence_basis_summary.trim()) {
+    return signalClusterSection.display_evidence_basis_summary;
+  }
+
   const evidenceCount = Number(signalClusterSection?.evidence_count || 0);
   const sourceLinkCount = Array.isArray(signalClusterSection?.source_links)
     ? signalClusterSection.source_links.length
     : 0;
 
   return `${pluralize(evidenceCount, 'evidence item', 'evidence items')} and ${pluralize(sourceLinkCount, 'source link', 'source links')} available for review.`;
+}
+
+function getEvidenceBadgeLabel(signalClusterSection) {
+  if (typeof signalClusterSection?.display_evidence_label === 'string'
+    && signalClusterSection.display_evidence_label.trim()) {
+    return signalClusterSection.display_evidence_label;
+  }
+
+  return pluralize(Number(signalClusterSection?.evidence_count || 0), 'evidence item', 'evidence items');
 }
 
 function getClusterReviewGuidance(signalClusterSection) {
@@ -72,7 +86,7 @@ function getGroupedEvidencePreview(signalClusterSection) {
     `${Number(preview.counter_evidence_count || 0)} counter`,
     `${Number(preview.discovery_lead_count || 0)} leads`,
     `${Number(preview.total_grouped_evidence_count || 0)} grouped total`,
-  ].join(' · ');
+  ].join(' | ');
 }
 
 export default function SignalClusterCard({
@@ -114,7 +128,7 @@ export default function SignalClusterCard({
         </div>
         <div className="cluster-card__header-side">
           <span className="cluster-card__badge">
-            {pluralize(Number(signalClusterSection.evidence_count || 0), 'evidence item', 'evidence items')}
+            {getEvidenceBadgeLabel(signalClusterSection)}
           </span>
           {(isWatched || isSaved) ? (
             <div className="cluster-card__state-badges" aria-label="Cluster state">

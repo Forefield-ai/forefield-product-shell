@@ -47,6 +47,16 @@ const FORBIDDEN_KEYS = new Set([
   'target_url',
   'url',
 ]);
+const DEBUG_PHRASES = [
+  'Functional grouped evidence intake only',
+  'Not final visual design',
+  'Controlled v0.3 fixture',
+  'Fallback behavior only',
+  'No grouped evidence for this cluster',
+  'Using v0.2 flat evidence fallback',
+  'v0.2 flat evidence fallback',
+  'controlled lead',
+];
 
 function buildEvidenceDrawersByClusterId(productMainline) {
   const workspaceViewState = buildTopicWorkspaceViewState(productMainline);
@@ -127,6 +137,20 @@ test('buildBaselineBriefMarkdown includes required functional sections', () => {
   assert.match(markdown, /## Caveats/);
 });
 
+test('brief prioritizes grouped direct-support cluster before fallback cluster', () => {
+  const briefState = buildBaselineBriefState({
+    topicScope: SAMPLE_TOPIC_SCOPE,
+    productMainline: groupedProductMainlineFixture,
+  });
+  const briefViewState = buildBriefViewState(groupedProductMainlineFixture);
+
+  assert.equal(briefState.sections.key_signal_clusters[0].cluster_id, GROUPED_CLUSTER_ID);
+  assert.equal(briefState.sections.evidence_backed_takeaways[0].cluster_id, GROUPED_CLUSTER_ID);
+  assert.equal(briefViewState.clusterBriefs[0].clusterId, GROUPED_CLUSTER_ID);
+  assert.equal(briefViewState.clusterBriefs[0].directEvidenceCount, 1);
+  assert.equal(briefViewState.clusterBriefs[0].hasGroupedEvidence, true);
+});
+
 test('direct support count is strict and contextual sections do not inflate it', () => {
   const briefViewState = buildBriefViewState(groupedProductMainlineFixture);
   const summary = summarizeBaselineBriefSections(briefViewState);
@@ -145,7 +169,7 @@ test('trend context discovery leads and competitive context are labeled as non-e
   assert.equal(sectionById(briefViewState, 'trend_context').isDirectEvidence, false);
   assert.equal(sectionById(briefViewState, 'discovery_leads').isDirectEvidence, false);
   assert.equal(sectionById(briefViewState, 'competitive_context').isDirectEvidence, false);
-  assert.match(briefViewState.markdown, /Trend context does not prove user demand/);
+  assert.match(briefViewState.markdown, /Trend context does not prove user demand by itself/);
   assert.match(briefViewState.markdown, /Discovery leads are not evidence yet/);
   assert.match(briefViewState.markdown, /Competitive\/vendor context does not prove user demand by itself/);
 });
@@ -177,6 +201,17 @@ test('brief output excludes raw private provider fields and source URLs', () => 
   });
 });
 
+test('copyable markdown excludes local debug and fixture phrases', () => {
+  const briefViewState = buildBriefViewState(groupedProductMainlineFixture);
+
+  DEBUG_PHRASES.forEach((phrase) => {
+    assert.doesNotMatch(briefViewState.copyableMarkdown, new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'));
+  });
+  assert.match(briefViewState.copyableMarkdown, /This is a preliminary review/);
+  assert.match(briefViewState.copyableMarkdown, /Discovery leads are not evidence yet/);
+  assert.match(briefViewState.copyableMarkdown, /Counter Evidence/);
+});
+
 test('brief works when grouped evidence is absent and marks fallback mode', () => {
   const briefViewState = buildBriefViewState(minimalProductMainlineFixture);
 
@@ -185,7 +220,7 @@ test('brief works when grouped evidence is absent and marks fallback mode', () =
   assert.equal(briefViewState.clusterBriefs.length, 1);
   assert.equal(briefViewState.evidenceHighlights.length, 1);
   assert.equal(sectionById(briefViewState, 'direct_support').fallbackMode, true);
-  assert.match(briefViewState.markdown, /Using v0\.2 flat evidence fallback/);
+  assert.match(briefViewState.markdown, /Standard evidence view available/);
   assert.doesNotMatch(briefViewState.markdown, /example\.com/);
 });
 
