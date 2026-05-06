@@ -12,6 +12,10 @@ test('browser API runtime adapter creates run with injected client', async () =>
 
   const adapter = createApiRuntimeAdapter({
     decisionCoreClient: {
+      checkBackendAvailability: async () => ({
+        ok: true,
+        status: 'ready',
+      }),
       createInitialReviewRun: async (topicInput, options) => {
         calls.push({ topicInput, options });
         return {
@@ -52,8 +56,10 @@ test('browser API runtime adapter creates run with injected client', async () =>
   }, {
     mode: 'mocked',
   });
+  const health = await adapter.system.checkBackendAvailability();
 
   assert.equal(adapter.mode, RUNTIME_MODES.API);
+  assert.equal(health.status, 'ready');
   assert.equal(calls[0].topicInput.topic_input, 'AI meeting notes for product teams');
   assert.equal(calls[0].options.mode, 'mocked');
   assert.equal(result.product_mainline_payload.topic_draft.title, 'AI meeting notes for product teams');

@@ -7,6 +7,7 @@ const {
   buildApiTopicRunInputFromDraft,
   isApiTopicSnapshot,
   normalizeApiRuntimeErrorCode,
+  pollInitialReviewRun,
   runApiInitialReviewFromDraft,
 } = require('../../src/ui/flow/api-mode-topic-flow');
 
@@ -82,37 +83,171 @@ test('API mode runtime options default to mocked backend mode', () => {
   });
 });
 
-test('API visible flow calls create run through API adapter and returns workspace patch', async () => {
+test('API visible flow checks backend, creates run, polls status, and fetches workspace patch', async () => {
   const calls = [];
+  const statusChanges = [];
   const result = await runApiInitialReviewFromDraft({
     draft: SAMPLE_DRAFT,
     apiRuntimeAdapter: {
-      workspace: {
-        createRunAndGetWorkspacePayload: async (topicInput, options) => {
-          calls.push({ topicInput, options });
+      system: {
+        checkBackendAvailability: async () => {
+          calls.push({ type: 'health' });
+          return { ok: true, status: 'ready' };
+        },
+      },
+      runs: {
+        createInitialReviewRun: async (topicInput, options) => {
+          calls.push({ type: 'create', topicInput, options });
           return {
-            run: {
-              run_id: 'initial-review-run:test:api-visible',
-              workspace_id: 'workspace:test:api-visible',
-              status: 'workspace_ready',
-            },
-            workspace_payload: mockWorkspacePayload(),
-            product_mainline_payload: mockWorkspacePayload().product_mainline_payload,
+            run_id: 'initial-review-run:test:api-visible',
+            workspace_id: 'workspace:test:api-visible',
+            status: 'collecting_candidates',
+          };
+        },
+        getRunStatus: async (runId) => {
+          calls.push({ type: 'poll', runId });
+          return {
+            run_id: 'initial-review-run:test:api-visible',
+            workspace_id: 'workspace:test:api-visible',
+            status: 'workspace_ready',
           };
         },
       },
+      workspace: {
+        getWorkspacePayload: async (workspaceId) => {
+          calls.push({ type: 'workspace', workspaceId });
+          return mockWorkspacePayload();
+        },
+      },
+    },
+    pollOptions: {
+      maxAttempts: 2,
+      delayMs: 0,
+    },
+    onStatusChange: (state) => {
+      statusChanges.push(state.status);
     },
   });
 
   assert.equal(result.status, API_RUNTIME_STATUSES.WORKSPACE_READY);
-  assert.equal(calls.length, 1);
-  assert.equal(calls[0].topicInput.topic_input, SAMPLE_DRAFT.original_input);
-  assert.equal(calls[0].options.mode, 'mocked');
+  assert.deepEqual(calls.map((call) => call.type), ['health', 'create', 'poll', 'workspace']);
+  assert.equal(calls[1].topicInput.topic_input, SAMPLE_DRAFT.original_input);
+  assert.equal(calls[1].options.mode, 'mocked');
+  assert.deepEqual(statusChanges, [
+    API_RUNTIME_STATUSES.CHECKING_BACKEND,
+    API_RUNTIME_STATUSES.CREATING_RUN,
+    API_RUNTIME_STATUSES.POLLING_RUN,
+    API_RUNTIME_STATUSES.LOADING_WORKSPACE,
+  ]);
   assert.equal(result.topic_patch.runtimeSource, 'api');
   assert.equal(result.topic_patch.runId, 'initial-review-run:test:api-visible');
   assert.equal(result.topic_patch.workspaceId, 'workspace:test:api-visible');
   assert.equal(isApiTopicSnapshot(result.topic_patch), true);
   assert.equal(JSON.stringify(result).includes('fixture'), false);
+});
+
+test('API visible flow reports workspace_not_ready without fixture fallback', async () => {
+  await assert.rejects(
+    () => runApiInitialReviewFromDraft({
+      draft: SAMPLE_DRAFT,
+      apiRuntimeAdapter: {
+        system: {
+          checkBackendAvailability: async () => ({ ok: true, status: 'ready' }),
+        },
+        runs: {
+          createInitialReviewRun: async () => ({
+            run_id: 'initial-review-run:test:not-ready',
+            workspace_id: 'workspace:test:not-ready',
+            status: 'collecting_candidates',
+          }),
+          getRunStatus: async () => ({
+            run_id: 'initial-review-run:test:not-ready',
+            workspace_id: 'workspace:test:not-ready',
+            status: 'collecting_candidates',
+          }),
+        },
+        workspace: {
+          getWorkspacePayload: async () => {
+            throw new Error('workspace should not be fetched before ready');
+          },
+        },
+      },
+      pollOptions: {
+        maxAttempts: 1,
+        delayMs: 0,
+      },
+    }),
+    /workspace_not_ready/
+  );
+});
+
+test('API visible flow reports failed backend run safely', async () => {
+  await assert.rejects(
+    () => runApiInitialReviewFromDraft({
+      draft: SAMPLE_DRAFT,
+      apiRuntimeAdapter: {
+        system: {
+          checkBackendAvailability: async () => ({ ok: true, status: 'ready' }),
+        },
+        runs: {
+          createInitialReviewRun: async () => ({
+            run_id: 'initial-review-run:test:failed',
+            workspace_id: 'workspace:test:failed',
+            status: 'failed',
+            failure_code: 'runtime_execution_failed',
+          }),
+          getRunStatus: async () => {
+            throw new Error('poll should not be needed for failed run');
+          },
+        },
+        workspace: {
+          getWorkspacePayload: async () => {
+            throw new Error('workspace should not be fetched for failed run');
+          },
+        },
+      },
+      pollOptions: {
+        delayMs: 0,
+      },
+    }),
+    /run_failed:runtime_execution_failed/
+  );
+});
+
+test('pollInitialReviewRun returns ready status after polling and rejects stale runs', async () => {
+  const ready = await pollInitialReviewRun({
+    run: {
+      run_id: 'initial-review-run:test:poll',
+      workspace_id: 'workspace:test:poll',
+      status: 'collecting_candidates',
+    },
+    getRunStatus: async () => ({
+      run_id: 'initial-review-run:test:poll',
+      workspace_id: 'workspace:test:poll',
+      status: 'workspace_ready',
+    }),
+    maxAttempts: 1,
+    delayMs: 0,
+  });
+
+  assert.equal(ready.status, 'workspace_ready');
+  await assert.rejects(
+    () => pollInitialReviewRun({
+      run: {
+        run_id: 'initial-review-run:test:poll-stale',
+        workspace_id: 'workspace:test:poll-stale',
+        status: 'filtering_candidates',
+      },
+      getRunStatus: async () => ({
+        run_id: 'initial-review-run:test:poll-stale',
+        workspace_id: 'workspace:test:poll-stale',
+        status: 'filtering_candidates',
+      }),
+      maxAttempts: 1,
+      delayMs: 0,
+    }),
+    /workspace_not_ready/
+  );
 });
 
 test('API visible flow normalizes safe error codes without fixture fallback', () => {
@@ -127,6 +262,22 @@ test('API visible flow normalizes safe error codes without fixture fallback', ()
   assert.equal(
     normalizeApiRuntimeErrorCode(new Error('Failed to fetch')),
     'backend_unavailable'
+  );
+  assert.equal(
+    normalizeApiRuntimeErrorCode(new Error('backend_unavailable')),
+    'backend_unavailable'
+  );
+  assert.equal(
+    normalizeApiRuntimeErrorCode(new Error('invalid_backend_url')),
+    'invalid_backend_url'
+  );
+  assert.equal(
+    normalizeApiRuntimeErrorCode(new Error('workspace_not_ready')),
+    'workspace_not_ready'
+  );
+  assert.equal(
+    normalizeApiRuntimeErrorCode(new Error('run_failed:runtime_execution_failed')),
+    'run_failed'
   );
   assert.equal(
     normalizeApiRuntimeErrorCode(new Error('unexpected')),

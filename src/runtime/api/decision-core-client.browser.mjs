@@ -4,6 +4,21 @@ function normalizeBaseUrl(baseUrl) {
   return String(baseUrl || '').replace(/\/+$/, '');
 }
 
+function validateDecisionCoreApiBaseUrl(baseUrl) {
+  const normalized = normalizeBaseUrl(baseUrl);
+
+  try {
+    const parsed = new URL(normalized);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      throw new Error('invalid_protocol');
+    }
+  } catch (_error) {
+    throw new Error('invalid_backend_url');
+  }
+
+  return normalized;
+}
+
 function readGlobalConfig(name) {
   if (typeof globalThis === 'undefined') {
     return '';
@@ -72,7 +87,7 @@ async function parseJsonResponse(response, label) {
 }
 
 function createDecisionCoreClient(options = {}) {
-  const baseUrl = resolveDecisionCoreApiBaseUrl(options);
+  const baseUrl = validateDecisionCoreApiBaseUrl(resolveDecisionCoreApiBaseUrl(options));
   const requestImpl = ensureFetchImplementation(options.fetchImpl);
 
   async function getJson(pathName, label) {
@@ -100,6 +115,9 @@ function createDecisionCoreClient(options = {}) {
   }
 
   return {
+    checkBackendAvailability() {
+      return getJson('/api/health', 'DecisionCoreClient.checkBackendAvailability');
+    },
     createInitialReviewRun(topicInput = {}, options = {}) {
       return postJson('/api/initial-review-runs', {
         ...topicInput,
@@ -130,4 +148,5 @@ export {
   DEFAULT_DECISION_CORE_API_BASE_URL,
   createDecisionCoreClient,
   resolveDecisionCoreApiBaseUrl,
+  validateDecisionCoreApiBaseUrl,
 };

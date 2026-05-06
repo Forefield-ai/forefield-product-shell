@@ -23,6 +23,20 @@ function createApiRuntimeAdapter(options = {}) {
 
   return {
     mode: RUNTIME_MODES.API,
+    system: {
+      async checkBackendAvailability() {
+        if (typeof decisionCoreClient.checkBackendAvailability !== 'function') {
+          throw new Error('decisionCoreClient.checkBackendAvailability must be a function for API mode.');
+        }
+
+        const health = await decisionCoreClient.checkBackendAvailability();
+        if (!health || health.ok !== true || health.status !== 'ready') {
+          throw new Error('backend_unavailable');
+        }
+
+        return health;
+      },
+    },
     runs: {
       createInitialReviewRun(topicInput, options = {}) {
         if (typeof decisionCoreClient.createInitialReviewRun !== 'function') {

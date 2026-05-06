@@ -10,6 +10,7 @@ const {
   DEFAULT_DECISION_CORE_API_BASE_URL,
   createDecisionCoreClient,
   resolveDecisionCoreApiBaseUrl,
+  validateDecisionCoreApiBaseUrl,
 } = require('../../src/runtime/api/decision-core-client');
 const {
   createApiRuntimeAdapter,
@@ -95,6 +96,39 @@ test('DecisionCore API client loads mocked workspace payload through injected fe
 
   assert.equal(payload.workspace_id, WORKSPACE_ID);
   assert.equal(calls[0].url, `https://example.test/api/workspaces/${encodeURIComponent(WORKSPACE_ID)}`);
+  assert.equal(calls[0].options.method, 'GET');
+});
+
+test('DecisionCore API client validates backend URL and checks backend availability', async () => {
+  const calls = [];
+  const client = createDecisionCoreClient({
+    baseUrl: 'https://example.test/',
+    fetchImpl: async (url, options) => {
+      calls.push({ url, options });
+      return {
+        ok: true,
+        json: async () => ({
+          ok: true,
+          service: 'forefield_initial_review_api',
+          status: 'ready',
+          default_runtime_mode: 'mocked',
+        }),
+      };
+    },
+  });
+
+  assert.equal(validateDecisionCoreApiBaseUrl('https://example.test/'), 'https://example.test');
+  assert.throws(() => validateDecisionCoreApiBaseUrl('not a url'), /invalid_backend_url/);
+  assert.throws(() => createDecisionCoreClient({
+    baseUrl: 'file:///tmp/backend',
+    fetchImpl: async () => ({ ok: true, json: async () => ({}) }),
+  }), /invalid_backend_url/);
+
+  const health = await client.checkBackendAvailability();
+
+  assert.equal(health.ok, true);
+  assert.equal(health.status, 'ready');
+  assert.equal(calls[0].url, 'https://example.test/api/health');
   assert.equal(calls[0].options.method, 'GET');
 });
 
@@ -243,6 +277,35 @@ test('API runtime adapter normalizes remote payload and builds workspace/drawer/
   assertNoForbiddenSerializedFields(workspaceState);
   assertNoForbiddenSerializedFields(drawerState);
   assertNoForbiddenSerializedFields(briefState);
+});
+
+test('API runtime adapter checks backend readiness and rejects unavailable backend', async () => {
+  const adapter = createApiRuntimeAdapter({
+    decisionCoreClient: {
+      checkBackendAvailability: async () => ({
+        ok: true,
+        status: 'ready',
+      }),
+      getWorkspacePayload: async () => remotePayload(),
+    },
+  });
+  const unavailableAdapter = createApiRuntimeAdapter({
+    decisionCoreClient: {
+      checkBackendAvailability: async () => ({
+        ok: false,
+        status: 'starting',
+      }),
+      getWorkspacePayload: async () => remotePayload(),
+    },
+  });
+
+  const health = await adapter.system.checkBackendAvailability();
+
+  assert.equal(health.status, 'ready');
+  await assert.rejects(
+    () => unavailableAdapter.system.checkBackendAvailability(),
+    /backend_unavailable/
+  );
 });
 
 test('API runtime adapter creates run then loads runtime workspace payload', async () => {

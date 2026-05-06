@@ -142,8 +142,16 @@ function buildApiRuntimeState(status, patch = {}) {
 }
 
 function resolveApiStatusCopy(status) {
+  if (status === API_RUNTIME_STATUSES.CHECKING_BACKEND) {
+    return 'Checking that the configured backend API is reachable.';
+  }
+
   if (status === API_RUNTIME_STATUSES.CREATING_RUN) {
     return 'Creating an Initial Review run through the configured backend.';
+  }
+
+  if (status === API_RUNTIME_STATUSES.POLLING_RUN) {
+    return 'Waiting for the backend run to report a workspace-ready state.';
   }
 
   if (status === API_RUNTIME_STATUSES.LOADING_WORKSPACE) {
@@ -160,8 +168,11 @@ function resolveApiFailureCopy(errorCode) {
 
   const copyByCode = {
     backend_unavailable: 'The app could not reach the configured decision-core backend.',
+    invalid_backend_url: 'The configured backend URL is not a valid HTTP or HTTPS URL.',
     invalid_topic: 'The topic input was rejected before a backend run could start.',
     live_gate_missing: 'Live mode was requested without the required live source gate.',
+    workspace_not_ready: 'The backend run is not workspace-ready yet.',
+    run_failed: 'The backend run failed before a workspace payload was ready.',
     workspace_load_failed: 'The backend run returned without a usable workspace payload.',
     runtime_execution_failed: 'The backend runtime path failed before the workspace could be loaded.',
   };
@@ -392,6 +403,11 @@ export default function App() {
           options: {
             mode: 'mocked',
           },
+          onStatusChange: (nextRuntimeState) => {
+            setApiRuntimeState(buildApiRuntimeState(nextRuntimeState.status, {
+              run: nextRuntimeState.run || null,
+            }));
+          },
         });
         const readySnapshot = {
           ...updateLocalTopicStatus(nextTopicSnapshot, TOPIC_STATUSES.READY),
@@ -532,7 +548,9 @@ export default function App() {
     if (
       runtimeModeIsApi
       && (
-        apiRuntimeState.status === API_RUNTIME_STATUSES.CREATING_RUN
+        apiRuntimeState.status === API_RUNTIME_STATUSES.CHECKING_BACKEND
+        || apiRuntimeState.status === API_RUNTIME_STATUSES.POLLING_RUN
+        || apiRuntimeState.status === API_RUNTIME_STATUSES.CREATING_RUN
         || apiRuntimeState.status === API_RUNTIME_STATUSES.LOADING_WORKSPACE
       )
     ) {
