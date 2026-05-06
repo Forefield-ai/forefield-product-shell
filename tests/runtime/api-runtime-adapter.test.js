@@ -96,6 +96,60 @@ test('DecisionCore API client loads mocked workspace payload through injected fe
   assert.equal(calls[0].options.method, 'GET');
 });
 
+test('DecisionCore API client creates run, gets status, and handles safe errors', async () => {
+  const calls = [];
+  const client = createDecisionCoreClient({
+    baseUrl: 'https://example.test',
+    fetchImpl: async (url, options) => {
+      calls.push({ url, options });
+      if (String(url).includes('/api/initial-review-runs') && options.method === 'POST') {
+        return {
+          ok: true,
+          json: async () => ({
+            run_id: 'initial-review-run:p18d:api',
+            workspace_id: WORKSPACE_ID,
+            status: 'workspace_ready',
+          }),
+        };
+      }
+      if (String(url).includes('/api/initial-review-runs/')) {
+        return {
+          ok: true,
+          json: async () => ({
+            run_id: 'initial-review-run:p18d:api',
+            workspace_id: WORKSPACE_ID,
+            status: 'workspace_ready',
+          }),
+        };
+      }
+      return {
+        ok: false,
+        status: 404,
+        json: async () => ({
+          error: { code: 'workspace_not_found' },
+        }),
+      };
+    },
+  });
+
+  const created = await client.createInitialReviewRun({
+    topic_input: 'AI meeting notes for product teams',
+  }, {
+    mode: 'mocked',
+  });
+  const status = await client.getInitialReviewRun(created.run_id);
+
+  assert.equal(created.workspace_id, WORKSPACE_ID);
+  assert.equal(status.status, 'workspace_ready');
+  assert.equal(calls[0].url, 'https://example.test/api/initial-review-runs');
+  assert.equal(calls[0].options.method, 'POST');
+  assert.equal(JSON.parse(calls[0].options.body).topic_input, 'AI meeting notes for product teams');
+  assert.rejects(
+    () => client.getWorkspacePayload('missing-workspace'),
+    /workspace_not_found/
+  );
+});
+
 test('API runtime adapter normalizes remote payload and builds workspace/drawer/brief states', async () => {
   const adapter = createApiRuntimeAdapter({
     decisionCoreClient: {
@@ -123,6 +177,50 @@ test('API runtime adapter normalizes remote payload and builds workspace/drawer/
   assert.match(briefState.copyableMarkdown, /## Evidence Highlights/);
   assert.match(briefState.copyableMarkdown, /Discovery leads are not evidence yet/);
   assertNoForbiddenSerializedFields(productMainline);
+  assertNoForbiddenSerializedFields(workspaceState);
+  assertNoForbiddenSerializedFields(drawerState);
+  assertNoForbiddenSerializedFields(briefState);
+});
+
+test('API runtime adapter creates run then loads runtime workspace payload', async () => {
+  const calls = [];
+  const adapter = createApiRuntimeAdapter({
+    decisionCoreClient: {
+      createInitialReviewRun: async (topicInput, options) => {
+        calls.push({ topicInput, options });
+        return {
+          run_id: runtimeWorkspacePayload.initial_review_run_id,
+          workspace_id: runtimeWorkspacePayload.workspace_id,
+          status: 'workspace_ready',
+        };
+      },
+      getWorkspacePayload: async () => runtimeWorkspacePayload,
+      getRun: async () => ({ id: runtimeWorkspacePayload.initial_review_run_id, status: 'workspace_ready' }),
+    },
+  });
+  const result = await adapter.workspace.createRunAndGetWorkspacePayload({
+    topic_input: 'AI meeting notes for product teams',
+  }, {
+    mode: 'mocked',
+  });
+  const workspaceState = buildTopicWorkspaceViewState(result.product_mainline_payload);
+  const drawerState = buildTopicWorkspaceViewState(result.product_mainline_payload, {
+    selectedClusterId: workspaceState.signal_cluster_sections[0].cluster_id,
+  }).selected_evidence_drawer;
+  const briefState = buildBaselineBriefViewState({
+    workspaceViewState: workspaceState,
+    evidenceDrawersByClusterId: buildEvidenceDrawersByClusterId(result.product_mainline_payload),
+    briefState: buildBaselineBriefState({ productMainline: result.product_mainline_payload }),
+  });
+
+  assert.equal(calls[0].topicInput.topic_input, 'AI meeting notes for product teams');
+  assert.equal(calls[0].options.mode, 'mocked');
+  assert.equal(result.run.status, 'workspace_ready');
+  assert.equal(result.workspace_payload.source_coverage_summary.partial_source_failure, true);
+  assert.equal(workspaceState.source_coverage_strip.partial_source_failure, true);
+  assert.equal(drawerState.grouped_evidence_summary.direct_evidence_count, 1);
+  assert.match(briefState.copyableMarkdown, /## Evidence Highlights/);
+  assertNoForbiddenSerializedFields(result);
   assertNoForbiddenSerializedFields(workspaceState);
   assertNoForbiddenSerializedFields(drawerState);
   assertNoForbiddenSerializedFields(briefState);

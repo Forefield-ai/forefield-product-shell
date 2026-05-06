@@ -24,6 +24,13 @@ function createApiRuntimeAdapter(options = {}) {
   return {
     mode: RUNTIME_MODES.API,
     runs: {
+      createInitialReviewRun(topicInput, options = {}) {
+        if (typeof decisionCoreClient.createInitialReviewRun !== 'function') {
+          throw new Error('decisionCoreClient.createInitialReviewRun must be a function for create calls.');
+        }
+
+        return decisionCoreClient.createInitialReviewRun(topicInput, options);
+      },
       getRunStatus(runId) {
         if (typeof decisionCoreClient.getRun !== 'function') {
           throw new Error('decisionCoreClient.getRun must be a function for run status calls.');
@@ -43,6 +50,24 @@ function createApiRuntimeAdapter(options = {}) {
       },
       async getTopicWorkspace(workspaceId) {
         return this.getProductMainline(workspaceId);
+      },
+      async createRunAndGetWorkspacePayload(topicInput, options = {}) {
+        if (typeof decisionCoreClient.createInitialReviewRun !== 'function') {
+          throw new Error('decisionCoreClient.createInitialReviewRun must be a function for create calls.');
+        }
+
+        const run = await decisionCoreClient.createInitialReviewRun(topicInput, options);
+        if (!run?.workspace_id) {
+          throw new Error('Initial review create response must include workspace_id.');
+        }
+
+        const workspacePayload = await this.getWorkspacePayload(run.workspace_id);
+
+        return {
+          run,
+          workspace_payload: workspacePayload,
+          product_mainline_payload: assertCanonicalRuntimePayload(workspacePayload.product_mainline_payload),
+        };
       },
     },
   };

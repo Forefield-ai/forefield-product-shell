@@ -17,15 +17,21 @@ async function parseJsonResponse(response, label) {
     throw new Error(`${label} returned an invalid response object.`);
   }
 
-  if (response.ok === false) {
-    throw new Error(`${label} failed with status ${response.status || 'unknown'}.`);
+  let payload = null;
+  if (typeof response.json === 'function') {
+    payload = await response.json();
   }
 
-  if (typeof response.json !== 'function') {
+  if (response.ok === false) {
+    const code = payload?.error?.code || payload?.failure_code || response.status || 'unknown';
+    throw new Error(`${label} failed: ${code}.`);
+  }
+
+  if (!payload) {
     throw new Error(`${label} response must expose json().`);
   }
 
-  return response.json();
+  return payload;
 }
 
 function createDecisionCoreClient(options = {}) {
@@ -43,13 +49,35 @@ function createDecisionCoreClient(options = {}) {
     return parseJsonResponse(response, label);
   }
 
+  async function postJson(pathName, body, label) {
+    const response = await requestImpl(`${baseUrl}${pathName}`, {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(body || {}),
+    });
+
+    return parseJsonResponse(response, label);
+  }
+
   return {
+    createInitialReviewRun(topicInput = {}, options = {}) {
+      return postJson('/api/initial-review-runs', {
+        ...topicInput,
+        ...options,
+      }, 'DecisionCoreClient.createInitialReviewRun');
+    },
     getRun(runId) {
       const safeRunId = encodeURIComponent(String(runId || '').trim());
       if (!safeRunId) {
         throw new Error('runId is required.');
       }
       return getJson(`/api/initial-review-runs/${safeRunId}`, 'DecisionCoreClient.getRun');
+    },
+    getInitialReviewRun(runId) {
+      return this.getRun(runId);
     },
     getWorkspacePayload(workspaceId) {
       const safeWorkspaceId = encodeURIComponent(String(workspaceId || '').trim());
