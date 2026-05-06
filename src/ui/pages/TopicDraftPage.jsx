@@ -54,6 +54,7 @@ export default function TopicDraftPage({
   onConfirm,
   onBackHome,
   onOpenTopicList,
+  runtimeMode = 'local',
 }) {
   if (!draft) {
     return null;
@@ -69,16 +70,16 @@ export default function TopicDraftPage({
   const handleRegenerate = () => {
     onDraftChange(generateLocalTopicDraftFromInput(draft.original_input));
   };
+  const runtimeModeIsApi = runtimeMode === 'api';
 
   return (
     <main className="flow-shell">
       <div className="flow-shell__inner">
         <section className="flow-page flow-page--draft">
           <p className="flow-page__eyebrow">Topic Draft Confirmation</p>
-          <h1 className="flow-page__title">Review and edit your local Topic Draft</h1>
+          <h1 className="flow-page__title">Review and edit your Topic Draft</h1>
           <p className="flow-page__copy">
-            This draft is local-only and editable. Confirming it starts a mock baseline-building
-            flow and then opens the existing Topic Workspace.
+            This draft is editable before it starts the selected Initial Review path.
           </p>
 
           <div className="flow-form flow-form--grid">
@@ -156,13 +157,16 @@ export default function TopicDraftPage({
           </div>
 
           <p className="flow-note">
-            Local mock draft only. Confirming the Topic starts simulated progress, not real source
-            collection.
+            {runtimeModeIsApi
+              ? 'API Backend mode creates a backend run and loads the returned workspace payload. It does not use local sample data as a fallback.'
+              : 'Local Sample mode starts simulated progress and opens the selected sample workspace.'}
           </p>
 
           <div className="flow-actions">
             <button className="flow-button flow-button--primary" type="button" onClick={() => onConfirm(draft)}>
-              Confirm Topic &amp; Start Initial Review
+              {runtimeModeIsApi
+                ? 'Confirm Topic & Start API Review'
+                : 'Confirm Topic & Start Initial Review'}
             </button>
             <button className="flow-button flow-button--secondary" type="button" onClick={handleRegenerate}>
               Regenerate Draft

@@ -7,10 +7,12 @@ export default function HomePage({
   onOpenTopicList,
   topicsCount,
   selectedFixtureKey,
+  runtimeMode = 'local',
 }) {
   const [showValidation, setShowValidation] = useState(false);
   const trimmedInput = typeof inputValue === 'string' ? inputValue.trim() : '';
   const isShortInput = trimmedInput.length > 0 && trimmedInput.length < 18;
+  const runtimeModeIsApi = runtimeMode === 'api';
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -28,11 +30,13 @@ export default function HomePage({
     <main className="flow-shell">
       <div className="flow-shell__inner">
         <section className="flow-page flow-page--home">
-          <p className="flow-page__eyebrow">Local MVP Flow</p>
+          <p className="flow-page__eyebrow">
+            {runtimeModeIsApi ? 'API Backend Flow' : 'Local MVP Flow'}
+          </p>
           <h1 className="flow-page__title">Start a new Topic from natural language</h1>
           <p className="flow-page__copy">
-            Describe the demand area you want to monitor. This local demo will create a mock
-            Topic Draft and then route you into the existing Topic Workspace shell.
+            Describe the demand area you want to monitor. The app will create a Topic Draft and
+            route it through the selected product flow.
           </p>
 
           <form className="flow-form" onSubmit={handleSubmit}>
@@ -48,7 +52,7 @@ export default function HomePage({
 
             {showValidation && !trimmedInput ? (
               <p className="flow-message flow-message--error">
-                Enter a topic intent before creating a local Topic Draft.
+                Enter a topic intent before creating a Topic Draft.
               </p>
             ) : null}
 
@@ -60,13 +64,21 @@ export default function HomePage({
             ) : null}
 
             <p className="flow-note">
-              Local demo only. No data collection starts here. New topics currently use the
-              <strong> {selectedFixtureKey}</strong> workspace fixture.
+              {runtimeModeIsApi
+                ? 'API Backend mode creates a backend Initial Review run and loads the persisted workspace payload.'
+                : 'Local Sample mode uses the selected bundled workspace sample.'}
+              {!runtimeModeIsApi ? (
+                <>
+                  {' '}
+                  New topics currently use the
+                  <strong> {selectedFixtureKey}</strong> workspace fixture.
+                </>
+              ) : null}
             </p>
 
             <div className="flow-actions">
               <button className="flow-button flow-button--primary" type="submit">
-                Create Topic Draft
+                {runtimeModeIsApi ? 'Create Topic Draft for API Run' : 'Create Topic Draft'}
               </button>
               <button
                 className="flow-button flow-button--secondary"

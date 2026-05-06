@@ -50,6 +50,7 @@ export default function TopicWorkspaceShellPage({
   const [copilotPanelState, setCopilotPanelState] = useState(null);
   const [workspaceCommand, setWorkspaceCommand] = useState(null);
   const [savedTabNotice, setSavedTabNotice] = useState('');
+  const topicUsesApiBackend = topic?.runtimeSource === 'api';
   const currentActionState = topicActionState || initialActionState();
   const topicScope = useMemo(() => ({
     topic_id: topic?.id || '',
@@ -478,8 +479,9 @@ export default function TopicWorkspaceShellPage({
                 <p className="flow-page__eyebrow">Topic Workspace Preview</p>
                 <h1 className="flow-page__title">{topic.draft?.topic_name || 'Local topic'}</h1>
                 <p className="flow-page__copy">
-                  This prototype uses sample review data while preserving the topic flow. Review
-                  the generated topic context below.
+                  {topicUsesApiBackend
+                    ? 'This workspace was loaded from the configured backend API payload. Review the generated topic context below.'
+                    : 'This prototype uses sample review data while preserving the topic flow. Review the generated topic context below.'}
                 </p>
               </div>
               <div className="flow-actions flow-actions--compact">

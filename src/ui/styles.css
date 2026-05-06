@@ -505,6 +505,63 @@ select {
   color: var(--text);
 }
 
+.runtime-mode-selector {
+  padding: 20px 20px 0;
+}
+
+.runtime-mode-selector__inner {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: end;
+  flex-wrap: wrap;
+  background: rgba(255, 253, 248, 0.82);
+  border: 1px solid rgba(212, 198, 178, 0.85);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.runtime-mode-selector__meta {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.runtime-mode-selector__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.runtime-mode-selector__option {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  display: grid;
+  gap: 4px;
+  min-width: 150px;
+}
+
+.runtime-mode-selector__option--active {
+  border-color: rgba(29, 95, 83, 0.45);
+  background: rgba(223, 240, 234, 0.78);
+}
+
+.runtime-mode-selector__option span {
+  font-weight: 700;
+}
+
+.runtime-mode-selector__option small {
+  color: var(--muted);
+}
+
 .workspace-shell {
   min-height: 100vh;
   padding: 16px 20px 48px;
@@ -2011,11 +2068,13 @@ select {
     flex-direction: column;
   }
 
-  .fixture-selector {
+  .fixture-selector,
+  .runtime-mode-selector {
     padding: 14px 14px 0;
   }
 
-  .fixture-selector__inner {
+  .fixture-selector__inner,
+  .runtime-mode-selector__inner {
     padding: 16px;
   }
 

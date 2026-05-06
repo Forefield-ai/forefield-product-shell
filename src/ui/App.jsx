@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import DebugFixtureSelector from './components/DebugFixtureSelector';
 import PrototypeFallbackState from './components/PrototypeFallbackState';
+import RuntimeModeSelector from './components/RuntimeModeSelector';
 import HomePage from './pages/HomePage';
 import TopicDraftGenerationPage from './pages/TopicDraftGenerationPage';
 import TopicDraftPage from './pages/TopicDraftPage';
@@ -14,8 +15,24 @@ import sparseProductMainline from '../../fixtures/product/sparse-product-mainlin
 import noEvidenceProductMainline from '../../fixtures/product/no-evidence-product-mainline.sample.json';
 import groupedEvidenceProductMainline from '../../fixtures/product/grouped-evidence-product-mainline.sample.json';
 import { createLocalRuntimeAdapter } from '../runtime/adapters/local-runtime-adapter.browser.mjs';
+import {
+  createRuntimeAdapterFromConfig,
+  resolveProductShellRuntimeMode,
+} from '../runtime/adapters/runtime-adapter-selector.browser.mjs';
+import {
+  resolveDecisionCoreApiBaseUrl,
+} from '../runtime/api/decision-core-client.browser.mjs';
+import {
+  RUNTIME_MODES,
+} from '../runtime/contracts/runtime-adapter-contract.browser.mjs';
 import { buildProductMainlineCompatibilityPayload } from '../runtime/workspace/local-workspace-payload.browser.mjs';
 import { initialActionState } from '../product/actions/user-action-state.browser.mjs';
+import {
+  API_RUNTIME_STATUSES,
+  isApiTopicSnapshot,
+  normalizeApiRuntimeErrorCode,
+  runApiInitialReviewFromDraft,
+} from './flow/api-mode-topic-flow.browser.mjs';
 import {
   createLocalTopicRecord,
   LOCAL_BASELINE_SCENARIO_KEYS,
@@ -114,8 +131,55 @@ function resolveAdapterTopicUpdatedAt(adapterTopic, existingSnapshot) {
   return adapterTopic?.updated_at || existingSnapshot?.updatedAt || adapterTopic?.created_at;
 }
 
+function buildApiRuntimeState(status, patch = {}) {
+  return {
+    status,
+    errorCode: null,
+    run: null,
+    workspacePayload: null,
+    ...patch,
+  };
+}
+
+function resolveApiStatusCopy(status) {
+  if (status === API_RUNTIME_STATUSES.CREATING_RUN) {
+    return 'Creating an Initial Review run through the configured backend.';
+  }
+
+  if (status === API_RUNTIME_STATUSES.LOADING_WORKSPACE) {
+    return 'Loading the persisted workspace payload from the backend.';
+  }
+
+  return 'Preparing the API Backend workspace.';
+}
+
+function resolveApiFailureCopy(errorCode) {
+  const safeErrorCode = typeof errorCode === 'string' && errorCode.trim()
+    ? errorCode.trim()
+    : 'runtime_execution_failed';
+
+  const copyByCode = {
+    backend_unavailable: 'The app could not reach the configured decision-core backend.',
+    invalid_topic: 'The topic input was rejected before a backend run could start.',
+    live_gate_missing: 'Live mode was requested without the required live source gate.',
+    workspace_load_failed: 'The backend run returned without a usable workspace payload.',
+    runtime_execution_failed: 'The backend runtime path failed before the workspace could be loaded.',
+  };
+
+  return {
+    errorCode: safeErrorCode,
+    copy: copyByCode[safeErrorCode] || copyByCode.runtime_execution_failed,
+  };
+}
+
 export default function App() {
   const runtimeAdapterRef = useRef(null);
+  const apiRuntimeAdapterRef = useRef(null);
+  const apiBaseUrl = resolveDecisionCoreApiBaseUrl();
+  const [runtimeMode, setRuntimeMode] = useState(resolveProductShellRuntimeMode());
+  const [apiRuntimeState, setApiRuntimeState] = useState(buildApiRuntimeState(
+    API_RUNTIME_STATUSES.IDLE
+  ));
   const [selectedFixtureKey, setSelectedFixtureKey] = useState('rich');
   const [selectedBaselineScenarioKey, setSelectedBaselineScenarioKey] = useState(
     LOCAL_BASELINE_SCENARIO_KEYS.DEFAULT
@@ -144,12 +208,31 @@ export default function App() {
   const fixtureSelectorNotice = isKnownFixtureKey(selectedFixtureKey)
     ? ''
     : 'The selected sample workspace is unavailable in this local prototype. Choose another sample to continue safely.';
+  const runtimeModeIsApi = runtimeMode === RUNTIME_MODES.API;
+  const runtimeModeIsLocal = !runtimeModeIsApi;
 
   if (!runtimeAdapterRef.current) {
     runtimeAdapterRef.current = createLocalRuntimeAdapter();
   }
 
   const runtimeAdapter = runtimeAdapterRef.current;
+
+  const getApiRuntimeAdapter = () => {
+    if (!apiRuntimeAdapterRef.current) {
+      apiRuntimeAdapterRef.current = createRuntimeAdapterFromConfig({
+        mode: RUNTIME_MODES.API,
+      });
+    }
+
+    return apiRuntimeAdapterRef.current;
+  };
+
+  const handleRuntimeModeChange = (nextMode) => {
+    const normalizedMode = nextMode === RUNTIME_MODES.API ? RUNTIME_MODES.API : RUNTIME_MODES.LOCAL;
+
+    setRuntimeMode(normalizedMode);
+    setApiRuntimeState(buildApiRuntimeState(API_RUNTIME_STATUSES.IDLE));
+  };
 
   const updateTopicById = (topicId, updater) => {
     setLocalTopics((currentTopics) => currentTopics.map((topic) => (
@@ -209,7 +292,11 @@ export default function App() {
         originalInput: existingSnapshot?.originalInput || nextSnapshot.originalInput,
         baselineScenarioKey: existingSnapshot?.baselineScenarioKey || selectedBaselineScenarioKey,
         runId: existingSnapshot?.runId || null,
-        runtimeSource: 'adapter',
+        workspaceId: existingSnapshot?.workspaceId || null,
+        apiRun: existingSnapshot?.apiRun || null,
+        apiWorkspacePayload: existingSnapshot?.apiWorkspacePayload || null,
+        apiProductMainline: existingSnapshot?.apiProductMainline || null,
+        runtimeSource: existingSnapshot?.runtimeSource || 'adapter',
       };
     });
 
@@ -217,6 +304,7 @@ export default function App() {
   };
 
   const handleCreateTopicDraft = (input) => {
+    setApiRuntimeState(buildApiRuntimeState(API_RUNTIME_STATUSES.IDLE));
     setCurrentInput(input);
     setCurrentTopicDraft(null);
     setActiveTopicId(null);
@@ -255,7 +343,7 @@ export default function App() {
     }));
   };
 
-  const handleConfirmTopic = (draft) => {
+  const handleConfirmTopic = async (draft) => {
     setCurrentTopicDraft(draft);
     setCurrentInput(draft.original_input);
 
@@ -267,6 +355,68 @@ export default function App() {
       topicId: confirmedTopicId,
       status: TOPIC_STATUSES.BUILDING,
     });
+
+    if (runtimeModeIsApi) {
+      const seedSnapshot = createLocalTopicRecord({
+        draft,
+        fixtureKey: currentTopicRecord?.fixtureKey || selectedFixtureKey,
+        status: TOPIC_STATUSES.BUILDING,
+        createdAt: confirmedTopic.created_at,
+        updatedAt: confirmedTopic.updated_at,
+        id: confirmedTopic.id,
+      });
+      const nextTopicSnapshot = {
+        ...seedSnapshot,
+        baselineScenarioKey: currentTopicRecord?.baselineScenarioKey || selectedBaselineScenarioKey,
+        runId: null,
+        workspaceId: null,
+        runtimeSource: 'api',
+      };
+
+      setActiveTopicId(confirmedTopic.id);
+      ensureTopicActionStateBucket(confirmedTopic.id);
+      setLocalTopics((currentTopics) => sortTopicSnapshots([
+        nextTopicSnapshot,
+        ...currentTopics.filter((topic) => topic.id !== confirmedTopic.id),
+      ]));
+      setApiRuntimeState(buildApiRuntimeState(API_RUNTIME_STATUSES.CREATING_RUN));
+      setCurrentScreen(SCREEN_IDS.BASELINE_BUILDING);
+
+      try {
+        await Promise.resolve();
+        setApiRuntimeState(buildApiRuntimeState(API_RUNTIME_STATUSES.LOADING_WORKSPACE));
+
+        const apiResult = await runApiInitialReviewFromDraft({
+          apiRuntimeAdapter: getApiRuntimeAdapter(),
+          draft,
+          options: {
+            mode: 'mocked',
+          },
+        });
+        const readySnapshot = {
+          ...updateLocalTopicStatus(nextTopicSnapshot, TOPIC_STATUSES.READY),
+          ...apiResult.topic_patch,
+          runtimeSource: 'api',
+        };
+
+        setLocalTopics((currentTopics) => sortTopicSnapshots([
+          readySnapshot,
+          ...currentTopics.filter((topic) => topic.id !== confirmedTopic.id),
+        ]));
+        setApiRuntimeState(buildApiRuntimeState(API_RUNTIME_STATUSES.WORKSPACE_READY, {
+          run: apiResult.run,
+          workspacePayload: apiResult.workspace_payload,
+        }));
+        setCurrentScreen(SCREEN_IDS.TOPIC_WORKSPACE);
+      } catch (error) {
+        setApiRuntimeState(buildApiRuntimeState(API_RUNTIME_STATUSES.FAILED, {
+          errorCode: normalizeApiRuntimeErrorCode(error),
+        }));
+      }
+
+      return;
+    }
+
     const run = runtimeAdapter.runs.startInitialReview(confirmedTopic.id, {
       status: TOPIC_STATUSES.BUILDING,
       stageLabel: 'Preparing your Initial Topic Map',
@@ -366,10 +516,12 @@ export default function App() {
   };
 
   const goHome = () => {
+    setApiRuntimeState(buildApiRuntimeState(API_RUNTIME_STATUSES.IDLE));
     setCurrentScreen(SCREEN_IDS.HOME);
   };
 
   const startNewTopic = () => {
+    setApiRuntimeState(buildApiRuntimeState(API_RUNTIME_STATUSES.IDLE));
     setCurrentInput('');
     setCurrentTopicDraft(null);
     setActiveTopicId(null);
@@ -377,6 +529,49 @@ export default function App() {
   };
 
   const renderCurrentScreen = () => {
+    if (
+      runtimeModeIsApi
+      && (
+        apiRuntimeState.status === API_RUNTIME_STATUSES.CREATING_RUN
+        || apiRuntimeState.status === API_RUNTIME_STATUSES.LOADING_WORKSPACE
+      )
+    ) {
+      return (
+        <PrototypeFallbackState
+          eyebrow="API Backend"
+          title="Running Initial Review"
+          copy={resolveApiStatusCopy(apiRuntimeState.status)}
+          detail="The browser is using the backend API path. No local sample workspace will be used as a fallback in this mode."
+          variant="warning"
+          actions={[
+            { label: 'Back to Home', onClick: goHome, variant: 'secondary' },
+          ]}
+        />
+      );
+    }
+
+    if (runtimeModeIsApi && apiRuntimeState.status === API_RUNTIME_STATUSES.FAILED) {
+      const failure = resolveApiFailureCopy(apiRuntimeState.errorCode);
+
+      return (
+        <PrototypeFallbackState
+          eyebrow="API Backend error"
+          title="Initial Review could not be completed"
+          copy={failure.copy}
+          detail={`Safe error code: ${failure.errorCode}. Local sample data was not used as a fallback.`}
+          variant="error"
+          actions={[
+            { label: 'Back to Home', onClick: goHome, variant: 'secondary' },
+            {
+              label: 'Use Local Sample',
+              onClick: () => handleRuntimeModeChange(RUNTIME_MODES.LOCAL),
+              variant: 'primary',
+            },
+          ]}
+        />
+      );
+    }
+
     switch (currentScreen) {
       case SCREEN_IDS.TOPIC_DRAFT_GENERATION:
         return (
@@ -394,6 +589,7 @@ export default function App() {
             onConfirm={handleConfirmTopic}
             onBackHome={goHome}
             onOpenTopicList={openTopicList}
+            runtimeMode={runtimeMode}
           />
         );
       case SCREEN_IDS.BASELINE_BUILDING:
@@ -423,7 +619,9 @@ export default function App() {
             );
           }
 
-          if (!isKnownFixtureKey(activeTopicFixtureKey)) {
+          const activeTopicUsesApi = isApiTopicSnapshot(activeTopic);
+
+          if (!activeTopicUsesApi && !isKnownFixtureKey(activeTopicFixtureKey)) {
             return (
               <PrototypeFallbackState
                 eyebrow="Sample workspace unavailable"
@@ -439,26 +637,38 @@ export default function App() {
             );
           }
 
-          let activeWorkspaceProductMainline = activeProductMainline;
+          let activeWorkspaceProductMainline = activeTopicUsesApi
+            ? activeTopic.apiProductMainline
+            : activeProductMainline;
 
           try {
-          const activeRuntimeWorkspaceData = activeTopicId
-            ? runtimeAdapter.workspace.getTopicWorkspace(activeTopicId, {
-              productMainline: activeProductMainline,
-            })
-            : null;
-          activeWorkspaceProductMainline = activeRuntimeWorkspaceData
-            ? buildProductMainlineCompatibilityPayload(activeRuntimeWorkspaceData, {
-              productMainline: activeProductMainline,
-            })
-            : activeProductMainline;
+            if (activeTopicUsesApi) {
+              if (!activeWorkspaceProductMainline) {
+                throw new Error('api_workspace_payload_missing');
+              }
+            } else {
+              const activeRuntimeWorkspaceData = activeTopicId
+                ? runtimeAdapter.workspace.getTopicWorkspace(activeTopicId, {
+                  productMainline: activeProductMainline,
+                })
+                : null;
+              activeWorkspaceProductMainline = activeRuntimeWorkspaceData
+                ? buildProductMainlineCompatibilityPayload(activeRuntimeWorkspaceData, {
+                  productMainline: activeProductMainline,
+                })
+                : activeProductMainline;
+            }
           } catch (error) {
             return (
               <PrototypeFallbackState
-                eyebrow="Prototype data unavailable"
+                eyebrow={activeTopicUsesApi ? 'API workspace unavailable' : 'Prototype data unavailable'}
                 title="This review snapshot could not be rendered safely"
-                copy="The local prototype ran into a sample data problem before the workspace could be shown. This is a prototype data issue, not a market signal conclusion."
-                detail="Return Home or open Recent Topics instead of treating this as sparse demand, empty demand, or a completed review state."
+                copy={activeTopicUsesApi
+                  ? 'The backend returned without a workspace payload the product shell can render safely.'
+                  : 'The local prototype ran into a sample data problem before the workspace could be shown. This is a prototype data issue, not a market signal conclusion.'}
+                detail={activeTopicUsesApi
+                  ? 'Return Home or try Local Sample mode. The app did not fall back to fixture data for this API run.'
+                  : 'Return Home or open Recent Topics instead of treating this as sparse demand, empty demand, or a completed review state.'}
                 variant="error"
                 actions={[
                   { label: 'Back to Home', onClick: goHome, variant: 'secondary' },
@@ -600,6 +810,7 @@ export default function App() {
             onOpenTopicList={openTopicList}
             topicsCount={localTopics.length}
             selectedFixtureKey={homeFixtureNoteLabel}
+            runtimeMode={runtimeMode}
           />
         );
     }
@@ -607,13 +818,20 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <DebugFixtureSelector
-        selectedFixtureKey={selectedFixtureKey}
-        onSelectFixture={setSelectedFixtureKey}
-        selectedBaselineScenarioKey={selectedBaselineScenarioKey}
-        onSelectBaselineScenario={setSelectedBaselineScenarioKey}
-        fixtureNotice={fixtureSelectorNotice}
+      <RuntimeModeSelector
+        mode={runtimeMode}
+        onChange={handleRuntimeModeChange}
+        apiBaseUrl={apiBaseUrl}
       />
+      {runtimeModeIsLocal ? (
+        <DebugFixtureSelector
+          selectedFixtureKey={selectedFixtureKey}
+          onSelectFixture={setSelectedFixtureKey}
+          selectedBaselineScenarioKey={selectedBaselineScenarioKey}
+          onSelectBaselineScenario={setSelectedBaselineScenarioKey}
+          fixtureNotice={fixtureSelectorNotice}
+        />
+      ) : null}
       {renderCurrentScreen()}
     </div>
   );
