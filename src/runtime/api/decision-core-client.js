@@ -1,5 +1,52 @@
+const DEFAULT_DECISION_CORE_API_BASE_URL = 'http://127.0.0.1:8787';
+
 function normalizeBaseUrl(baseUrl) {
   return String(baseUrl || '').replace(/\/+$/, '');
+}
+
+function readProcessEnv(name) {
+  if (typeof process === 'undefined' || !process.env) {
+    return '';
+  }
+
+  return process.env[name] || '';
+}
+
+function readGlobalConfig(name) {
+  if (typeof globalThis === 'undefined') {
+    return '';
+  }
+
+  return globalThis[name] || '';
+}
+
+function readBundledApiBaseUrl() {
+  try {
+    if (typeof __FOREFIELD_API_BASE_URL__ !== 'undefined') {
+      return __FOREFIELD_API_BASE_URL__;
+    }
+  } catch (_error) {
+    return '';
+  }
+
+  return '';
+}
+
+function resolveDecisionCoreApiBaseUrl(options = {}) {
+  const candidates = [
+    options.baseUrl,
+    readBundledApiBaseUrl(),
+    readGlobalConfig('__FOREFIELD_API_BASE_URL__'),
+    readGlobalConfig('FOREFIELD_API_BASE_URL'),
+    readProcessEnv('VITE_FOREFIELD_API_BASE_URL'),
+    readProcessEnv('FOREFIELD_API_BASE_URL'),
+    DEFAULT_DECISION_CORE_API_BASE_URL,
+  ];
+  const selected = candidates
+    .map((entry) => String(entry || '').trim())
+    .find(Boolean);
+
+  return normalizeBaseUrl(selected);
 }
 
 function ensureFetchImplementation(fetchImpl) {
@@ -35,7 +82,7 @@ async function parseJsonResponse(response, label) {
 }
 
 function createDecisionCoreClient(options = {}) {
-  const baseUrl = normalizeBaseUrl(options.baseUrl || '');
+  const baseUrl = resolveDecisionCoreApiBaseUrl(options);
   const requestImpl = ensureFetchImplementation(options.fetchImpl);
 
   async function getJson(pathName, label) {
@@ -90,5 +137,7 @@ function createDecisionCoreClient(options = {}) {
 }
 
 module.exports = {
+  DEFAULT_DECISION_CORE_API_BASE_URL,
   createDecisionCoreClient,
+  resolveDecisionCoreApiBaseUrl,
 };

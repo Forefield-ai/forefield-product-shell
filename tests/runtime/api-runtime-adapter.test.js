@@ -7,7 +7,9 @@ const groupedProductMainline = require('../../fixtures/product/grouped-evidence-
 const minimalProductMainline = require('../../fixtures/product/product-mainline.sample.json');
 const runtimeWorkspacePayload = require('../../fixtures/external/decision-core/initial-review-runtime-workspace-payload.partial.sample.json');
 const {
+  DEFAULT_DECISION_CORE_API_BASE_URL,
   createDecisionCoreClient,
+  resolveDecisionCoreApiBaseUrl,
 } = require('../../src/runtime/api/decision-core-client');
 const {
   createApiRuntimeAdapter,
@@ -94,6 +96,67 @@ test('DecisionCore API client loads mocked workspace payload through injected fe
   assert.equal(payload.workspace_id, WORKSPACE_ID);
   assert.equal(calls[0].url, `https://example.test/api/workspaces/${encodeURIComponent(WORKSPACE_ID)}`);
   assert.equal(calls[0].options.method, 'GET');
+});
+
+test('DecisionCore API client resolves deployed backend URL from explicit and environment config', async () => {
+  const previousViteBaseUrl = process.env.VITE_FOREFIELD_API_BASE_URL;
+  const previousBaseUrl = process.env.FOREFIELD_API_BASE_URL;
+  const previousGlobalBaseUrl = globalThis.__FOREFIELD_API_BASE_URL__;
+  const calls = [];
+
+  try {
+    delete process.env.FOREFIELD_API_BASE_URL;
+    delete process.env.VITE_FOREFIELD_API_BASE_URL;
+    delete globalThis.__FOREFIELD_API_BASE_URL__;
+
+    assert.equal(resolveDecisionCoreApiBaseUrl(), DEFAULT_DECISION_CORE_API_BASE_URL);
+
+    globalThis.__FOREFIELD_API_BASE_URL__ = 'https://global-config.example.test/';
+    assert.equal(resolveDecisionCoreApiBaseUrl(), 'https://global-config.example.test');
+    delete globalThis.__FOREFIELD_API_BASE_URL__;
+
+    process.env.VITE_FOREFIELD_API_BASE_URL = 'https://configured.example.test/';
+    assert.equal(resolveDecisionCoreApiBaseUrl(), 'https://configured.example.test');
+    assert.equal(
+      resolveDecisionCoreApiBaseUrl({ baseUrl: 'https://explicit.example.test/' }),
+      'https://explicit.example.test'
+    );
+
+    const client = createDecisionCoreClient({
+      fetchImpl: async (url, options) => {
+        calls.push({ url, options });
+        return {
+          ok: true,
+          json: async () => remotePayload(),
+        };
+      },
+    });
+
+    await client.getWorkspacePayload(WORKSPACE_ID);
+
+    assert.equal(
+      calls[0].url,
+      `https://configured.example.test/api/workspaces/${encodeURIComponent(WORKSPACE_ID)}`
+    );
+  } finally {
+    if (previousViteBaseUrl === undefined) {
+      delete process.env.VITE_FOREFIELD_API_BASE_URL;
+    } else {
+      process.env.VITE_FOREFIELD_API_BASE_URL = previousViteBaseUrl;
+    }
+
+    if (previousBaseUrl === undefined) {
+      delete process.env.FOREFIELD_API_BASE_URL;
+    } else {
+      process.env.FOREFIELD_API_BASE_URL = previousBaseUrl;
+    }
+
+    if (previousGlobalBaseUrl === undefined) {
+      delete globalThis.__FOREFIELD_API_BASE_URL__;
+    } else {
+      globalThis.__FOREFIELD_API_BASE_URL__ = previousGlobalBaseUrl;
+    }
+  }
 });
 
 test('DecisionCore API client creates run, gets status, and handles safe errors', async () => {
