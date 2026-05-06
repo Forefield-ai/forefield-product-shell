@@ -105,6 +105,7 @@ function normalizeRemoteWorkspacePayload(payload = {}) {
     workspace_id: payload.workspace_id,
     initial_review_run_id: payload.initial_review_run_id,
     built_at: payload.built_at,
+    source_coverage_summary: payload.source_coverage_summary,
     product_mainline_payload: payload.product_mainline_payload,
     caveats: Array.isArray(payload.caveats) ? payload.caveats : [],
   });

@@ -243,6 +243,38 @@ function buildSourceCoverageStrip(signalClusters, curatedEvidenceRecords, source
       ? sourceCoverageSummary.coverage_boundary
       : '';
     baseCoverage.source_families = normalizeLimitations(sourceCoverageSummary.source_families);
+    baseCoverage.coverage_mode = typeof sourceCoverageSummary.coverage_mode === 'string'
+      ? sourceCoverageSummary.coverage_mode
+      : '';
+    baseCoverage.source_count = Number(sourceCoverageSummary.source_count || 0);
+    baseCoverage.attempted_count = Number(sourceCoverageSummary.attempted_count || 0);
+    baseCoverage.succeeded_count = Number(sourceCoverageSummary.succeeded_count || 0);
+    baseCoverage.failed_count = Number(sourceCoverageSummary.failed_count || 0);
+    baseCoverage.skipped_count = Number(sourceCoverageSummary.skipped_count || 0);
+    baseCoverage.captured_count = Number(sourceCoverageSummary.captured_count || 0);
+    baseCoverage.candidate_count = Number(sourceCoverageSummary.candidate_count || 0);
+    baseCoverage.partial_source_failure = sourceCoverageSummary.partial_source_failure === true;
+    baseCoverage.direct_evidence_count_at_fetch_stage = Number(
+      sourceCoverageSummary.direct_evidence_count_at_fetch_stage || 0
+    );
+    baseCoverage.source_role_violation_count = Number(sourceCoverageSummary.source_role_violation_count || 0);
+    baseCoverage.direct_evidence_violation_count = Number(sourceCoverageSummary.direct_evidence_violation_count || 0);
+    baseCoverage.raw_private_field_violation_count = Number(sourceCoverageSummary.raw_private_field_violation_count || 0);
+    baseCoverage.limitations = normalizeLimitations(sourceCoverageSummary.limitations);
+    baseCoverage.per_source = Array.isArray(sourceCoverageSummary.per_source)
+      ? sourceCoverageSummary.per_source.map((entry) => ({
+        source_name: typeof entry?.source_name === 'string' ? entry.source_name.trim() : '',
+        provider_kind: typeof entry?.provider_kind === 'string' ? entry.provider_kind.trim() : '',
+        attempted: entry?.attempted === true,
+        succeeded: entry?.succeeded === true,
+        failed: entry?.failed === true,
+        skipped: entry?.skipped === true,
+        failure_code: typeof entry?.failure_code === 'string' ? entry.failure_code.trim() : null,
+        captured_count: Number(entry?.captured_count || 0),
+        candidate_count: Number(entry?.candidate_count || 0),
+        preview_warning_count: Number(entry?.preview_warning_count || 0),
+      }))
+      : [];
   }
 
   return {

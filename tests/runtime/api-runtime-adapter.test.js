@@ -5,6 +5,7 @@ const path = require('node:path');
 
 const groupedProductMainline = require('../../fixtures/product/grouped-evidence-product-mainline.sample.json');
 const minimalProductMainline = require('../../fixtures/product/product-mainline.sample.json');
+const runtimeWorkspacePayload = require('../../fixtures/external/decision-core/initial-review-runtime-workspace-payload.partial.sample.json');
 const {
   createDecisionCoreClient,
 } = require('../../src/runtime/api/decision-core-client');
@@ -69,10 +70,10 @@ function assertNoForbiddenSerializedFields(value) {
     'api_key',
     'chain_of_thought',
     'source_candidate_outputs',
-    'review_handoff_v0_3',
   ].forEach((term) => {
     assert.equal(serialized.includes(term), false, `${term} should not appear`);
   });
+  assert.equal(serialized.includes('"review_handoff_v0_3"'), false, 'review_handoff_v0_3 field should not appear');
 }
 
 test('DecisionCore API client loads mocked workspace payload through injected fetch', async () => {
@@ -122,6 +123,51 @@ test('API runtime adapter normalizes remote payload and builds workspace/drawer/
   assert.match(briefState.copyableMarkdown, /## Evidence Highlights/);
   assert.match(briefState.copyableMarkdown, /Discovery leads are not evidence yet/);
   assertNoForbiddenSerializedFields(productMainline);
+  assertNoForbiddenSerializedFields(workspaceState);
+  assertNoForbiddenSerializedFields(drawerState);
+  assertNoForbiddenSerializedFields(briefState);
+});
+
+test('API runtime adapter accepts runtime workspace payload with partial source coverage', async () => {
+  const adapter = createApiRuntimeAdapter({
+    decisionCoreClient: {
+      getWorkspacePayload: async () => runtimeWorkspacePayload,
+      getRun: async () => ({ id: runtimeWorkspacePayload.initial_review_run_id, status: 'workspace_ready' }),
+    },
+  });
+  const normalizedPayload = await adapter.workspace.getWorkspacePayload(runtimeWorkspacePayload.workspace_id);
+  const productMainline = await adapter.workspace.getProductMainline(runtimeWorkspacePayload.workspace_id);
+  const workspaceState = buildTopicWorkspaceViewState(productMainline);
+  const selectedClusterId = workspaceState.signal_cluster_sections[0].cluster_id;
+  const drawerState = buildTopicWorkspaceViewState(productMainline, {
+    selectedClusterId,
+  }).selected_evidence_drawer;
+  const briefState = buildBaselineBriefViewState({
+    workspaceViewState: workspaceState,
+    evidenceDrawersByClusterId: buildEvidenceDrawersByClusterId(productMainline),
+    briefState: buildBaselineBriefState({ productMainline }),
+  });
+
+  assert.equal(validateRemoteWorkspacePayload(runtimeWorkspacePayload).ok, true);
+  assert.equal(normalizedPayload.source_coverage_summary.partial_source_failure, true);
+  assert.equal(workspaceState.source_coverage_strip.partial_source_failure, true);
+  assert.equal(workspaceState.source_coverage_strip.failed_count, 3);
+  assert.equal(workspaceState.source_coverage_strip.succeeded_count, 3);
+  assert.equal(workspaceState.source_coverage_strip.per_source.length, 6);
+  assert.equal(
+    workspaceState.source_coverage_strip.per_source.find((entry) => entry.source_name === 'google_forum').failure_code,
+    'serpapi_http_429'
+  );
+  assert.equal(workspaceState.source_coverage_strip.raw_private_field_violation_count, 0);
+  assert.equal(drawerState.grouped_evidence_summary.direct_evidence_count, 1);
+  assert.equal(
+    drawerState.grouped_evidence_sections.find((section) => section.section_id === 'counter_evidence').count,
+    1
+  );
+  assert.match(briefState.copyableMarkdown, /## Review Summary/);
+  assert.match(briefState.copyableMarkdown, /Counter Evidence/);
+  assertNoForbiddenSerializedFields(runtimeWorkspacePayload);
+  assertNoForbiddenSerializedFields(normalizedPayload);
   assertNoForbiddenSerializedFields(workspaceState);
   assertNoForbiddenSerializedFields(drawerState);
   assertNoForbiddenSerializedFields(briefState);

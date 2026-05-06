@@ -1,0 +1,382 @@
+{
+  "workspace_payload_version": "forefield_workspace_payload_v1",
+  "payload_kind": "product_workspace_payload",
+  "payload_source": "review_handoff_v0_3_runtime_minimal",
+  "workspace_id": "workspace:p18c:runtime-partial",
+  "initial_review_run_id": "initial-review-run:p18c:runtime-partial",
+  "built_at": "2026-05-06T18:00:00.000Z",
+  "source_coverage_summary": {
+    "public_source_ref_count": 0,
+    "source_family_count": 6,
+    "coverage_boundary": "minimal runtime workspace payload without public source links",
+    "source_families": [
+      "youtube_comment",
+      "x_post",
+      "reddit",
+      "google_forum_snippet",
+      "google_trends",
+      "linkedin_post"
+    ],
+    "coverage_mode": "live_source_orchestration",
+    "source_count": 6,
+    "attempted_count": 6,
+    "succeeded_count": 3,
+    "failed_count": 3,
+    "skipped_count": 0,
+    "captured_count": 25,
+    "candidate_count": 25,
+    "direct_evidence_count_at_fetch_stage": 0,
+    "source_role_violation_count": 0,
+    "direct_evidence_violation_count": 0,
+    "raw_private_field_violation_count": 0,
+    "partial_source_failure": true,
+    "limitations": [
+      "Some sources were unavailable during this run.",
+      "A source provider rate limit is represented as a coverage limitation."
+    ],
+    "per_source": [
+      {
+        "source_name": "youtube",
+        "provider_kind": "youtube_official_api",
+        "attempted": true,
+        "succeeded": true,
+        "failed": false,
+        "skipped": false,
+        "failure_code": null,
+        "captured_count": 9,
+        "candidate_count": 9,
+        "preview_warning_count": 1,
+        "direct_evidence_count": 0,
+        "source_role_violation_count": 0,
+        "direct_evidence_violation_count": 0,
+        "raw_private_field_violation_count": 0
+      },
+      {
+        "source_name": "x",
+        "provider_kind": "twitterapi",
+        "attempted": true,
+        "succeeded": true,
+        "failed": false,
+        "skipped": false,
+        "failure_code": null,
+        "captured_count": 8,
+        "candidate_count": 8,
+        "preview_warning_count": 1,
+        "direct_evidence_count": 0,
+        "source_role_violation_count": 0,
+        "direct_evidence_violation_count": 0,
+        "raw_private_field_violation_count": 0
+      },
+      {
+        "source_name": "reddit",
+        "provider_kind": "reddit_public_web",
+        "attempted": true,
+        "succeeded": true,
+        "failed": false,
+        "skipped": false,
+        "failure_code": null,
+        "captured_count": 8,
+        "candidate_count": 8,
+        "preview_warning_count": 1,
+        "direct_evidence_count": 0,
+        "source_role_violation_count": 0,
+        "direct_evidence_violation_count": 0,
+        "raw_private_field_violation_count": 0
+      },
+      {
+        "source_name": "google_forum",
+        "provider_kind": "serpapi",
+        "attempted": true,
+        "succeeded": false,
+        "failed": true,
+        "skipped": false,
+        "failure_code": "serpapi_http_429",
+        "captured_count": 0,
+        "candidate_count": 0,
+        "preview_warning_count": 0,
+        "direct_evidence_count": 0,
+        "source_role_violation_count": 0,
+        "direct_evidence_violation_count": 0,
+        "raw_private_field_violation_count": 0
+      },
+      {
+        "source_name": "google_trends",
+        "provider_kind": "serpapi",
+        "attempted": true,
+        "succeeded": false,
+        "failed": true,
+        "skipped": false,
+        "failure_code": "serpapi_http_429",
+        "captured_count": 0,
+        "candidate_count": 0,
+        "preview_warning_count": 0,
+        "direct_evidence_count": 0,
+        "source_role_violation_count": 0,
+        "direct_evidence_violation_count": 0,
+        "raw_private_field_violation_count": 0
+      },
+      {
+        "source_name": "linkedin",
+        "provider_kind": "serpapi",
+        "attempted": true,
+        "succeeded": false,
+        "failed": true,
+        "skipped": false,
+        "failure_code": "serpapi_http_429",
+        "captured_count": 0,
+        "candidate_count": 0,
+        "preview_warning_count": 0,
+        "direct_evidence_count": 0,
+        "source_role_violation_count": 0,
+        "direct_evidence_violation_count": 0,
+        "raw_private_field_violation_count": 0
+      }
+    ]
+  },
+  "product_mainline_payload": {
+    "monitoring_run": {
+      "id": "monitoring-run:p18c:runtime-partial",
+      "handoff_version": "0.3.0-decision-core-review-handoff",
+      "source_bundle_id": "initial-review-run:p18c:runtime-partial",
+      "source_bundle_status": "workspace_ready",
+      "review_run_status": "workspace_ready",
+      "ingest_status": "runtime_minimal",
+      "imported_at": "2026-05-06T18:00:00.000Z"
+    },
+    "topic_draft": {
+      "id": "topic-draft:p18c:runtime-partial",
+      "monitoring_run_id": "monitoring-run:p18c:runtime-partial",
+      "lifecycle_state": "runtime_ready",
+      "title": "AI meeting notes for product teams",
+      "summary": "Preliminary runtime review for AI meeting notes cleanup and action item ownership.",
+      "target_audience": "product teams",
+      "problem_space": "meeting follow-up and action item cleanup",
+      "monitoring_intent": "Find recurring user language around cleanup, ownership, and follow-up quality.",
+      "limitations_summary": "Minimal runtime assembly, not final production denoising.",
+      "provenance": {
+        "source_kind": "runtime_review_handoff_v0_3_minimal",
+        "handoff_version": "0.3.0-decision-core-review-handoff",
+        "run_id": "initial-review-run:p18c:runtime-partial"
+      }
+    },
+    "review_state": {
+      "state": "ready",
+      "reasons": [
+        "minimal_runtime_grouping_contains_direct_support"
+      ]
+    },
+    "source_coverage_summary": {
+      "public_source_ref_count": 0,
+      "source_family_count": 6,
+      "coverage_boundary": "minimal runtime workspace payload without public source links",
+      "source_families": [
+        "youtube_comment",
+        "x_post",
+        "reddit",
+        "google_forum_snippet",
+        "google_trends",
+        "linkedin_post"
+      ],
+      "coverage_mode": "live_source_orchestration",
+      "source_count": 6,
+      "attempted_count": 6,
+      "succeeded_count": 3,
+      "failed_count": 3,
+      "skipped_count": 0,
+      "captured_count": 25,
+      "candidate_count": 25,
+      "direct_evidence_count_at_fetch_stage": 0,
+      "source_role_violation_count": 0,
+      "direct_evidence_violation_count": 0,
+      "raw_private_field_violation_count": 0,
+      "partial_source_failure": true,
+      "limitations": [
+        "Some sources were unavailable during this run.",
+        "A source provider rate limit is represented as a coverage limitation."
+      ],
+      "per_source": [
+        {
+          "source_name": "youtube",
+          "provider_kind": "youtube_official_api",
+          "attempted": true,
+          "succeeded": true,
+          "failed": false,
+          "skipped": false,
+          "failure_code": null,
+          "captured_count": 9,
+          "candidate_count": 9,
+          "preview_warning_count": 1
+        },
+        {
+          "source_name": "x",
+          "provider_kind": "twitterapi",
+          "attempted": true,
+          "succeeded": true,
+          "failed": false,
+          "skipped": false,
+          "failure_code": null,
+          "captured_count": 8,
+          "candidate_count": 8,
+          "preview_warning_count": 1
+        },
+        {
+          "source_name": "reddit",
+          "provider_kind": "reddit_public_web",
+          "attempted": true,
+          "succeeded": true,
+          "failed": false,
+          "skipped": false,
+          "failure_code": null,
+          "captured_count": 8,
+          "candidate_count": 8,
+          "preview_warning_count": 1
+        },
+        {
+          "source_name": "google_forum",
+          "provider_kind": "serpapi",
+          "attempted": true,
+          "succeeded": false,
+          "failed": true,
+          "skipped": false,
+          "failure_code": "serpapi_http_429",
+          "captured_count": 0,
+          "candidate_count": 0,
+          "preview_warning_count": 0
+        },
+        {
+          "source_name": "google_trends",
+          "provider_kind": "serpapi",
+          "attempted": true,
+          "succeeded": false,
+          "failed": true,
+          "skipped": false,
+          "failure_code": "serpapi_http_429",
+          "captured_count": 0,
+          "candidate_count": 0,
+          "preview_warning_count": 0
+        },
+        {
+          "source_name": "linkedin",
+          "provider_kind": "serpapi",
+          "attempted": true,
+          "succeeded": false,
+          "failed": true,
+          "skipped": false,
+          "failure_code": "serpapi_http_429",
+          "captured_count": 0,
+          "candidate_count": 0,
+          "preview_warning_count": 0
+        }
+      ]
+    },
+    "signal_clusters": [
+      {
+        "id": "signal-cluster:p18c:runtime-partial:1",
+        "monitoring_run_id": "monitoring-run:p18c:runtime-partial",
+        "parent_topic_ref": {
+          "topic_draft_id": "topic-draft:p18c:runtime-partial"
+        },
+        "source_review_entry_ref": {
+          "review_entry_id": "review-entry:p18c:runtime-partial:1"
+        },
+        "headline": "Initial signals from retained source candidates",
+        "summary": "Minimal runtime grouping collects retained source candidates into reviewable grouped evidence sections.",
+        "confidence_display": {
+          "label": "directional",
+          "summary": "Minimal runtime assembly; not production clustering or evidence scoring."
+        },
+        "limitations": [
+          "This is a preliminary review.",
+          "Direct support is counted only after grouped evidence validation."
+        ],
+        "grouped_evidence_caveats": [
+          "This is a preliminary review.",
+          "Discovery leads are follow-up leads, not evidence yet.",
+          "Trend context does not prove user demand by itself.",
+          "Direct evidence count only includes Direct Support."
+        ],
+        "grouped_evidence": {
+          "direct_support": [
+            {
+              "item_id": "grouped-evidence-item:p18c:direct:1",
+              "label": "Direct support 1",
+              "summary": "Product-team users describe extra cleanup before AI meeting notes are ready to share.",
+              "source_family": "reddit",
+              "source_role": "primary_discussion",
+              "support_role": "direct_support",
+              "confidence_label": "directional",
+              "counts_toward_direct_evidence": true,
+              "caveats": [
+                "This is a preliminary review."
+              ]
+            }
+          ],
+          "weak_support": [
+            {
+              "item_id": "grouped-evidence-item:p18c:weak:1",
+              "label": "Weak support 1",
+              "summary": "Reaction-level signals mention manual follow-up cleanup after transcription.",
+              "source_family": "youtube_comment",
+              "source_role": "reaction_signal",
+              "support_role": "weak_support",
+              "confidence_label": "weak",
+              "counts_toward_direct_evidence": false,
+              "caveats": [
+                "Reaction context only."
+              ]
+            },
+            {
+              "item_id": "grouped-evidence-item:p18c:weak:2",
+              "label": "Weak support 2",
+              "summary": "Short-form reactions suggest summary quality remains uneven.",
+              "source_family": "x_post",
+              "source_role": "reaction_signal",
+              "support_role": "weak_support",
+              "confidence_label": "weak",
+              "counts_toward_direct_evidence": false,
+              "caveats": [
+                "Reaction context only."
+              ]
+            }
+          ],
+          "trend_context": [],
+          "competitive_context": [],
+          "professional_context": [],
+          "counter_evidence": [
+            {
+              "item_id": "grouped-evidence-item:p18c:counter:1",
+              "label": "Counter evidence 1",
+              "summary": "Some discussion says current meeting summaries are good enough for internal use.",
+              "source_family": "reddit",
+              "source_role": "supporting_discussion",
+              "support_role": "counter_evidence",
+              "confidence_label": "directional",
+              "counts_toward_direct_evidence": false,
+              "caveats": [
+                "Preserved separately from direct support."
+              ]
+            }
+          ],
+          "discovery_leads": []
+        },
+        "curated_evidence_ids": [],
+        "status": "active"
+      }
+    ],
+    "curated_evidence_records": []
+  },
+  "review_handoff_summary": {
+    "handoff_version": "0.3.0-decision-core-review-handoff",
+    "review_entry_count": 1,
+    "direct_evidence_count": 1
+  },
+  "safety_summary": {
+    "direct_evidence_count": 1,
+    "raw_private_provider_violation_count": 0,
+    "decision_core_internal_fields_exposed": false
+  },
+  "caveats": [
+    "Product-shell consumes product_mainline_payload, not raw decision-core internals.",
+    "Runtime v0.3 remains additive."
+  ]
+}
