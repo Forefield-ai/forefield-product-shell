@@ -86,3 +86,52 @@ test('browser DecisionCore client rejects localhost backend in deployed mode', a
     /invalid_backend_url/
   );
 });
+
+test('browser DecisionCore client uses bundled deployed API base URL config', async () => {
+  const {
+    createDecisionCoreClient,
+    resolveDecisionCoreApiBaseUrl,
+    resolveProductShellDeploymentMode,
+  } = await import('../../src/runtime/api/decision-core-client.browser.mjs');
+  const previousBaseUrl = globalThis.__FOREFIELD_API_BASE_URL__;
+  const previousDeploymentMode = globalThis.__FOREFIELD_DEPLOYMENT_MODE__;
+  const calls = [];
+
+  try {
+    globalThis.__FOREFIELD_API_BASE_URL__ = 'https://api.forefield.example';
+    globalThis.__FOREFIELD_DEPLOYMENT_MODE__ = 'deployed';
+
+    assert.equal(resolveProductShellDeploymentMode(), 'deployed');
+    assert.equal(resolveDecisionCoreApiBaseUrl(), 'https://api.forefield.example');
+
+    const client = createDecisionCoreClient({
+      fetchImpl: async (url, options) => {
+        calls.push({ url, options });
+        return {
+          ok: true,
+          json: async () => ({
+            ok: true,
+            status: 'ready',
+          }),
+        };
+      },
+    });
+
+    const health = await client.checkBackendAvailability();
+
+    assert.equal(health.status, 'ready');
+    assert.equal(calls[0].url, 'https://api.forefield.example/api/health');
+  } finally {
+    if (previousBaseUrl === undefined) {
+      delete globalThis.__FOREFIELD_API_BASE_URL__;
+    } else {
+      globalThis.__FOREFIELD_API_BASE_URL__ = previousBaseUrl;
+    }
+
+    if (previousDeploymentMode === undefined) {
+      delete globalThis.__FOREFIELD_DEPLOYMENT_MODE__;
+    } else {
+      globalThis.__FOREFIELD_DEPLOYMENT_MODE__ = previousDeploymentMode;
+    }
+  }
+});
