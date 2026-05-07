@@ -4,7 +4,27 @@ function normalizeBaseUrl(baseUrl) {
   return String(baseUrl || '').replace(/\/+$/, '');
 }
 
-function validateDecisionCoreApiBaseUrl(baseUrl) {
+function normalizeDeploymentMode(value) {
+  const normalized = String(value || 'local')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_');
+
+  return normalized === 'deployed' || normalized === 'production'
+    ? 'deployed'
+    : 'local';
+}
+
+function isLocalhostApiBaseUrl(baseUrl) {
+  try {
+    const parsed = new URL(normalizeBaseUrl(baseUrl));
+    return ['localhost', '127.0.0.1', '::1'].includes(parsed.hostname);
+  } catch (_error) {
+    return false;
+  }
+}
+
+function validateDecisionCoreApiBaseUrl(baseUrl, options = {}) {
   const normalized = normalizeBaseUrl(baseUrl);
 
   try {
@@ -14,6 +34,10 @@ function validateDecisionCoreApiBaseUrl(baseUrl) {
     }
   } catch (_error) {
     throw new Error('invalid_backend_url');
+  }
+
+  if (normalizeDeploymentMode(options.deploymentMode) === 'deployed' && isLocalhostApiBaseUrl(normalized)) {
+    throw new Error('invalid_backend_url: deployed_backend_url_required');
   }
 
   return normalized;
@@ -45,6 +69,29 @@ function readBundledApiBaseUrl() {
   }
 
   return '';
+}
+
+function readBundledDeploymentMode() {
+  try {
+    if (typeof __FOREFIELD_DEPLOYMENT_MODE__ !== 'undefined') {
+      return __FOREFIELD_DEPLOYMENT_MODE__;
+    }
+  } catch (_error) {
+    return '';
+  }
+
+  return '';
+}
+
+function resolveProductShellDeploymentMode(options = {}) {
+  return normalizeDeploymentMode(
+    options.deploymentMode
+    || readBundledDeploymentMode()
+    || readGlobalConfig('__FOREFIELD_DEPLOYMENT_MODE__')
+    || readGlobalConfig('FOREFIELD_DEPLOYMENT_MODE')
+    || readProcessEnv('VITE_FOREFIELD_DEPLOYMENT_MODE')
+    || readProcessEnv('FOREFIELD_DEPLOYMENT_MODE')
+  );
 }
 
 function resolveDecisionCoreApiBaseUrl(options = {}) {
@@ -97,7 +144,10 @@ async function parseJsonResponse(response, label) {
 }
 
 function createDecisionCoreClient(options = {}) {
-  const baseUrl = validateDecisionCoreApiBaseUrl(resolveDecisionCoreApiBaseUrl(options));
+  const deploymentMode = resolveProductShellDeploymentMode(options);
+  const baseUrl = validateDecisionCoreApiBaseUrl(resolveDecisionCoreApiBaseUrl(options), {
+    deploymentMode,
+  });
   const requestImpl = ensureFetchImplementation(options.fetchImpl);
 
   async function getJson(pathName, label) {
@@ -157,6 +207,8 @@ function createDecisionCoreClient(options = {}) {
 module.exports = {
   DEFAULT_DECISION_CORE_API_BASE_URL,
   createDecisionCoreClient,
+  isLocalhostApiBaseUrl,
   resolveDecisionCoreApiBaseUrl,
+  resolveProductShellDeploymentMode,
   validateDecisionCoreApiBaseUrl,
 };

@@ -76,6 +76,37 @@ test('runtime adapter selector creates API adapter without breaking local fixtur
   assert.equal(localDraft.topic_name.length > 0, true);
 });
 
+test('deployed API mode requires a non-local configured backend URL', () => {
+  assert.throws(
+    () => createRuntimeAdapterFromConfig({
+      mode: 'api',
+      deploymentMode: 'deployed',
+      fetchImpl: async () => ({
+        ok: true,
+        json: async () => ({ ok: true }),
+      }),
+    }),
+    /invalid_backend_url/
+  );
+
+  const apiAdapter = createRuntimeAdapterFromConfig({
+    mode: 'api',
+    deploymentMode: 'deployed',
+    baseUrl: 'https://api.forefield.example',
+    fetchImpl: async () => ({
+      ok: true,
+      json: async () => ({ ok: true, status: 'ready' }),
+    }),
+  });
+  const localAdapter = createRuntimeAdapterFromConfig({
+    mode: 'local',
+    deploymentMode: 'deployed',
+  });
+
+  assert.equal(apiAdapter.mode, RUNTIME_MODES.API);
+  assert.equal(localAdapter.mode, RUNTIME_MODES.LOCAL);
+});
+
 test('local website runtime acceptance smoke reaches workspace drawer and brief through HTTP API mode', async () => {
   const {
     runLocalWebsiteRuntimeAcceptance,

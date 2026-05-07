@@ -73,6 +73,7 @@ function createRuntimeAdapterFromConfig(options = {}) {
     const createDecisionCoreClient = loadDecisionCoreClientFactory();
     const decisionCoreClient = options.decisionCoreClient || createDecisionCoreClient({
       baseUrl: options.baseUrl,
+      deploymentMode: options.deploymentMode,
       fetchImpl: options.fetchImpl,
     });
 

@@ -64,3 +64,25 @@ test('browser API runtime adapter creates run with injected client', async () =>
   assert.equal(calls[0].options.mode, 'mocked');
   assert.equal(result.product_mainline_payload.topic_draft.title, 'AI meeting notes for product teams');
 });
+
+test('browser DecisionCore client rejects localhost backend in deployed mode', async () => {
+  const {
+    createDecisionCoreClient,
+    validateDecisionCoreApiBaseUrl,
+  } = await import('../../src/runtime/api/decision-core-client.browser.mjs');
+
+  assert.throws(
+    () => validateDecisionCoreApiBaseUrl('http://localhost:8787', { deploymentMode: 'deployed' }),
+    /invalid_backend_url/
+  );
+  assert.throws(
+    () => createDecisionCoreClient({
+      deploymentMode: 'deployed',
+      fetchImpl: async () => ({
+        ok: true,
+        json: async () => ({ ok: true }),
+      }),
+    }),
+    /invalid_backend_url/
+  );
+});

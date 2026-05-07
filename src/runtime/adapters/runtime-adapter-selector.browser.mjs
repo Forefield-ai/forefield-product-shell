@@ -60,6 +60,7 @@ function createRuntimeAdapterFromConfig(options = {}) {
   if (mode === RUNTIME_MODES.API) {
     const decisionCoreClient = options.decisionCoreClient || createDecisionCoreClient({
       baseUrl: options.baseUrl,
+      deploymentMode: options.deploymentMode,
       fetchImpl: options.fetchImpl,
     });
 

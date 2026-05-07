@@ -9,7 +9,9 @@ const runtimeWorkspacePayload = require('../../fixtures/external/decision-core/i
 const {
   DEFAULT_DECISION_CORE_API_BASE_URL,
   createDecisionCoreClient,
+  isLocalhostApiBaseUrl,
   resolveDecisionCoreApiBaseUrl,
+  resolveProductShellDeploymentMode,
   validateDecisionCoreApiBaseUrl,
 } = require('../../src/runtime/api/decision-core-client');
 const {
@@ -118,9 +120,21 @@ test('DecisionCore API client validates backend URL and checks backend availabil
   });
 
   assert.equal(validateDecisionCoreApiBaseUrl('https://example.test/'), 'https://example.test');
+  assert.equal(validateDecisionCoreApiBaseUrl('http://127.0.0.1:8787/'), 'http://127.0.0.1:8787');
+  assert.equal(isLocalhostApiBaseUrl('http://127.0.0.1:8787'), true);
+  assert.equal(isLocalhostApiBaseUrl('https://api.example.test'), false);
+  assert.equal(resolveProductShellDeploymentMode({ deploymentMode: 'production' }), 'deployed');
   assert.throws(() => validateDecisionCoreApiBaseUrl('not a url'), /invalid_backend_url/);
+  assert.throws(
+    () => validateDecisionCoreApiBaseUrl('http://127.0.0.1:8787', { deploymentMode: 'deployed' }),
+    /invalid_backend_url/
+  );
   assert.throws(() => createDecisionCoreClient({
     baseUrl: 'file:///tmp/backend',
+    fetchImpl: async () => ({ ok: true, json: async () => ({}) }),
+  }), /invalid_backend_url/);
+  assert.throws(() => createDecisionCoreClient({
+    deploymentMode: 'deployed',
     fetchImpl: async () => ({ ok: true, json: async () => ({}) }),
   }), /invalid_backend_url/);
 
