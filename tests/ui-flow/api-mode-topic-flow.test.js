@@ -250,6 +250,36 @@ test('pollInitialReviewRun returns ready status after polling and rejects stale 
   );
 });
 
+test('API visible flow treats limited and insufficient outcomes as terminal product states', async () => {
+  const limited = await pollInitialReviewRun({
+    run: {
+      run_id: 'initial-review-run:test:limited',
+      workspace_id: 'workspace:test:limited',
+      status: 'workspace_ready_with_limited_support',
+    },
+    getRunStatus: async () => {
+      throw new Error('poll should not run for terminal limited status');
+    },
+    maxAttempts: 1,
+    delayMs: 0,
+  });
+  const insufficient = await pollInitialReviewRun({
+    run: {
+      run_id: 'initial-review-run:test:insufficient',
+      workspace_id: 'workspace:test:insufficient',
+      status: 'insufficient_signal',
+    },
+    getRunStatus: async () => {
+      throw new Error('poll should not run for terminal insufficient status');
+    },
+    maxAttempts: 1,
+    delayMs: 0,
+  });
+
+  assert.equal(limited.status, 'workspace_ready_with_limited_support');
+  assert.equal(insufficient.status, 'insufficient_signal');
+});
+
 test('API visible flow normalizes safe error codes without fixture fallback', () => {
   assert.equal(
     normalizeApiRuntimeErrorCode(new Error('DecisionCoreClient.createInitialReviewRun failed: live_gate_missing.')),

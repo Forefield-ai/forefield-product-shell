@@ -21,6 +21,8 @@ const SAFE_API_ERROR_CODES = Object.freeze([
 
 const RUN_TERMINAL_READY_STATUSES = Object.freeze([
   'workspace_ready',
+  'workspace_ready_with_limited_support',
+  'insufficient_signal',
 ]);
 
 const RUN_TERMINAL_FAILED_STATUSES = Object.freeze([

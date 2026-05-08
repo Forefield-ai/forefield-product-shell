@@ -29,6 +29,8 @@ export default function ReviewSummaryStrip({ reviewSummary }) {
   const publicSourceRefCount = Number(reviewSummary?.public_source_ref_count || 0);
   const directionalCount = Number(reviewSummary?.directional_count || 0);
   const exploratoryCount = Number(reviewSummary?.exploratory_count || 0);
+  const outcomeSummary = reviewSummary?.outcome_summary || null;
+  const releaseStatus = outcomeSummary?.release_readiness_status;
   const items = [
     ['Clusters ready', clusterCount],
     ['Evidence items', evidenceCount],
@@ -36,7 +38,9 @@ export default function ReviewSummaryStrip({ reviewSummary }) {
     ['Directional', directionalCount],
     ['Exploratory', exploratoryCount],
   ];
-  const summaryLine = clusterCount > 0
+  const summaryLine = releaseStatus === 'insufficient_signal'
+    ? 'This run completed, but it did not find enough reliable user-side signals for an accepted Initial Review.'
+    : clusterCount > 0
     ? `${pluralize(clusterCount, 'cluster is', 'clusters are')} ready to review, backed by ${pluralize(evidenceCount, 'curated evidence item', 'curated evidence items')} and ${pluralize(publicSourceRefCount, 'public source link', 'public source links')}.`
     : 'No clusters are ready to review yet in this workspace snapshot.';
 
@@ -47,7 +51,9 @@ export default function ReviewSummaryStrip({ reviewSummary }) {
           <p className="summary-strip__eyebrow">Initial Review</p>
           <h2 className="summary-strip__title">What this review surfaced so far</h2>
           <p className="summary-strip__copy">{summaryLine}</p>
-          <p className="summary-strip__copy">{buildEvidenceRead(reviewSummary)}</p>
+          <p className="summary-strip__copy">
+            {outcomeSummary?.client_safe_outcome_message || buildEvidenceRead(reviewSummary)}
+          </p>
         </div>
 
         <div className="summary-strip__guidance">

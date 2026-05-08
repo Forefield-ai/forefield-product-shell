@@ -60,6 +60,42 @@ function normalizeReviewState(reviewState) {
   };
 }
 
+function normalizeOutcomeDecision(productMainline) {
+  const decision = productMainline?.initial_review_outcome_decision
+    && typeof productMainline.initial_review_outcome_decision === 'object'
+    && !Array.isArray(productMainline.initial_review_outcome_decision)
+    ? productMainline.initial_review_outcome_decision
+    : null;
+  const outcome = typeof productMainline?.initial_review_outcome === 'string'
+    ? productMainline.initial_review_outcome.trim()
+    : '';
+  const message = typeof productMainline?.client_safe_outcome_message === 'string'
+    ? productMainline.client_safe_outcome_message.trim()
+    : '';
+  const releaseReadinessStatus = typeof productMainline?.release_readiness_status === 'string'
+    ? productMainline.release_readiness_status.trim()
+    : '';
+  const userVisibleSeverity = typeof productMainline?.user_visible_severity === 'string'
+    ? productMainline.user_visible_severity.trim()
+    : '';
+
+  if (!decision && !outcome && !message && !releaseReadinessStatus && !userVisibleSeverity) {
+    return null;
+  }
+
+  return {
+    initial_review_outcome: outcome || decision?.initial_review_outcome || 'unknown',
+    release_readiness_status: releaseReadinessStatus || decision?.release_readiness_status || 'unknown',
+    user_visible_severity: userVisibleSeverity || decision?.user_visible_severity || 'unknown',
+    retry_recommended: productMainline?.retry_recommended === true || decision?.retry_recommended === true,
+    client_safe_outcome_message: message || decision?.client_safe_outcome_message || '',
+    source_coverage_limited: decision?.source_coverage_limited === true,
+    product_success_metric: typeof decision?.product_success_metric === 'string'
+      ? decision.product_success_metric
+      : '',
+  };
+}
+
 function pluralize(count, singular, plural = `${singular}s`) {
   return `${count} ${count === 1 ? singular : plural}`;
 }
@@ -351,6 +387,7 @@ function buildTopicWorkspaceViewState(productMainline, options = {}) {
     'productMainline.curated_evidence_records'
   );
   const explicitReviewState = normalizeReviewState(productMainline.review_state);
+  const outcomeSummary = normalizeOutcomeDecision(productMainline);
   const sourceCoverageSummary = productMainline.source_coverage_summary
     && typeof productMainline.source_coverage_summary === 'object'
     && !Array.isArray(productMainline.source_coverage_summary)
@@ -396,6 +433,13 @@ function buildTopicWorkspaceViewState(productMainline, options = {}) {
     reviewSummary.coverage_boundary = sourceCoverageStrip.coverage_boundary;
   }
 
+  if (outcomeSummary) {
+    workspaceHeader.outcome_summary = outcomeSummary;
+    reviewSummary.outcome_summary = outcomeSummary;
+    reviewSummary.release_readiness_status = outcomeSummary.release_readiness_status;
+    reviewSummary.initial_review_outcome = outcomeSummary.initial_review_outcome;
+  }
+
   const viewState = {
     workspace_header: workspaceHeader,
     topic_draft_summary: {
@@ -415,6 +459,10 @@ function buildTopicWorkspaceViewState(productMainline, options = {}) {
       explicitReviewState
     ),
   };
+
+  if (outcomeSummary) {
+    viewState.outcome_summary = outcomeSummary;
+  }
 
   if (explicitReviewState) {
     viewState.review_state = explicitReviewState;

@@ -104,6 +104,37 @@ test('review_summary counts are correct', () => {
   assert.equal(richViewState.review_summary.exploratory_count, 1);
 });
 
+test('runtime outcome decision is preserved for workspace header and summary', () => {
+  const runtimeProductMainline = {
+    ...minimalProductMainlineFixture,
+    initial_review_outcome: 'insufficient_signal',
+    client_safe_outcome_message: 'We could not find enough reliable user-side signals for this topic.',
+    release_readiness_status: 'insufficient_signal',
+    user_visible_severity: 'insufficient',
+    retry_recommended: true,
+    initial_review_outcome_decision: {
+      initial_review_outcome: 'insufficient_signal',
+      release_readiness_status: 'insufficient_signal',
+      client_safe_outcome_message: 'We could not find enough reliable user-side signals for this topic.',
+      user_visible_severity: 'insufficient',
+      retry_recommended: true,
+      source_coverage_limited: true,
+      product_success_metric: 'cluster_sufficiency_not_source_coverage',
+    },
+  };
+  const viewState = buildTopicWorkspaceViewState(runtimeProductMainline);
+
+  assert.equal(viewState.outcome_summary.initial_review_outcome, 'insufficient_signal');
+  assert.equal(viewState.outcome_summary.release_readiness_status, 'insufficient_signal');
+  assert.equal(viewState.outcome_summary.retry_recommended, true);
+  assert.equal(viewState.workspace_header.outcome_summary.user_visible_severity, 'insufficient');
+  assert.equal(viewState.review_summary.release_readiness_status, 'insufficient_signal');
+  assert.equal(
+    viewState.review_summary.outcome_summary.client_safe_outcome_message,
+    'We could not find enough reliable user-side signals for this topic.'
+  );
+});
+
 test('source_coverage_strip counts are correct', () => {
   const minimalViewState = buildTopicWorkspaceViewState(minimalProductMainlineFixture);
   const richViewState = buildTopicWorkspaceViewState(richProductMainlineFixture);

@@ -24,6 +24,17 @@ function formatTopicDefinitionStatus(value) {
   return formatLabel(value) || 'Defined';
 }
 
+function outcomeLabel(outcomeSummary) {
+  const status = outcomeSummary?.release_readiness_status;
+
+  if (status === 'accepted') return 'Accepted';
+  if (status === 'accepted_limited') return 'Limited support';
+  if (status === 'insufficient_signal') return 'Insufficient signal';
+  if (status === 'runtime_failure') return 'Runtime issue';
+
+  return 'Initial Review Ready';
+}
+
 export default function WorkspaceHeader({
   workspaceHeader,
   topicDraftSummary,
@@ -38,6 +49,13 @@ export default function WorkspaceHeader({
   const reviewSnapshot = formatTimestamp(workspaceHeader?.imported_at);
   const limitationsSummary = typeof topicDraftSummary?.limitations_summary === 'string'
     ? topicDraftSummary.limitations_summary.trim()
+    : '';
+  const outcomeSummary = workspaceHeader?.outcome_summary || null;
+  const outcomeMessage = typeof outcomeSummary?.client_safe_outcome_message === 'string'
+    ? outcomeSummary.client_safe_outcome_message.trim()
+    : '';
+  const outcomeSeverity = typeof outcomeSummary?.user_visible_severity === 'string'
+    ? outcomeSummary.user_visible_severity.trim()
     : '';
   const briefIsEligible = Boolean(briefEligibility?.is_eligible);
   const briefIsPreliminary = briefEligibility?.brief_mode === 'preliminary';
@@ -73,7 +91,9 @@ export default function WorkspaceHeader({
           <div className="workspace-header__eyebrow">
             <span className="workspace-header__pill">Initial Review</span>
             <span className="workspace-header__pill">Topic definition: {topicDefinitionStatus}</span>
-            <span className="workspace-header__pill">Review status: Initial Review Ready</span>
+            <span className={`workspace-header__pill${outcomeSeverity ? ` workspace-header__pill--${outcomeSeverity}` : ''}`}>
+              Review status: {outcomeLabel(outcomeSummary)}
+            </span>
           </div>
         </div>
         <div className="workspace-header__actions">
@@ -114,8 +134,7 @@ export default function WorkspaceHeader({
       <h1 className="workspace-header__title">{workspaceHeader.workspace_title}</h1>
       <p className="workspace-header__summary">{topicDraftSummary.summary}</p>
       <p className="workspace-header__review-note">
-        Review the clusters surfaced for this topic, then open the Evidence Drawer to verify what
-        supports them before deciding what to monitor, save, or trim from scope.
+        {outcomeMessage || 'Review the clusters surfaced for this topic, then open the Evidence Drawer to verify what supports them before deciding what to monitor, save, or trim from scope.'}
       </p>
       <dl className="workspace-header__meta">
         <div className="workspace-header__meta-item">
