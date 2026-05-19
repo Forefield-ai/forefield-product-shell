@@ -42,6 +42,14 @@ function formatConfidenceLabel(label) {
 
 function buildWhyIncludedCopy(item, clusterHeadline) {
   if (typeof item?.summary === 'string' && item.summary.trim()) {
+    if (!item?.url) {
+      if (typeof clusterHeadline === 'string' && clusterHeadline.trim()) {
+        return `Included as a safe evidence summary for the cluster "${clusterHeadline}".`;
+      }
+
+      return 'Included as a safe evidence summary for the selected cluster.';
+    }
+
     if (typeof clusterHeadline === 'string' && clusterHeadline.trim()) {
       return `Included to help verify the cluster "${clusterHeadline}" against a public source.`;
     }
@@ -50,6 +58,14 @@ function buildWhyIncludedCopy(item, clusterHeadline) {
   }
 
   return 'Included as part of the current public-source evidence set for this cluster.';
+}
+
+function getEvidenceItemLabel(item, index) {
+  if (item?.url) {
+    return item.label || `Public source ${index + 1}`;
+  }
+
+  return `Evidence summary ${index + 1}`;
 }
 
 function getVisibleGroupedSections(evidenceDrawer) {
@@ -95,8 +111,8 @@ export default function EvidenceDrawer({
       </p>
 
       <p className="evidence-drawer__review-note">
-        Use these sources to verify what supports this cluster before deciding what to save,
-        watch, or trim from scope.
+        Review these evidence summaries to understand what supports this cluster. Public source
+        links appear when they are available in the current snapshot.
       </p>
 
       {evidenceDrawer.confidence_display ? (
@@ -179,16 +195,22 @@ export default function EvidenceDrawer({
         <section className="evidence-drawer__section">
           <h3>Evidence to verify</h3>
           <ul className="evidence-drawer__items">
-            {evidenceDrawer.evidence_items.map((item) => (
+            {evidenceDrawer.evidence_items.map((item, itemIndex) => (
               <li className="evidence-drawer__item" key={item.id}>
                 <div className="evidence-drawer__item-header">
                   <div>
-                    <p className="evidence-drawer__item-label">{item.label}</p>
+                    <p className="evidence-drawer__item-label">
+                      {getEvidenceItemLabel(item, itemIndex)}
+                    </p>
                     {getSourceHostLabel(item.url) ? (
                       <p className="evidence-drawer__item-source">
                         Source: {getSourceHostLabel(item.url)}
                       </p>
-                    ) : null}
+                    ) : (
+                      <p className="evidence-drawer__item-source">
+                        Public source link unavailable in this snapshot
+                      </p>
+                    )}
                     {isEvidenceSaved?.(getEvidenceItemId(item)) ? (
                       <span className="evidence-drawer__item-badge">Saved</span>
                     ) : null}

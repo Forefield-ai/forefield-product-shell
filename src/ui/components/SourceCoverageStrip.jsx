@@ -10,9 +10,15 @@ function describeCoverage(sourceCoverageStrip) {
   const clusterCoverage = Array.isArray(sourceCoverageStrip?.cluster_coverage)
     ? sourceCoverageStrip.cluster_coverage
     : [];
+  const evidenceCount = clusterCoverage.reduce((sum, cluster) =>
+    sum + Number(cluster?.display_evidence_count ?? cluster?.evidence_count ?? 0), 0);
   const thinClusters = clusterCoverage.filter((cluster) => Number(
     cluster?.display_evidence_count ?? cluster?.evidence_count ?? 0
   ) <= 1).length;
+
+  if (evidenceCount > 0 && publicSourceRefCount === 0) {
+    return `${pluralize(evidenceCount, 'evidence summary is', 'evidence summaries are')} available across clusters. Public source links are not exposed in this snapshot, so treat the summaries as review material rather than source-level verification.`;
+  }
 
   let summary = `${pluralize(publicSourceRefCount, 'public source link is', 'public source links are')} available across ${pluralize(uniqueUrlCount, 'unique URL', 'unique URLs')}.`;
 
@@ -80,8 +86,8 @@ export default function SourceCoverageStrip({ sourceCoverageStrip }) {
         <div className="coverage-strip__guidance">
           <span className="coverage-strip__guidance-label">Review note</span>
           <p className="coverage-strip__guidance-copy">
-            Source coverage helps you judge how much support each cluster has. Open Evidence Drawer
-            before relying on clusters with thinner coverage.
+            Evidence coverage helps you judge how much support each cluster has. Open Evidence Drawer
+            before relying on clusters with thinner or link-limited coverage.
           </p>
         </div>
       </div>
@@ -108,7 +114,7 @@ export default function SourceCoverageStrip({ sourceCoverageStrip }) {
               </div>
               <div className="coverage-strip__metric">
                 <span className="coverage-strip__metric-value">{clusterCoverageEntry.public_source_ref_count}</span>
-                <span className="coverage-strip__metric-label">Source links</span>
+                <span className="coverage-strip__metric-label">Public links</span>
               </div>
             </div>
           </article>

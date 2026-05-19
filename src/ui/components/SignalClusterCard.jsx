@@ -38,6 +38,10 @@ function getEvidenceBasisSummary(signalClusterSection) {
     ? signalClusterSection.source_links.length
     : 0;
 
+  if (evidenceCount > 0 && sourceLinkCount === 0) {
+    return `${pluralize(evidenceCount, 'evidence summary', 'evidence summaries')} available for review; public source links are not exposed in this snapshot.`;
+  }
+
   return `${pluralize(evidenceCount, 'evidence item', 'evidence items')} and ${pluralize(sourceLinkCount, 'source link', 'source links')} available for review.`;
 }
 
@@ -68,7 +72,15 @@ function getClusterReviewGuidance(signalClusterSection) {
 
 function getEvidenceAccessMessage(signalClusterSection) {
   if (signalClusterSection?.drawer_available) {
-    return 'Open the drawer to verify supporting sources';
+    const sourceLinkCount = Array.isArray(signalClusterSection?.source_links)
+      ? signalClusterSection.source_links.length
+      : 0;
+
+    if (sourceLinkCount === 0) {
+      return 'Open the drawer to review safe evidence summaries';
+    }
+
+    return 'Open the drawer to verify supporting source links';
   }
 
   return 'Evidence is not available for this cluster in the current snapshot';
